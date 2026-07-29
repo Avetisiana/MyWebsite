@@ -7,9 +7,9 @@ export const content = {
     title: 'Arthur Avetisian — Création de sites internet à Angoulême',
     description: "Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.",
     domain: 'https://DOMAINE-A-DEFINIR.fr',
-    email: '[MON_EMAIL]',
-    phone: '[TELEPHONE_A_COMPLETER]',
-    phoneDisplay: '[Téléphone à compléter]',
+    email: 'arthur.avetisian@hotmail.com',
+    phone: '+33646456925',
+    phoneDisplay: '06 46 45 69 25',
     year: new Date().getFullYear(),
   },
 
@@ -100,7 +100,6 @@ export const content = {
     responseLabel: 'La réponse',
     response: "Un site multi-pages à l'identité soignée, un espace d'administration permettant au cabinet de gérer lui-même ses contenus, une attention particulière portée à la conformité déontologique propre à la profession d'avocat, et un référencement local pensé pour Angoulême et la Charente.",
     link: { label: 'Voir le site en ligne', href: 'https://laperonnie-avocat.fr/' },
-    screenshotPlaceholder: 'Capture d’écran du site à intégrer',
     testimonialPlaceholder: 'Témoignage client à intégrer',
   },
 
@@ -218,7 +217,7 @@ export const content = {
     title: 'Discutons de votre projet',
     subtitle: 'Décrivez-moi votre besoin, je reviens vers vous sous 24 à 48h.',
     form: {
-      action: 'https://formsubmit.co/[MON_EMAIL]',
+      action: 'https://formsubmit.co/arthur.avetisian@hotmail.com',
       fields: {
         name: { label: 'Nom', id: 'contact-name', type: 'text', required: true },
         email: { label: 'Email', id: 'contact-email', type: 'email', required: true },

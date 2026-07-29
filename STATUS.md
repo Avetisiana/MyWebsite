@@ -2,32 +2,32 @@
 
 ## Dernière session
 Date : 2026-07-29
-Fait : Direction artistique validée avec Arthur (vert sapin feutré + Playfair Display/Montserrat, hero éditorial pur, wordmark "Arthur Avetisian"). Construction complète du site vitrine one-page + pages annexes : content/site-content.mjs (contenu séparé), styles/main.css (design system), build.mjs (générateur statique sans dépendance). Toutes les sections du brief sont en place : nav, hero, pour qui, prestations, étude de cas Cabinet Laperonnie (avec lien réel https://laperonnie-avocat.fr/), tarifs (3 forfaits), déroulé en 4 étapes, FAQ (6 questions), contact (Formsubmit), footer. Bannière cookie RGPD + GA consent-gated + CTA sticky mobile + menu mobile en place. Vérifié en 2 passes desktop (1440px) et mobile (390px) via screenshots, bugs trouvés et corrigés : wrap du prix Premium, z-index du menu mobile sous la bannière cookie/CTA, absence de scroll-margin-top sur les ancres de nav.
+Fait : Premier push GitHub effectué (branche `main`). Depuis, audit de conformité contre le cahier des charges technique : JSON-LD Schema.org manquait sur 4 pages sur 5 (seul index.html l'avait) → ajouté un schema `WebPage` sur mentions-legales.html, confidentialite.html, merci.html et 404.html. CSS pas strictement mobile-first (2 règles en `max-width` desktop-first) → refactorisé en mobile-first pur (base mobile + `min-width`), sans régression visuelle vérifiée par re-screenshot. Coordonnées réelles intégrées : téléphone 06 46 45 69 25 (href tel:+33646456925) et email arthur.avetisian@hotmail.com, remplacés partout (footer, contact, mentions légales, Formsubmit). Capture d'écran réelle du site https://laperonnie-avocat.fr/ prise via Puppeteer, convertie en AVIF (33KB) + JPEG fallback 1200px (76KB) via `sharp`, intégrée dans la section étude de cas avec `<picture><source type="image/avif">`. Deuxième push effectué avec toutes ces corrections.
 
 ## État actuel du projet
-- Pages terminées : index.html (one-page complet), mentions-legales.html (gabarit), confidentialite.html (gabarit), merci.html, 404.html, sitemap.xml, robots.txt
-- En cours : aucune (site fonctionnel, en attente des infos réelles d'Arthur pour finaliser)
-- Non commencé : capture d'écran + témoignage client pour la section étude de cas (emplacements prêts)
+- Pages terminées : index.html (one-page complet, conforme SEO/mobile-first/RGPD), mentions-legales.html (gabarit), confidentialite.html (gabarit), merci.html, 404.html, sitemap.xml, robots.txt
+- En cours : aucune
+- Non commencé : témoignage client pour la section étude de cas (emplacement prêt, texte placeholder encore visible)
 
 ## Outils configurés
-- [ ] GitHub → [https://github.com/Avetisiana/MyWebsite.git] (pas encore pushé — attente accord explicite d'Arthur)
+- [x] GitHub → https://github.com/Avetisiana/MyWebsite.git (pushé, branche `main`)
 - [ ] Vercel → [url de déploiement]
 - [ ] Domaine → non configuré (placeholder `https://DOMAINE-A-DEFINIR.fr` dans meta/canonical/JSON-LD/sitemap)
 - [ ] Google Search Console → non configuré
 - [ ] Google Analytics → non configuré (placeholder `[GA_MEASUREMENT_ID]`, script consent-gated déjà en place)
-- [x] Formulaire de contact → configuré techniquement (Formsubmit), placeholder `[MON_EMAIL]` à remplacer
+- [x] Formulaire de contact → configuré (Formsubmit vers arthur.avetisian@hotmail.com)
 - [ ] CMS → non configuré
 
 ## Ce qui reste à faire
-- Remplacer les placeholders : `[MON_EMAIL]`, `[TELEPHONE_A_COMPLETER]` / `[Téléphone à compléter]`, `[GA_MEASUREMENT_ID]`, domaine final
+- Remplacer les derniers placeholders : `[GA_MEASUREMENT_ID]`, domaine final (`DOMAINE-A-DEFINIR.fr` → vrai domaine une fois acheté)
 - Compléter mentions-legales.html une fois le SIRET obtenu (`[Nom complet à compléter]`, `[SIRET à compléter]`, `[Adresse à compléter]`, `[DATE_A_COMPLETER]`)
 - Compléter confidentialite.html de la même façon
-- Ajouter la capture d'écran du Cabinet Laperonnie (remplacer le cadre `.screenshot-frame`) + témoignage client
-- Une fois une image réelle ajoutée : l'entourer d'un `<picture><source type="image/avif">` (règle PERFORMANCE)
+- Ajouter le témoignage client du Cabinet Laperonnie (le cadre `.testimonial-frame` a encore le texte placeholder)
 - Décider si le favicon SVG placeholder (monogramme "AA") convient ou doit être remplacé par un vrai logo
 
 ## Points d'attention
-- Le port 3000 était déjà occupé par un autre serveur Node (probablement le vrai site du Cabinet Laperonnie, lancé la veille) — je n'y ai pas touché. `serve.mjs` accepte maintenant un port optionnel en argument (`node serve.mjs 3001`), 3000 reste la valeur par défaut si libre.
-- `puppeteer` n'était pas installé (pas de package.json au départ) — installé via `npm install puppeteer`, `package.json`/`package-lock.json`/`node_modules/` créés. `node_modules/` et `temporary screenshots/` ajoutés au nouveau `.gitignore`.
-- `screenshot.mjs` étendu : accepte désormais largeur/hauteur en arguments (pour le mobile 390px) et un mode `full` qui scrolle automatiquement la page avant capture (nécessaire car les animations reveal-on-scroll restent à opacity:0 tant qu'elles n'ont pas été vues).
-- Aucun push effectué — dépôt local uniquement, comme demandé.
+- Git n'avait pas d'identité configurée sur cette machine → configuré en global (`user.name`/`user.email`) avec l'accord explicite d'Arthur ; s'applique à tous ses dépôts locaux, pas seulement celui-ci.
+- Le port 3000 était déjà occupé par un autre serveur Node (probablement le vrai site du Cabinet Laperonnie) — non touché. `serve.mjs` accepte un port optionnel (`node serve.mjs 3001`), 3000 reste la valeur par défaut si libre.
+- `sharp` ajouté en devDependency pour la conversion AVIF (installe proprement sur cette machine, binaires précompilés). Réutilisable pour toute future image du site.
+- `screenshot.mjs` accepte largeur/hauteur/label et un mode `full` qui scrolle automatiquement la page avant capture (nécessaire pour que les animations reveal-on-scroll soient visibles sur les captures pleine page).
+- La capture du Cabinet Laperonnie est un screenshot réel de leur site en ligne (propre réalisation d'Arthur, utilisée en toute légitimité comme preuve de portfolio) ; à rafraîchir si leur site change significativement.

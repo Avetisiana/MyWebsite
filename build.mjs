@@ -15,6 +15,22 @@ const FONTS_LINK = `<link rel="preconnect" href="https://fonts.googleapis.com">
 
 // ---------- helpers ----------
 
+function webPageJsonLd({ title, description, pagePath }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${content.meta.domain}${pagePath}`,
+    inLanguage: 'fr-FR',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: content.nav.logo,
+      url: content.meta.domain,
+    },
+  };
+}
+
 function heroTitleHTML() {
   const { title, titleAccent } = content.hero;
   return title.replace(titleAccent, `<em>${titleAccent}</em>`);
@@ -312,7 +328,12 @@ function caseStudySection() {
               <a href="${c.link.href}" class="btn btn-ghost btn-ghost--invert" target="_blank" rel="noopener">${c.link.label}</a>
             </div>
             <div class="case-study-visual">
-              <div class="screenshot-frame">${c.screenshotPlaceholder}</div>
+              <div class="screenshot-frame">
+                <picture>
+                  <source srcset="/images/cabinet-laperonnie.avif" type="image/avif">
+                  <img src="/images/cabinet-laperonnie-1200.jpg" alt="Site internet du Cabinet Laperonnie, avocat à Angoulême" width="1200" height="750" loading="lazy">
+                </picture>
+              </div>
               <div class="testimonial-frame">“${c.testimonialPlaceholder}”</div>
             </div>
           </div>
@@ -504,7 +525,15 @@ function legalPage({ pagePath, title, description, sections }) {
       ${sections}
     </div>
   </div>`;
-  return page({ title: `${title} — ${content.nav.logo}`, description, pagePath, bodyHTML, robots: 'index, follow' });
+  const fullTitle = `${title} — ${content.nav.logo}`;
+  return page({
+    title: fullTitle,
+    description,
+    pagePath,
+    bodyHTML,
+    robots: 'index, follow',
+    jsonLd: webPageJsonLd({ title: fullTitle, description, pagePath }),
+  });
 }
 
 function buildMentionsLegales() {
@@ -586,13 +615,17 @@ function buildMerci() {
       <a href="/" class="btn btn-primary">Retour à l'accueil</a>
     </div>
   </div>`;
+  const title = `Merci — ${content.nav.logo}`;
+  const description = 'Votre demande a bien été envoyée.';
+  const pagePath = '/merci.html';
   return page({
-    title: `Merci — ${content.nav.logo}`,
-    description: 'Votre demande a bien été envoyée.',
-    pagePath: '/merci.html',
+    title,
+    description,
+    pagePath,
     bodyHTML,
     robots: 'noindex, nofollow',
     includeMobileCta: false,
+    jsonLd: webPageJsonLd({ title, description, pagePath }),
   });
 }
 
@@ -605,13 +638,17 @@ function build404() {
       <a href="/" class="btn btn-primary">Retour à l'accueil</a>
     </div>
   </div>`;
+  const title = `Page introuvable — ${content.nav.logo}`;
+  const description = "Cette page n'existe pas.";
+  const pagePath = '/404.html';
   return page({
-    title: `Page introuvable — ${content.nav.logo}`,
-    description: "Cette page n'existe pas.",
-    pagePath: '/404.html',
+    title,
+    description,
+    pagePath,
     bodyHTML,
     robots: 'noindex, nofollow',
     includeMobileCta: false,
+    jsonLd: webPageJsonLd({ title, description, pagePath }),
   });
 }
 
