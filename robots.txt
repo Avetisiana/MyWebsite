@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /merci.html
+Allow: /
+
+Sitemap: https://DOMAINE-A-DEFINIR.fr/sitemap.xml
