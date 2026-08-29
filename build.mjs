@@ -167,7 +167,9 @@ function nav() {
           <span class="chevron" aria-hidden="true"></span>
         </button>
         <div class="nav-dropdown-menu" id="nav-solutions-menu" role="menu" aria-label="${content.nav.solutionsLabel}">
-          ${solutionItems.map(it => `<a href="/${it.slug}" role="menuitem">${it.cardTitle}</a>`).join('\n          ')}
+          <div class="nav-dropdown-menu-inner">
+            ${solutionItems.map(it => `<a href="/${it.slug}" role="menuitem">${it.cardTitle}</a>`).join('\n            ')}
+          </div>
         </div>
       </div>`;
 

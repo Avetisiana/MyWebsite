@@ -300,21 +300,20 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 }
 .nav-dropdown:hover .nav-dropdown-trigger .chevron,
 .nav-dropdown.is-open .nav-dropdown-trigger .chevron { transform: rotate(-135deg) translateY(1px); }
+/* La zone interactive (.nav-dropdown-menu) part pile à top:100%, sans espace mort avec le
+   déclencheur : le survol reste continu quand la souris descend vers un lien. L'espacement visuel
+   avec le bouton est simulé par le padding-top, qui fait partie de la zone survolable — la carte
+   visible (.nav-dropdown-menu-inner) est ensuite décalée à l'intérieur de ce padding. */
 .nav-dropdown-menu {
   position: absolute;
-  top: calc(100% + 16px);
+  top: 100%;
   left: 50%;
-  min-width: 240px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-2);
+  padding-top: 16px;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate(-50%, -8px);
-  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-spring), visibility 0.3s;
+  transform: translateX(-50%);
+  transition: opacity 0.3s var(--ease-out), visibility 0.3s;
   z-index: 600;
 }
 .nav-dropdown:hover .nav-dropdown-menu,
@@ -323,7 +322,21 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translate(-50%, 0);
+}
+.nav-dropdown-menu-inner {
+  min-width: 240px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2);
+  transform: translateY(-8px);
+  transition: transform 0.3s var(--ease-spring);
+}
+.nav-dropdown:hover .nav-dropdown-menu-inner,
+.nav-dropdown.is-open .nav-dropdown-menu-inner,
+.nav-dropdown:focus-within .nav-dropdown-menu-inner {
+  transform: translateY(0);
 }
 .nav-dropdown-menu a {
   display: block;
