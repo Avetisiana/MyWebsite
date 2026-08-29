@@ -149,10 +149,10 @@ function head({ title, description, pagePath, ogType = 'website', jsonLd = null,
 }
 
 function nav() {
-  // le dropdown "Solutions" s'insère juste avant Contact, sur desktop comme sur mobile
-  const contactIndex = content.nav.links.findIndex(l => l.label === 'Contact');
-  const before = content.nav.links.slice(0, contactIndex === -1 ? content.nav.links.length : contactIndex);
-  const after = contactIndex === -1 ? [] : content.nav.links.slice(contactIndex);
+  // le dropdown "Solutions" s'insère juste avant Prestations, sur desktop comme sur mobile
+  const insertIndex = content.nav.links.findIndex(l => l.label === 'Prestations');
+  const before = content.nav.links.slice(0, insertIndex === -1 ? 0 : insertIndex);
+  const after = content.nav.links.slice(insertIndex === -1 ? 0 : insertIndex);
   const solutionItems = content.digitalSolutions.items;
 
   const linkHTML = l => `<a href="${l.href}">${l.label}</a>`;
