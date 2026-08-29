@@ -1,0 +1,70 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-DNS-Prefetch-Control",
+          "value": "off"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-G2u6TGMUQ1N+UMenrooHHaBKYY7wHiLT0+A8lf/OtKg=' 'sha256-QzKrYwv1GYVKy6Xi4+Bo0046UawX2UJYHZAlg4RPrI0=' 'sha256-bB68BTLUCs6puE7M4nsxM3PujSp+w1gpcou7vkD8MZQ=' 'sha256-QTLZmEGwVrFCZ4xR0pj5hvirN/EQzq/f3gEzH3LgNEs=' 'sha256-mOMrys+ylknl6kAuC7x6O9/qjf7bI8zxLlF6N9vWwu8=' 'sha256-VhsLaRmLdPFoKKRCx9+SUXAdQ7gQX8CJt36GXFqdBWk=' 'sha256-uumawBNlkBY9YJWd67SS/jfJ87Q+1HdYPBajq3eh00I=' 'sha256-lnJRUQTrWkhCkHzxc+JA+TqzcYg5piWZACywV8Zh2Js=' 'sha256-/J1cJ3o972TOp2Z/kUfP/n1uVPvkI67GRLo0uOmROc0=' 'sha256-BnOc/sI6JONBACUgHdjVL/i7jYAJ9Ulk9yk96kpSHkE=' 'sha256-UtgBymdIACKGul8bTPfH402CunR6b6kSVlyd/fq0UhY=' https://www.googletagmanager.com; style-src 'self' 'sha256-1SSPkqJNaFoB5cOrNaiiiMd/kdZ6zy7j4XMsCDQqtB8=' 'sha256-e9+S8NsJBcJmvFhSC0OKg8JE/SpAkNtE6XLHt6mQIgM='; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://formsubmit.co https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(css|js|mjs|svg|png|jpg|jpeg|webp|avif|woff2|woff|ico)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(robots.txt|sitemap.xml|manifest.webmanifest)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    }
+  ]
+}

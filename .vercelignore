@@ -1,0 +1,16 @@
+# Le build est fait en local et commité (index.html, mentions-legales.html, etc.
+# sont déjà à la racine) — exclure ces fichiers du déploiement n'a donc aucun
+# impact fonctionnel, ça évite seulement qu'ils soient servis publiquement.
+*.md
+build.mjs
+serve.mjs
+screenshot.mjs
+scripts/
+content/
+styles/
+brand_assets/
+node_modules/
+package.json
+package-lock.json
+temporary screenshots/
+.vercel

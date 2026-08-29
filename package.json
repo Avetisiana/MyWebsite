@@ -1,27 +1,33 @@
 {
-  "name": "monsite",
+  "name": "arthur-avetisian-site",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "description": "Site vitrine statique d'Arthur Avetisian, création de sites internet à Angoulême et en Charente.",
+  "main": "build.mjs",
+  "engines": {
+    "node": ">=18.18"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.mjs",
+    "serve": "node serve.mjs",
+    "assets": "node scripts/gen-assets.mjs",
+    "screenshot": "node screenshot.mjs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Avetisiana/MyWebsite.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Arthur Avetisian",
+  "license": "UNLICENSED",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Avetisiana/MyWebsite/issues"
   },
   "homepage": "https://github.com/Avetisiana/MyWebsite#readme",
-  "dependencies": {
-    "puppeteer": "^25.4.0"
-  },
   "devDependencies": {
-    "sharp": "^0.35.3"
+    "puppeteer": "^25.4.0",
+    "sharp": "^0.35.3",
+    "to-ico": "^1.1.5"
   }
 }
