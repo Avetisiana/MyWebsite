@@ -177,8 +177,11 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip; /* clip ne crée pas de conteneur de défilement -> ne casse pas position:fixed
+                       sur certains navigateurs mobiles (Samsung Internet, WebViews). hidden = repli. */
   position: relative;
   padding-bottom: var(--mobile-cta-h);
+  padding-bottom: calc(var(--mobile-cta-h) + env(safe-area-inset-bottom, 0px)); /* progressif */
 }
 @media (min-width: 768px) { body { padding-bottom: 0; } }
 
@@ -923,24 +926,33 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .cookie-banner {
   position: fixed;
   left: var(--space-3); right: var(--space-3);
-  bottom: calc(var(--mobile-cta-h) + var(--space-2));
+  bottom: var(--space-3);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-3)); /* progressif : ignoré si env() inconnu */
   z-index: 800;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  padding: var(--space-3);
+  padding: var(--space-2);
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
   max-width: 620px;
+  max-height: calc(100vh - 2 * var(--space-3));
+  overflow-y: auto;
   margin: 0 auto;
-  transform: translateY(140%);
+  transform: translateY(calc(100% + var(--space-5)));
   transition: transform 0.5s var(--ease-spring);
 }
 .cookie-banner.is-visible { transform: translateY(0); }
-@media (min-width: 768px) { .cookie-banner { bottom: var(--space-3); } }
+/* Bannière visible -> on rétracte le CTA collant. Sinon, sur mobile, les deux barres du bas
+   (+ barre du navigateur + encoche) se chevauchent et Refuser/Accepter deviennent
+   inatteignables. Le CTA remonte tout seul dès que le choix est fait (retrait de .is-visible). */
+.cookie-banner.is-visible ~ .mobile-cta { transform: translateY(120%); pointer-events: none; }
+@media (min-width: 768px) {
+  .cookie-banner { padding: var(--space-3); gap: var(--space-3); max-height: none; overflow-y: visible; }
+}
 .cookie-banner p { font-size: 0.82rem; color: var(--color-text-soft); flex: 1 1 240px; }
 .cookie-banner p a { color: var(--color-accent); font-weight: 600; }
 .cookie-actions { display: flex; gap: 0.6em; flex: none; }
@@ -955,12 +967,14 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .mobile-cta {
   position: fixed; left: 0; right: 0; bottom: 0;
   z-index: 700;
-  height: var(--mobile-cta-h);
+  min-height: var(--mobile-cta-h);
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
   box-shadow: 0 -8px 24px rgba(18,36,30,0.08);
-  display: flex; align-items: center; padding: 0 var(--space-3);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  display: flex; align-items: center; padding: var(--space-1) var(--space-3);
+  padding-bottom: var(--space-1);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-1)); /* progressif */
+  transition: transform 0.4s var(--ease-spring);
 }
 .mobile-cta .btn { width: 100%; }
 @media (min-width: 768px) { .mobile-cta { display: none; } }

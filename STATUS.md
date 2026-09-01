@@ -2,7 +2,29 @@
 
 ## Dernière session
 Date : 2026-09-01 (suite 4)
-Fait : Cache-busting de `silk-bg.js`.
+Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile.
+
+### Bannière cookies vs CTA collant (mobile)
+- **Signalé par Arthur** : sur certains mobiles, les boutons Refuser/Accepter de la bannière
+  passaient sous la barre « Demander un devis » collante (deux barres `position: fixed` en bas +
+  barre du navigateur + encoche → zone de tap inatteignable). NB : la bannière ne s'affiche
+  actuellement pas du tout (`GA_CONFIGURED = false`), le bug ne se déclenchera qu'une fois GA
+  configuré — corrigé en amont.
+- **Correctif** (`styles/main.css` uniquement) :
+  - `.cookie-banner.is-visible ~ .mobile-cta { transform: translateY(120%); pointer-events: none }`
+    — le CTA collant se rétracte tant que la bannière est là, remonte tout seul au choix fait
+    (sélecteur de voisinage : `.mobile-cta` suit `.cookie-banner` dans le DOM). `.mobile-cta` a
+    reçu `transition: transform .4s`.
+  - Bannière ancrée en bas (`bottom: calc(env(safe-area-inset-bottom,0px) + var(--space-3))`, avec
+    repli plat `bottom: var(--space-3)` pour les navigateurs sans `env()`), plus besoin de dégager
+    les 80px du CTA. Padding compact sur mobile (`--space-2`), `--space-3` restauré ≥768px.
+  - `max-height: calc(100vh - 2*var(--space-3))` + `overflow-y: auto` : filet de sécurité petits écrans.
+  - `body { overflow-x: hidden; overflow-x: clip }` — `clip` ne crée pas de conteneur de défilement,
+    donc ne casse pas `position: fixed` sur Samsung Internet / WebViews ; `hidden` reste le repli.
+  - `body` / `.mobile-cta` : `padding-bottom` intègre `env(safe-area-inset-bottom)` (repli plat d'abord).
+- Vérifié (Puppeteer 390/360/412 + court + desktop, avant/après Accepter) : boutons bannière
+  atteignables partout, CTA rétracté puis restauré, desktop inchangé, 0 violation CSP sur 4 pages,
+  `vercel.json` régénéré (hash `<style>` à jour).
 
 ### `silk-bg.js` — cache-busting
 - **Problème constaté** : Arthur voyait 3 fonds différents entre `:3000`, `:3001` et le site en
