@@ -57,6 +57,7 @@
     var opaque = canvas.hasAttribute('data-opaque') ? 1 : 0;
     var strength = parseFloat(canvas.getAttribute('data-strength'));
     if (isNaN(strength)) strength = 1;
+    if (!isMobile) strength *= 0.7; // -30% sur desktop (choix d'Arthur) ; mobile inchangé
 
     var opts = {
       alpha: !opaque, premultipliedAlpha: true, preserveDrawingBuffer: true,
