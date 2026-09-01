@@ -38,7 +38,7 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    ' float fadeBot=smoothstep(0.0,mix(0.10,0.42,u_opaque),uv.y);',           // hero opaque : fondu bas long
+    ' float fadeBot=pow(smoothstep(0.0,mix(0.12,0.60,u_opaque),uv.y),1.35);', // hero : fondu bas long et très progressif
     ' a*=fadeBot;',                                                           // pas de fondu gauche/droite ni haut
     ' float cd=mix(0.46+0.54*smoothstep(0.14,0.66,length((uv-vec2(0.5,0.46))*vec2(1.15,1.55))),1.0,u_dark);',
     ' a*=cd*u_strength;',
