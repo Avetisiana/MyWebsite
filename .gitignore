@@ -1,5 +1,6 @@
 node_modules/
 temporary screenshots/
+ui_design/
 .vercel
 .DS_Store
 *.log
