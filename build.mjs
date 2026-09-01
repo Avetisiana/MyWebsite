@@ -600,7 +600,7 @@ function prestationsSection() {
           <p>${it.desc}</p>
         </div>
       </div>`).join('\n      ');
-  return `<section id="prestations">
+  return `<section id="prestations" class="bg-alt">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -696,7 +696,7 @@ function pricingSection() {
         </div>`;
   }).join('\n        ');
 
-  return `<section id="tarifs" class="bg-alt">
+  return `<section id="tarifs">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -901,8 +901,8 @@ function buildIndex() {
     audiencesSection(),
     processSection(),
     caseStudySection(),
-    pricingSection(),
     prestationsSection(),
+    pricingSection(),
     digitalSolutionsSection(),
     faqSection(),
     contactSection(),

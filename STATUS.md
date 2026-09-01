@@ -3,17 +3,19 @@
 ## Dernière session
 Date : 2026-09-01 (suite 4)
 Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile
-+ logo « Arthur Avetisian » → accueil + swap « Ce que je propose » ↔ « Un déroulé simple, en 4 étapes ».
++ logo « Arthur Avetisian » → accueil + 2 swaps de sections (Process / Prestations / Tarifs).
 
-### Swap Prestations ↔ Process
-- `buildIndex` : ordre des sections `process` et `prestations` échangé. Nouvel ordre :
-  hero → pour-qui → **comment-ca-se-passe** → realisation → tarifs → **prestations** → solutions
-  → faq → contact.
-- Fonds ajustés pour garder l'alternance ivoire / `bg-alt` (F3EEE4) intacte :
-  `processSection()` gagne `class="bg-alt"`, `prestationsSection()` la perd. Résultat :
-  ivoire / ivoire / alt / ivoire / alt / ivoire / alt / ivoire / ivoire (inchangé).
-- Les `id` d'ancre (`#prestations`, `#comment-ca-se-passe`) ne bougent pas → liens nav OK.
-- Vérifié : capture pleine page desktop + mobile, alternance de fond propre.
+### Swaps de sections (2 passes)
+- Passe 1 : `process` ↔ `prestations`. Passe 2 : `prestations` ↔ `tarifs`.
+- **Ordre final** : hero → pour-qui → **comment-ca-se-passe** → realisation → **prestations**
+  → **tarifs** → solutions → faq → contact.
+- Fonds : `class="bg-alt"` déplacé à chaque fois pour garder l'alternance ivoire / `bg-alt`
+  (F3EEE4). État final : `bg-alt` sur `comment-ca-se-passe`, `prestations`, `solutions` →
+  ivoire / ivoire / alt / ivoire / alt / ivoire / alt / ivoire / ivoire (motif inchangé).
+- Aucune règle CSS ne dépend de `.bg-alt` comme ancêtre → déplacement sans effet de bord.
+  Les `id` d'ancre ne bougent pas → liens nav OK. `vercel.json` inchangé (aucun inline modifié).
+- Vérifié : captures pleine page desktop + mobile (prestations sur beige, tarifs sur ivoire),
+  onglets tarifs fonctionnels, 0 violation CSP.
 
 ### Logo → accueil (au lieu de « haut de page »)
 - `build.mjs` : les deux `.nav-logo` (header + panneau mobile) passent de `href="#top"` à
