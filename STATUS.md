@@ -3,7 +3,29 @@
 ## Dernière session
 Date : 2026-09-01 (suite 4)
 Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile
-+ logo « Arthur Avetisian » → accueil + 2 swaps de sections (Process / Prestations / Tarifs).
++ logo « Arthur Avetisian » → accueil + 2 swaps de sections (Process / Prestations / Tarifs)
++ refonte « Un déroulé simple, en 4 étapes » en rail animé (maquette 6c).
+
+### Section Process → rail « méthode » (maquette 6c)
+- `processSection()` : ancien `.steps`/`.step` remplacé par `<ol class="process-rail" data-rail>` +
+  `<li class="process-step">` (pastille numérotée + titre + description). `.steps`/`.step` **conservés**
+  tels quels (toujours utilisés par les pages Solutions via `.steps--three`).
+- **Contenu inchangé** : eyebrow « Comment ça se passe », titre « Un déroulé simple, en 4 étapes »,
+  les 4 étapes existantes. Pas repris de la maquette : le titre « Vous savez à tout moment… », les
+  libellés de délai (Jour 1 / Semaine 1…) et la 5e étape — à ajouter si Arthur le souhaite.
+- **Interaction** : à l'entrée de la section dans le champ de vision (IntersectionObserver, seuil
+  0.35), la ligne se remplit (`transform: scaleX/scaleY`) et les 4 pastilles s'allument en cascade
+  (vert `--color-accent`, `scale(1.05)`, easing spring). Une seule `is-lit` posée sur le `<ol>`,
+  jamais retirée. Choix : allumage à l'arrivée (pas au fil du scroll) — cohérent avec tous les
+  `reveal` du site, fiable au tactile, simple en `prefers-reduced-motion`.
+- **Mobile** (`< 860px`) : rail **vertical** (pastille à gauche, texte à droite, ligne verticale
+  entre pastilles), `max-width: 360px` centré. **Desktop** (`≥ 860px`) : rail **horizontal** 4 colonnes.
+  Segments de liaison = `::before` (piste grise) + `::after` (remplissage vert animé) par étape.
+- `prefers-reduced-motion` : `transition-delay` forcé à 0 → tout s'allume d'un coup, sans cascade.
+- Sans JS : `NOSCRIPT_CSS` complété → pastilles + ligne affichées à l'état « allumé » d'emblée.
+- Vérifié Puppeteer (1440 / 768 / 390, avant-scroll / mi-cascade / réglé / reduced-motion / sans JS) :
+  `is-lit` posé au bon moment, cascade OK, desktop + mobile OK, pages Solutions intactes (3 étapes),
+  0 violation CSP sur 7 pages, `vercel.json` régénéré (hashs `<style>` + `<script>` à jour).
 
 ### Swaps de sections (2 passes)
 - Passe 1 : `process` ↔ `prestations`. Passe 2 : `prestations` ↔ `tarifs`.

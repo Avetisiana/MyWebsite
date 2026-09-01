@@ -38,7 +38,7 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
@@ -387,6 +387,22 @@ function scripts() {
       revealEls.forEach(function (el) { el.classList.add('is-visible'); });
     }
 
+    // process — rail « méthode » : la ligne se remplit et les pastilles s'allument en cascade
+    // dès que la section entre dans le champ de vision (comportement identique desktop / mobile).
+    var rail = document.querySelector('[data-rail]');
+    if (rail) {
+      if ('IntersectionObserver' in window) {
+        var railIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { rail.classList.add('is-lit'); railIo.disconnect(); }
+          });
+        }, { threshold: 0.35 });
+        railIo.observe(rail);
+      } else {
+        rail.classList.add('is-lit');
+      }
+    }
+
     // hero — titre en entrée blur-zoom mot à mot, puis carrousel du dernier mot qui se fige sur "faire confiance"
     var heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
@@ -717,20 +733,22 @@ function pricingSection() {
 
 function processSection() {
   const p = content.process;
-  const steps = p.steps.map(s => `<div class="step">
-        <span class="n">${s.n}</span>
-        <h3>${s.title}</h3>
-        <p>${s.desc}</p>
-      </div>`).join('\n      ');
+  const steps = p.steps.map(s => `<li class="process-step">
+          <span class="process-step-dot" aria-hidden="true">${s.n}</span>
+          <div class="process-step-body">
+            <h3 class="process-step-title">${s.title}</h3>
+            <p class="process-step-desc">${s.desc}</p>
+          </div>
+        </li>`).join('\n        ');
   return `<section id="comment-ca-se-passe" class="bg-alt">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${p.eyebrow}</p>
         <h2>${p.title}</h2>
       </div>
-      <div class="steps reveal-stagger">
+      <ol class="process-rail reveal" data-rail>
         ${steps}
-      </div>
+      </ol>
     </div>
   </section>`;
 }
