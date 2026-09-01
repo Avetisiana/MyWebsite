@@ -599,13 +599,17 @@ function caseStudySection() {
   const c = content.caseStudy;
   return `<section id="realisation">
     <div class="container">
+      <div class="section-head section-head--center reveal">
+        <p class="eyebrow">${c.sectionEyebrow}</p>
+        <h2>${c.sectionTitle}</h2>
+      </div>
       <div class="case-study reveal">
         <canvas class="silk-canvas silk-canvas--case" data-dark="1" data-strength="1.1" aria-hidden="true"></canvas>
         <div class="case-study-inner">
           <div class="case-study-grid">
             <div>
               <p class="eyebrow">${c.eyebrow}</p>
-              <h2>${c.title}</h2>
+              <h3>${c.title}</h3>
               <p class="subtitle">${c.subtitle}</p>
               <div class="case-study-block">
                 <p class="label">${c.needLabel}</p>
@@ -719,7 +723,7 @@ function faqSection() {
         <summary>${it.q}<span class="plus"></span></summary>
         <p>${it.a}</p>
       </details>`).join('\n      ');
-  return `<section id="faq" class="bg-alt">
+  return `<section id="faq">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${f.eyebrow}</p>
@@ -881,8 +885,8 @@ function buildIndex() {
     caseStudySection(),
     pricingSection(),
     processSection(),
-    faqSection(),
     digitalSolutionsSection(),
+    faqSection(),
     contactSection(),
   ].join('\n');
   return page({

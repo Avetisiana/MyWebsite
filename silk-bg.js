@@ -38,10 +38,9 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    // fondu UNIQUEMENT en bas. Desktop-hero : commence au niveau des CTA (uv.y ~0.34) et va
-    // jusqu'à la section 2 (uv.y 0). Mobile-hero : plein au-dessus de 52%. Transparent : 0.14.
-    ' float heroTop=mix(0.52,0.34,u_desktop);',
-    ' float fadeBot=smoothstep(0.0,mix(0.14,heroTop,u_opaque),uv.y);',
+    // fondu UNIQUEMENT en bas : plein au-dessus de uv.y 0.52 (~48% du haut), grand dégradé
+    // progressif jusqu'à la section 2 (uv.y 0). Transparent (footer/case) : 0.14.
+    ' float fadeBot=smoothstep(0.0,mix(0.14,0.52,u_opaque),uv.y);',
     ' a*=fadeBot;',
     // dim central (zone du texte) : mobile-hero uniquement — retiré sur desktop
     ' float applyDim=u_opaque*(1.0-u_dark)*(1.0-u_desktop);',

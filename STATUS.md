@@ -1,9 +1,38 @@
 # STATUS.md — [MOI]
 
 ## Dernière session
-Date : 2026-09-01 (suite)
+Date : 2026-09-01 (suite 3)
+Fait : Ajustements fond « soie » (desktop), titre section étude de cas, ordre des sections.
+Beaucoup d'allers-retours sur le fondu. **Poussé** au fil de l'eau.
+
+### Fond « soie » — état actuel
+- **Diagnostic clé** : le Chrome d'Arthur a l'**accélération matérielle désactivée** ->
+  `getContext('webgl')` renvoie `null` -> il voyait le **fallback CSS**, pas le shader. Firefox/Safari
+  font un rendu logiciel, pas Chrome. (Conseil donné : `chrome://settings/system`.)
+- Fallback CSS (`.silk-css .hero::before`, JS ajoute `.silk-css` sur `<html>` si `!gl`) : teinte
+  verte **uniforme** (`rgba(30,59,50,0.185)` + 1 nappe claire qui dérive, **pas de flou** -> aucun
+  fondu latéral/coins) + masque **fondu bas uniquement** (`#000 48% -> transparent 95%`, grand
+  dégradé des CTA à la section 2).
+- Shader : uniforme `u_desktop`. Desktop-hero -> **dim central retiré** (texture pleine derrière le
+  texte), fondu bas = `smoothstep(0, 0.52, uv.y)` (plein au-dessus de ~48 % du haut, grand dégradé
+  jusqu'à la section 2), `strength *0.85`. Pas de fondu gauche/droite/haut. **Mobile-hero inchangé**
+  (dim central + `smoothstep(0, 0.52)` + strength plein).
+- Rappels : hero = canvas opaque (shader peint l'ivoire) ; footer/étude de cas = transparent
+  prémultiplié ; tout tourne sur mobile aussi.
+
+### Étude de cas — titre de section
+`content.caseStudy` : `sectionEyebrow: 'Réalisations'` + `sectionTitle: 'Une réalisation récente'`
+(placeholder, à affiner). `caseStudySection()` : `.section-head` centré ajouté avant la carte ;
+le `<h2>` de la carte (nom du client) passe en `<h3>` (`.case-study h3` en CSS).
+
+### Ordre des sections
+FAQ et « Au-delà du site internet » (digitalSolutions) **échangées** : …process -> **solutions
+(bg-alt)** -> **faq (ivoire, `bg-alt` retiré)** -> contact.
+
+---
+
+## Session 2026-09-01 (suite 2 — fond soie mobile + tarifs, poussé)
 Fait : Fond « soie » sur mobile, refonte de la section Tarifs, correctif de survol des Prestations.
-**Poussé sur GitHub** à la fin de la session.
 
 ### Fond « soie » — même effet sur mobile que desktop
 Le canvas WebGL **transparent** ne se composait pas sur certains GPU mobiles / iOS Safari (Arthur ne

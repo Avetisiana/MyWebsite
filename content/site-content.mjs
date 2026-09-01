@@ -102,6 +102,8 @@ export const content = {
   },
 
   caseStudy: {
+    sectionEyebrow: 'Réalisations',
+    sectionTitle: 'Une réalisation récente',
     eyebrow: 'Étude de cas',
     title: 'Cabinet Laperonnie',
     subtitle: 'Avocat à Angoulême',

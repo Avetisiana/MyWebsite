@@ -482,24 +482,24 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   content: '';
   display: block;
   position: absolute;
-  inset: -6% -6% -3% -6%; /* déborde un peu pour que le flou ne crée pas de bord visible */
+  inset: -6%;
   z-index: 0;
   pointer-events: none;
-  /* texture pleine partout (base uniforme + 2 nappes qui dérivent). Aucun fondu latéral ni haut. */
+  /* teinte verte UNIFORME partout (pas de flou -> aucun fondu sur les bords ni les coins).
+     Une seule nappe plus claire qui dérive pour donner un peu de vie. */
   background:
-    linear-gradient(180deg, rgba(30, 59, 50, 0.17), rgba(30, 59, 50, 0.11)),
-    radial-gradient(120% 90% at 32% 22%, rgba(44, 82, 69, 0.26), transparent 92%),
-    radial-gradient(120% 90% at 76% 58%, rgba(30, 59, 50, 0.22), transparent 92%);
-  filter: blur(24px);
+    radial-gradient(150% 130% at 38% 30%, rgba(52, 88, 74, 0.16), rgba(52, 88, 74, 0) 85%),
+    rgba(30, 59, 50, 0.185);
   will-change: transform;
-  animation: heroDriftFallback 24s var(--ease-out) infinite alternate;
-  /* fondu UNIQUEMENT en bas : plein jusqu'au niveau des CTA (~62 %) puis jusqu'à la section 2 */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 98%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 98%);
+  animation: heroDriftFallback 26s var(--ease-out) infinite alternate;
+  /* fondu UNIQUEMENT en bas : grand dégradé qui part au-dessus des CTA et va jusqu'à la section 2
+     (stops calés sur la boîte qui déborde de 6 % : 48 %/95 % ≈ 48 %/100 % du hero) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 95%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 95%);
 }
 @keyframes heroDriftFallback {
-  from { transform: translate3d(0, 0, 0) scale(1.05); }
-  to   { transform: translate3d(4%, -3%, 0) scale(1.14); }
+  from { transform: translate3d(0, 0, 0) scale(1.04); }
+  to   { transform: translate3d(3%, -2%, 0) scale(1.12); }
 }
 /* footer : apparaît en douceur depuis le haut du bloc */
 .silk-canvas--footer {
@@ -656,7 +656,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 @media (min-width: 960px) { .case-study-grid { grid-template-columns: 1fr 1fr; } }
 .case-study .eyebrow { color: rgba(250,246,239,0.75); }
 .case-study .eyebrow::before { background: rgba(250,246,239,0.5); }
-.case-study h2 { color: var(--color-bg); margin-top: var(--space-2); }
+.case-study h3 { color: var(--color-bg); margin-top: var(--space-2); font-size: clamp(1.5rem, 2vw + 1rem, 2rem); }
 .case-study .subtitle { color: rgba(250,246,239,0.7); font-size: 1.05rem; margin-top: 0.3em; font-family: var(--font-display); font-style: italic; }
 .case-study-block { margin-top: var(--space-4); }
 .case-study-block .label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,246,239,0.62); margin-bottom: 0.5em; }
