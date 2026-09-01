@@ -64,7 +64,12 @@
       antialias: false, depth: false, stencil: false, powerPreference: 'low-power'
     };
     var gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
-    if (!gl) return;
+    if (!gl) {
+      // WebGL indisponible (Chrome sans accélération matérielle, GPU blocklisté, très vieux appareil)
+      // -> fallback CSS animé pour le hero (voir .silk-css dans styles/main.css)
+      if (canvas.hasAttribute('data-opaque')) document.documentElement.classList.add('silk-css');
+      return;
+    }
 
     function compile(type, src) {
       var s = gl.createShader(type);

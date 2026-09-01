@@ -511,8 +511,9 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 
 /* Fond "soie" verte animé par shader WebGL (voir /silk-bg.js).
    hero : canvas OPAQUE (le shader peint l'ivoire + la soie, fondu bas dans le shader) -> même
-   rendu desktop ET mobile, compositing fiable partout. footer / étude de cas : canvas transparent,
-   desktop seulement, raccord géré par mask-image. Coupé si reduced-motion / sans WebGL (fond nu). */
+   rendu desktop ET mobile. footer / étude de cas : canvas transparent, raccord géré par mask-image.
+   Si WebGL indisponible (Chrome sans accélération, GPU blocklisté) le JS met `.silk-css` sur <html>
+   -> fallback CSS animé pour le hero. Coupé si reduced-motion (fond nu). */
 .silk-canvas {
   position: absolute;
   inset: 0;
@@ -523,6 +524,31 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   display: block;
 }
 .silk-canvas--hero { background: var(--color-bg); }
+
+/* Fallback CSS (uniquement si WebGL KO) : dégradés verts qui dérivent en transform */
+.hero::before { display: none; }
+.silk-css .silk-canvas--hero { background: transparent; }
+.silk-css .hero::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -25%; left: -18%; right: -18%; bottom: -6%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 40% at 22% 14%, rgba(30, 59, 50, 0.40), transparent 78%),
+    radial-gradient(52% 44% at 84% 8%, rgba(44, 82, 69, 0.34), transparent 80%),
+    radial-gradient(64% 50% at 56% 82%, rgba(30, 59, 50, 0.28), transparent 82%);
+  filter: blur(20px);
+  will-change: transform;
+  animation: heroDriftFallback 24s var(--ease-out) infinite alternate;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 72%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 72%);
+}
+@keyframes heroDriftFallback {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  to   { transform: translate3d(7%, -6%, 0) rotate(7deg) scale(1.15); }
+}
 /* footer : apparaît en douceur depuis le haut du bloc */
 .silk-canvas--footer {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 100%);
