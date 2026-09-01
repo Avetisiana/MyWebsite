@@ -29,6 +29,7 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-400-700-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://monsiteaa.vercel.app/#organization","name":"Arthur Avetisian","description":"Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.","url":"https://monsiteaa.vercel.app","image":"https://monsiteaa.vercel.app/og/og-default.png","logo":"https://monsiteaa.vercel.app/icon-512.png","email":"arthur.avetisian@hotmail.com","telephone":"+33646456925","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"address":{"@type":"PostalAddress","addressLocality":"Angoulême","addressRegion":"Charente","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":45.6486,"longitude":0.1557},"knowsLanguage":"fr","founder":{"@type":"Person","name":"Arthur Avetisian"},"priceRange":"990€ - 4490€+","hasOfferCatalog":{"@type":"OfferCatalog","name":"Formules de création de site internet","itemListElement":[{"@type":"Offer","name":"Essentiel","description":"Idéal pour une présence simple et efficace.","priceCurrency":"EUR","price":990},{"@type":"Offer","name":"Professionnel","description":"La formule la plus complète pour une activité qui se développe.","priceCurrency":"EUR","price":2490},{"@type":"Offer","name":"Premium","description":"Suivi et accompagnement pour un projet complet sur-mesure.","priceCurrency":"EUR","price":4490}]}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Oui, à partir de la formule Professionnel, vous disposez d’un espace d’administration simple pour modifier vos textes, images et actualités sans aucune compétence technique."}},{"@type":"Question","name":"Le nom de domaine et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"Oui, la mise en ligne, le nom de domaine et l’hébergement sont inclus dans chaque formule."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Vous êtes formé à la gestion de votre site et je reste disponible. Une option de maintenance mensuelle existe si vous préférez déléguer les mises à jour."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"Chaque formule inclut des allers-retours de validation avant la mise en ligne : nous ajustons ensemble jusqu’à ce que le résultat vous corresponde."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
   <script>(function () {
@@ -111,6 +112,8 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .reveal, .reveal-stagger > * { opacity: 1; transform: none; }
+  .ht-w { opacity: 1; filter: none; transform: none; }
+  .ht-rot-w { opacity: 1; filter: none; transform: none; }
 }
 :root { color-scheme: light; }
 img, svg { display: block; max-width: 100%; }
@@ -504,31 +507,101 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   padding: calc(var(--space-8) + 3rem) 0 var(--space-8);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
-.hero::before, .hero::after {
-  content: '';
+
+/* Fond "soie" verte animé par shader WebGL (voir /silk-bg.js) — hero + surfaces vertes.
+   Le canvas est transparent ; le raccord avec le reste de la page est géré par mask-image.
+   Coupé sur mobile / reduced-motion / sans WebGL (fond nu). */
+.silk-canvas {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
+  pointer-events: none;
+  display: block;
 }
-.hero::before {
-  width: 620px; height: 620px;
-  top: -220px; right: -160px;
-  background: radial-gradient(circle, rgba(30,59,50,0.09), transparent 70%);
+/* hero : fondu long et progressif vers le bas -> transition invisible avec la section suivante */
+.silk-canvas--hero {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 26%, rgba(0,0,0,0.28) 55%, transparent 82%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 26%, rgba(0,0,0,0.28) 55%, transparent 82%);
+  background: radial-gradient(72% 55% at 74% -14%, rgba(30, 59, 50, 0.035), transparent 66%);
 }
-.hero::after {
-  width: 500px; height: 500px;
-  bottom: -240px; left: -180px;
-  background: radial-gradient(circle, rgba(30,59,50,0.06), transparent 70%);
+/* footer : apparaît en douceur depuis le haut du bloc */
+.silk-canvas--footer {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 100%);
 }
+/* étude de cas : fondu radial doux sur tout le pourtour du bloc */
+.silk-canvas--case {
+  -webkit-mask-image: radial-gradient(128% 128% at 50% 42%, #000 40%, transparent 92%);
+          mask-image: radial-gradient(128% 128% at 50% 42%, #000 40%, transparent 92%);
+}
+
 .hero .container { position: relative; z-index: 1; }
 .hero-inner { max-width: 780px; margin: 0 auto; text-align: center; }
 .hero-eyebrow { margin-bottom: var(--space-3); justify-content: center; }
-.hero h1 { margin-bottom: var(--space-3); }
-.hero h1 em {
+.hero-title { margin-bottom: var(--space-3); }
+
+/* Titre animé — entrée blur-zoom mot à mot + rotation du dernier mot */
+.ht-w {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: scale(1.06);
+  transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out), transform 0.6s var(--ease-spring);
+}
+.ht-w.is-in { opacity: 1; filter: blur(0); transform: none; }
+
+.ht-rot { position: relative; text-align: left; }
+/* la largeur du conteneur transitionne → le mot précédent ("faire") glisse pour se recaler */
+.ht-w.ht-rot {
+  transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out),
+              transform 0.6s var(--ease-spring), width 0.4s var(--ease-out);
+}
+.ht-rot-w {
+  display: inline-block;
+  white-space: nowrap;
   font-style: italic;
   color: var(--color-accent);
+  transform-origin: left center;
+  transition: opacity 0.42s var(--ease-out), filter 0.42s var(--ease-out), transform 0.42s var(--ease-spring);
+}
+/* sortie : le mot grossit légèrement en se floutant avant de disparaître */
+.ht-rot-w.ht-out { opacity: 0; filter: blur(10px); transform: scale(1.16); }
+.ht-rot-w.ht-in { opacity: 0; filter: blur(10px); transform: scale(1.16); transition: none; }
+
+/* "faire confiance" figé : un trait se dessine dessous — le distingue des mots qui défilent */
+.ht-rot::after {
+  content: '';
+  position: absolute;
+  left: 0.06em;
+  right: 0.06em;
+  bottom: -0.1em;
+  height: 0.045em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.75s var(--ease-spring);
+  pointer-events: none;
+}
+.ht-rot.ht-final::after { transform: scaleX(1); }
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .ht-rot-w {
+    background: linear-gradient(96deg, var(--color-accent) 8%, var(--color-accent-hover) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  /* mot final : dégradé un cran plus profond pour l'ancrer visuellement */
+  .ht-rot.ht-final .ht-rot-w {
+    background: linear-gradient(96deg, var(--color-accent-dark) 0%, var(--color-accent) 48%, var(--color-accent-hover) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 }
 .hero-subtitle {
   font-size: 1.15rem;
@@ -604,8 +677,8 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .prestation-item p { margin-top: 0.3em; font-size: 0.92rem; }
 
 /* ---------- Case study ---------- */
-.case-study { background: var(--color-accent); color: var(--color-bg); border-radius: var(--radius-lg); overflow: hidden; }
-.case-study-inner { padding: var(--space-7) var(--space-4); }
+.case-study { background: var(--color-accent); color: var(--color-bg); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+.case-study-inner { padding: var(--space-7) var(--space-4); position: relative; z-index: 1; }
 .case-study-grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; align-items: start; }
 @media (min-width: 960px) { .case-study-grid { grid-template-columns: 1fr 1fr; } }
 .case-study .eyebrow { color: rgba(250,246,239,0.75); }
@@ -735,7 +808,8 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .contact-info-row a:hover { color: var(--color-accent); }
 
 /* ---------- Footer ---------- */
-.footer { background: var(--color-accent-dark); color: rgba(250,246,239,0.85); padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h)); }
+.footer { background: var(--color-accent-dark); color: rgba(250,246,239,0.85); padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h)); position: relative; overflow: hidden; }
+.footer .container { position: relative; z-index: 1; }
 @media (min-width: 768px) { .footer { padding-bottom: var(--space-4); } }
 .footer .container { display: flex; flex-direction: column; gap: var(--space-5); }
 .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); }
@@ -857,7 +931,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   .case-study, .footer { background: #fff; color: #000; }
 }
 </style>
-  <noscript><style>.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}</style></noscript>
+  <noscript><style>.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}</style></noscript>
 </head>
 <body id="top">
 <a href="#contenu" class="skip-link">Aller au contenu</a>
@@ -916,10 +990,11 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   </div>
 <main id="contenu">
 <section class="hero">
+    <canvas class="silk-canvas silk-canvas--hero" data-strength="1.81" aria-hidden="true"></canvas>
     <div class="container">
       <div class="hero-inner">
         <p class="eyebrow hero-eyebrow reveal">Création de sites internet — Angoulême & Charente</p>
-        <h1 class="reveal">Des sites internet qui donnent envie de vous faire <em>confiance</em></h1>
+        <h1 class="hero-title" aria-label="Des sites internet qui donnent envie de vous faire confiance"><span class="ht-w">Des</span> <span class="ht-w">sites</span> <span class="ht-w">internet</span> <span class="ht-w">qui</span> <span class="ht-w">donnent</span> <span class="ht-w">envie</span> <span class="ht-w">de</span> <span class="ht-w">vous</span> <span class="ht-w ht-rot" aria-hidden="true"><span class="ht-rot-w" data-rot-words="remarquer|choisir|contacter|connaître|faire confiance">faire confiance</span></span></h1>
         <p class="hero-subtitle reveal">Je conçois des sites sur-mesure pour les professionnels d'Angoulême et de Charente — avocats, artisans, indépendants — pensés pour transformer vos visiteurs en clients.</p>
         <div class="hero-ctas reveal">
           <a href="/#contact" class="btn btn-primary">Demander un devis</a>
@@ -1029,6 +1104,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 <section id="realisation">
     <div class="container">
       <div class="case-study reveal">
+        <canvas class="silk-canvas silk-canvas--case" data-dark="1" data-strength="1.1" aria-hidden="true"></canvas>
         <div class="case-study-inner">
           <div class="case-study-grid">
             <div>
@@ -1272,10 +1348,6 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
             <a href="tel:+33646456925">06 46 45 69 25</a>
           </div>
           <div class="contact-info-row">
-            <span class="label">Zone d’intervention</span>
-            <span>Angoulême et Charente</span>
-          </div>
-          <div class="contact-info-row">
             <span class="label">Disponibilité</span>
             <span>Disponible pour un échange téléphonique ou un rendez-vous en visio, du lundi au vendredi.</span>
           </div>
@@ -1285,6 +1357,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   </section>
 </main>
 <footer class="footer">
+    <canvas class="silk-canvas silk-canvas--footer" data-dark="1" data-strength="1.2" aria-hidden="true"></canvas>
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
@@ -1334,6 +1407,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
+<script src="/silk-bg.js" defer></script>
 <script>(function () {
     var GA_CONFIGURED = false;
 
@@ -1424,6 +1498,67 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
       revealEls.forEach(function (el) { io.observe(el); });
     } else {
       revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    // hero — titre en entrée blur-zoom mot à mot, puis carrousel du dernier mot qui se fige sur "faire confiance"
+    var heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      var htReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var htWords = heroTitle.querySelectorAll('.ht-w');
+      var htEl = heroTitle.querySelector('.ht-rot-w');
+      var htWrap = htEl && htEl.parentNode; // .ht-w.ht-rot
+      var htList = (htEl && htEl.getAttribute('data-rot-words') || '').split('|').filter(Boolean);
+      if (htReduce) {
+        htWords.forEach(function (w) { w.classList.add('is-in'); });
+        if (htWrap) htWrap.classList.add('ht-final'); // texte déjà = mot final
+      } else {
+        if (htEl && htList.length > 1) htEl.textContent = htList[0]; // repart au début du carrousel avant la 1re peinture
+        requestAnimationFrame(function () {
+          htWords.forEach(function (w, i) {
+            w.style.transitionDelay = (120 + i * 55) + 'ms';
+            w.classList.add('is-in');
+          });
+        });
+        var htEnd = 120 + htWords.length * 55 + 650;
+        setTimeout(function () {
+          htWords.forEach(function (w) { w.style.transitionDelay = ''; });
+        }, htEnd);
+
+        if (htEl && htWrap && htList.length > 1) {
+          var htBegin = function () {
+            // largeur naturelle de chaque mot (conteneur en auto), pour animer la largeur ensuite
+            var rest = htEl.textContent, widths = {};
+            htWrap.style.width = '';
+            htList.forEach(function (w) { htEl.textContent = w; widths[w] = Math.ceil(htEl.offsetWidth); });
+            htEl.textContent = rest;
+            htWrap.style.width = widths[rest] + 'px';
+
+            var seq = htList.slice(1); // la liste se déroule dans l'ordre, le dernier mot fige
+            var si = 0;
+            var advance = function () {
+              htEl.classList.add('ht-out'); // le mot grossit + se floute + disparaît
+              setTimeout(function () {
+                var w = seq[si];
+                var last = (si === seq.length - 1);
+                htEl.textContent = w;
+                htWrap.style.width = widths[w] + 'px'; // "de vous" glisse pour se recaler
+                htEl.classList.remove('ht-out');
+                htEl.classList.add('ht-in');
+                void htEl.offsetWidth; // applique l'état d'entrée avant transition
+                htEl.classList.remove('ht-in');
+                si++;
+                if (!last) setTimeout(advance, 1650);
+                else setTimeout(function () {
+                  htWrap.style.width = '';            // figé → largeur redevient responsive
+                  htWrap.classList.add('ht-final');   // trait qui se dessine sous "faire confiance"
+                }, 460);
+              }, 420);
+            };
+            setTimeout(advance, 600);
+          };
+          setTimeout(htBegin, htEnd + 500);
+        }
+      }
     }
 
     // cookie consent — bannière affichée seulement si Analytics est réellement configuré

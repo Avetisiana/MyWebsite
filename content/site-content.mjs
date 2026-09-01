@@ -30,7 +30,10 @@ export const content = {
   hero: {
     eyebrow: 'Création de sites internet — Angoulême & Charente',
     title: 'Des sites internet qui donnent envie de vous faire confiance',
-    titleAccent: 'confiance',
+    titleAccent: 'faire confiance',
+    // Le carrousel défile dans cet ordre puis se fige sur le dernier ("faire confiance").
+    // La partie fixe s'arrête à "…de vous" ; "faire" ne revient qu'avec le mot final.
+    titleAccentWords: ['remarquer', 'choisir', 'contacter', 'connaître', 'faire confiance'],
     subtitle: "Je conçois des sites sur-mesure pour les professionnels d'Angoulême et de Charente — avocats, artisans, indépendants — pensés pour transformer vos visiteurs en clients.",
     ctaPrimary: { label: 'Demander un devis', href: '/#contact' },
     ctaSecondary: { label: 'Voir une réalisation', href: '/#realisation' },
@@ -372,8 +375,6 @@ export const content = {
       consentLink: { label: 'politique de confidentialité', href: '/confidentialite' },
     },
     infoTitle: 'Mes coordonnées',
-    zone: 'Angoulême et Charente',
-    zoneLabel: 'Zone d’intervention',
     availability: 'Disponible pour un échange téléphonique ou un rendez-vous en visio, du lundi au vendredi.',
   },
 

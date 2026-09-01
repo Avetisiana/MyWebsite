@@ -30,12 +30,13 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
 const FONT_PRELOADS = `<link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-400-700-normal-latin.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>`;
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>`;
 
 // ---------- helpers ----------
 
@@ -81,8 +82,15 @@ function serviceJsonLd({ name, description, pagePath }) {
 }
 
 function heroTitleHTML() {
-  const { title, titleAccent } = content.hero;
-  return title.replace(titleAccent, `<em>${titleAccent}</em>`);
+  const { title, titleAccent, titleAccentWords } = content.hero;
+  const idx = title.lastIndexOf(titleAccent);
+  const before = idx >= 0 ? title.slice(0, idx).trim() : title.trim();
+  const staticWords = before.split(/\s+/).map(w => `<span class="ht-w">${w}</span>`).join(' ');
+  const rotList = (titleAccentWords && titleAccentWords.length) ? titleAccentWords : [titleAccent];
+  // texte initial = dernier mot (= état figé, phrase canonique) : correct sans JS / reduced-motion.
+  // Le JS repart sur rotList[0] pour lancer le carrousel.
+  const finalWord = rotList[rotList.length - 1];
+  return `${staticWords} <span class="ht-w ht-rot" aria-hidden="true"><span class="ht-rot-w" data-rot-words="${rotList.join('|')}">${finalWord}</span></span>`;
 }
 
 function parsePriceEUR(str) {
@@ -215,6 +223,7 @@ function footer() {
   const legalLinks = content.footer.legalLinks.map(l => `<a href="${l.href}">${l.label}</a>`).join('\n          ');
   const solutionLinks = content.digitalSolutions.items.map(it => `<a href="/${it.slug}">${it.cardTitle}</a>`).join('\n          ');
   return `<footer class="footer">
+    <canvas class="silk-canvas silk-canvas--footer" data-dark="1" data-strength="1.2" aria-hidden="true"></canvas>
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
@@ -360,6 +369,67 @@ function scripts() {
       revealEls.forEach(function (el) { el.classList.add('is-visible'); });
     }
 
+    // hero — titre en entrée blur-zoom mot à mot, puis carrousel du dernier mot qui se fige sur "faire confiance"
+    var heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      var htReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var htWords = heroTitle.querySelectorAll('.ht-w');
+      var htEl = heroTitle.querySelector('.ht-rot-w');
+      var htWrap = htEl && htEl.parentNode; // .ht-w.ht-rot
+      var htList = (htEl && htEl.getAttribute('data-rot-words') || '').split('|').filter(Boolean);
+      if (htReduce) {
+        htWords.forEach(function (w) { w.classList.add('is-in'); });
+        if (htWrap) htWrap.classList.add('ht-final'); // texte déjà = mot final
+      } else {
+        if (htEl && htList.length > 1) htEl.textContent = htList[0]; // repart au début du carrousel avant la 1re peinture
+        requestAnimationFrame(function () {
+          htWords.forEach(function (w, i) {
+            w.style.transitionDelay = (120 + i * 55) + 'ms';
+            w.classList.add('is-in');
+          });
+        });
+        var htEnd = 120 + htWords.length * 55 + 650;
+        setTimeout(function () {
+          htWords.forEach(function (w) { w.style.transitionDelay = ''; });
+        }, htEnd);
+
+        if (htEl && htWrap && htList.length > 1) {
+          var htBegin = function () {
+            // largeur naturelle de chaque mot (conteneur en auto), pour animer la largeur ensuite
+            var rest = htEl.textContent, widths = {};
+            htWrap.style.width = '';
+            htList.forEach(function (w) { htEl.textContent = w; widths[w] = Math.ceil(htEl.offsetWidth); });
+            htEl.textContent = rest;
+            htWrap.style.width = widths[rest] + 'px';
+
+            var seq = htList.slice(1); // la liste se déroule dans l'ordre, le dernier mot fige
+            var si = 0;
+            var advance = function () {
+              htEl.classList.add('ht-out'); // le mot grossit + se floute + disparaît
+              setTimeout(function () {
+                var w = seq[si];
+                var last = (si === seq.length - 1);
+                htEl.textContent = w;
+                htWrap.style.width = widths[w] + 'px'; // "de vous" glisse pour se recaler
+                htEl.classList.remove('ht-out');
+                htEl.classList.add('ht-in');
+                void htEl.offsetWidth; // applique l'état d'entrée avant transition
+                htEl.classList.remove('ht-in');
+                si++;
+                if (!last) setTimeout(advance, 1650);
+                else setTimeout(function () {
+                  htWrap.style.width = '';            // figé → largeur redevient responsive
+                  htWrap.classList.add('ht-final');   // trait qui se dessine sous "faire confiance"
+                }, 460);
+              }, 420);
+            };
+            setTimeout(advance, 600);
+          };
+          setTimeout(htBegin, htEnd + 500);
+        }
+      }
+    }
+
     // cookie consent — bannière affichée seulement si Analytics est réellement configuré
     var banner = document.getElementById('cookie-banner');
     var acceptBtn = document.getElementById('cookie-accept');
@@ -425,6 +495,7 @@ ${bodyHTML}
 ${footer()}
 ${cookieBanner()}
 ${includeMobileCta ? mobileCta() : ''}
+<script src="/silk-bg.js" defer></script>
 ${scripts()}
 </body>
 </html>`;
@@ -435,10 +506,11 @@ ${scripts()}
 function heroSection() {
   const h = content.hero;
   return `<section class="hero">
+    <canvas class="silk-canvas silk-canvas--hero" data-strength="1.81" aria-hidden="true"></canvas>
     <div class="container">
       <div class="hero-inner">
         <p class="eyebrow hero-eyebrow reveal">${h.eyebrow}</p>
-        <h1 class="reveal">${heroTitleHTML()}</h1>
+        <h1 class="hero-title" aria-label="${h.title}">${heroTitleHTML()}</h1>
         <p class="hero-subtitle reveal">${h.subtitle}</p>
         <div class="hero-ctas reveal">
           <a href="${h.ctaPrimary.href}" class="btn btn-primary">${h.ctaPrimary.label}</a>
@@ -501,6 +573,7 @@ function caseStudySection() {
   return `<section id="realisation">
     <div class="container">
       <div class="case-study reveal">
+        <canvas class="silk-canvas silk-canvas--case" data-dark="1" data-strength="1.1" aria-hidden="true"></canvas>
         <div class="case-study-inner">
           <div class="case-study-grid">
             <div>
@@ -683,10 +756,6 @@ function contactSection() {
           <div class="contact-info-row">
             <span class="label">Téléphone</span>
             <a href="tel:${content.meta.phone}">${content.meta.phoneDisplay}</a>
-          </div>
-          <div class="contact-info-row">
-            <span class="label">${c.zoneLabel}</span>
-            <span>${c.zone}</span>
           </div>
           <div class="contact-info-row">
             <span class="label">Disponibilité</span>

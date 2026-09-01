@@ -1,6 +1,62 @@
 # STATUS.md — [MOI]
 
 ## Dernière session
+Date : 2026-09-01
+Fait : Animations du hero + fond « soie » animé (demande d'Arthur, réf. Framer "blur-zoom"),
+nombreux allers-retours d'ajustement, puis retrait d'une ligne du bloc contact. **Poussé sur
+GitHub** à la fin de la session.
+
+### Titre h1 — entrée + carrousel de mots
+- Entrée "blur-zoom" mot à mot : `opacity` + `filter: blur` + `transform: scale`, stagger 55 ms/mot,
+  easing spring. (`filter: blur` assumé sur ce seul `<h1>`, one-shot, hors règle "transform/opacity
+  only" — validé par le choix de l'effet.)
+- `heroTitleHTML()` découpe le titre fixe en `<span class="ht-w">` ; le mot variable est **un seul**
+  `<span class="ht-rot-w" data-rot-words="…">` dont le JS échange le `textContent` (alignement sur
+  la ligne de base garanti, contrairement à un stacking `inline-grid`).
+- Partie fixe raccourcie à « …donnent envie de vous » ; `titleAccent = 'faire confiance'` (point de
+  coupe). `content.hero.titleAccentWords = ['remarquer','choisir','contacter','connaître','faire
+  confiance']` — se déroule **dans cet ordre** (pas de retour au 1er mot), tient 1,65 s/mot, puis
+  **se fige sur « faire confiance »**. Le mot **grossit** (`scale 1.16`) en se floutant avant de
+  disparaître ; le conteneur transitionne sa **largeur** (`width 0.4s`) vers la largeur mesurée du
+  mot entrant → la phrase s'adapte à la taille du mot (verrou relâché une fois figé → responsive).
+- Texte HTML initial = mot final (phrase canonique OK sans JS / reduced-motion) ; le JS repart sur
+  `[0]` avant la 1re peinture. `<h1 aria-label="…phrase canonique…">`, rotator `aria-hidden`.
+  `prefers-reduced-motion` → état final directement, aucune animation. `<noscript>` → visible d'emblée.
+- « faire confiance » distingué visuellement : `white-space: nowrap`, **trait qui se dessine dessous**
+  (`.ht-rot.ht-final::after`, `scaleX` spring) + dégradé 3 arrêts plus profond
+  (`--color-accent-dark → accent → accent-hover`).
+- Playfair italic 700 ajouté aux `FONT_PRELOADS` (mot au-dessus de la ligne de flottaison, mesuré
+  par JS pour le verrou de largeur → doit être chargé tôt).
+
+### Fond « soie » animé — `silk-bg.js`
+- Historique : v1 blobs CSS `radial-gradient` → rejetés par Arthur. v2 finale = **shader WebGL**
+  maison (`/silk-bg.js`, aucune dépendance, servi tel quel — CSP `script-src 'self'`). Warp itératif
+  de sinusoïdes → plis verts qui coulent sur l'ivoire (recolor de l'effet Framer, hero clair
+  conservé — choix d'Arthur).
+- Généralisé : gère tous les `<canvas class="silk-canvas">` (attrs `data-dark` / `data-strength`),
+  max 4. Décliné sur les **3 surfaces vertes** : hero (`data-strength 1.81`, sur ivoire), **footer**
+  (`data-dark 1`, `data-strength 1.2`) et **bloc étude de cas** (`data-dark 1`, `data-strength 1.1`)
+  — glints clairs sur vert foncé. `peak` d'opacité : 0,46 (clair) / 0,16 (foncé). Chargé sur toutes
+  les pages (footer partout).
+- Rendu 0,55× la résolution (effet flou), `powerPreference: 'low-power'`, `preserveDrawingBuffer:
+  true` (coût négligeable, desktop seulement, + rend le canvas capturable en screenshot headless).
+- Raccords gérés par **`mask-image` CSS** par variante (`--hero` fondu long vers le bas invisible avec
+  « Pour qui » ; `--footer` apparaît depuis le haut ; `--case` radial doux). Pas de fondu haut sur le
+  hero → la soie passe pleinement **derrière le nav** (transparent au scroll 0).
+- Garde-fous : coupé si `prefers-reduced-motion`, écran ≤ 640 px (fond nu + micro-dégradé CSS),
+  onglet caché, élément hors écran (`IntersectionObserver` + `rootMargin 120px`), WebGL absent,
+  perte de contexte. 3 contextes WebGL max sur la home, 0 erreur / 0 perte de contexte vérifiées.
+- `serve.mjs` : `.js` ajouté à la liste blanche MIME (sinon `/silk-bg.js` → 404 en local ; Vercel
+  le sert nativement en prod, `.vercelignore` ne l'exclut pas).
+
+### Divers
+- Section Contact : ligne « Zone d'intervention — Angoulême et Charente » retirée du bloc « Mes
+  coordonnées » (champs `zone`/`zoneLabel` supprimés de `site-content.mjs`). Le `areaServed` reste
+  dans le JSON-LD pour le SEO local.
+- `vercel.json` régénéré (hashes CSP à jour). 0 violation CSP vérifiée sur `/`, `/mentions-legales`,
+  `/videos-ia`, `/merci`.
+
+## Session précédente
 Date : 2026-08-29 (suite 2)
 Fait : Ajout d'un dropdown "Solutions" dans le header (desktop : survol/clic + clavier ; mobile :
 `<details>` dans le menu burger, même langage visuel que la FAQ) listant les 3 nouvelles offres,
@@ -73,8 +129,8 @@ le reste du site, grille "Comment ça marche" bien à 3 colonnes sans case vide.
   au pluriel (signalée comme discutable dans le brief précédent, toujours pas tranchée)
 
 ## Outils configurés
-- [x] GitHub → https://github.com/Avetisiana/MyWebsite.git (2 commits pushés à ce jour ; **cette
-  session n'a pas été pushée** — Arthur doit relire avant de pousser)
+- [x] GitHub → https://github.com/Avetisiana/MyWebsite.git (branche `main`, à jour — durcissement
+  technique + 3 offres digitales + animations hero/soie tous poussés)
 - [ ] Vercel → pas encore connecté à ce repo
 - [ ] Domaine → non configuré (`SITE_URL` retombe sur `https://monsiteaa.vercel.app`, noindex)
 - [ ] Google Search Console → non configuré
@@ -83,7 +139,6 @@ le reste du site, grille "Comment ça marche" bien à 3 colonnes sans case vide.
 - [ ] CMS → non configuré
 
 ## Ce qui reste à faire
-- Relire ce diff puis pousser (`git push`) — non fait volontairement
 - Connecter le repo à un projet Vercel
 - Renseigner `content.meta.domain` (vrai domaine) puis rebuild → bascule auto index/noindex
 - Renseigner `content.meta.gaId` une fois Google Analytics créé

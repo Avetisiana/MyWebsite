@@ -14,6 +14,7 @@ const PORT = process.argv[2] ? parseInt(process.argv[2], 10) : 3000;
 
 const MIME = {
   '.html': 'text/html',
+  '.js': 'application/javascript',
   '.xml': 'application/xml',
   '.txt': 'text/plain',
   '.webmanifest': 'application/manifest+json',

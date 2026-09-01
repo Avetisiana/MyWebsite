@@ -29,6 +29,7 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-400-700-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Contenu réseaux sociaux IA","description":"Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.","url":"https://monsiteaa.vercel.app/contenu-reseaux-sociaux","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"provider":{"@id":"https://monsiteaa.vercel.app/#organization"}}</script>
   <script>(function () {
     var GA_ID = '[GA_MEASUREMENT_ID]';
@@ -110,6 +111,8 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .reveal, .reveal-stagger > * { opacity: 1; transform: none; }
+  .ht-w { opacity: 1; filter: none; transform: none; }
+  .ht-rot-w { opacity: 1; filter: none; transform: none; }
 }
 :root { color-scheme: light; }
 img, svg { display: block; max-width: 100%; }
@@ -503,31 +506,101 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   padding: calc(var(--space-8) + 3rem) 0 var(--space-8);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
-.hero::before, .hero::after {
-  content: '';
+
+/* Fond "soie" verte animé par shader WebGL (voir /silk-bg.js) — hero + surfaces vertes.
+   Le canvas est transparent ; le raccord avec le reste de la page est géré par mask-image.
+   Coupé sur mobile / reduced-motion / sans WebGL (fond nu). */
+.silk-canvas {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
+  pointer-events: none;
+  display: block;
 }
-.hero::before {
-  width: 620px; height: 620px;
-  top: -220px; right: -160px;
-  background: radial-gradient(circle, rgba(30,59,50,0.09), transparent 70%);
+/* hero : fondu long et progressif vers le bas -> transition invisible avec la section suivante */
+.silk-canvas--hero {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 26%, rgba(0,0,0,0.28) 55%, transparent 82%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 26%, rgba(0,0,0,0.28) 55%, transparent 82%);
+  background: radial-gradient(72% 55% at 74% -14%, rgba(30, 59, 50, 0.035), transparent 66%);
 }
-.hero::after {
-  width: 500px; height: 500px;
-  bottom: -240px; left: -180px;
-  background: radial-gradient(circle, rgba(30,59,50,0.06), transparent 70%);
+/* footer : apparaît en douceur depuis le haut du bloc */
+.silk-canvas--footer {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 100%);
 }
+/* étude de cas : fondu radial doux sur tout le pourtour du bloc */
+.silk-canvas--case {
+  -webkit-mask-image: radial-gradient(128% 128% at 50% 42%, #000 40%, transparent 92%);
+          mask-image: radial-gradient(128% 128% at 50% 42%, #000 40%, transparent 92%);
+}
+
 .hero .container { position: relative; z-index: 1; }
 .hero-inner { max-width: 780px; margin: 0 auto; text-align: center; }
 .hero-eyebrow { margin-bottom: var(--space-3); justify-content: center; }
-.hero h1 { margin-bottom: var(--space-3); }
-.hero h1 em {
+.hero-title { margin-bottom: var(--space-3); }
+
+/* Titre animé — entrée blur-zoom mot à mot + rotation du dernier mot */
+.ht-w {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: scale(1.06);
+  transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out), transform 0.6s var(--ease-spring);
+}
+.ht-w.is-in { opacity: 1; filter: blur(0); transform: none; }
+
+.ht-rot { position: relative; text-align: left; }
+/* la largeur du conteneur transitionne → le mot précédent ("faire") glisse pour se recaler */
+.ht-w.ht-rot {
+  transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out),
+              transform 0.6s var(--ease-spring), width 0.4s var(--ease-out);
+}
+.ht-rot-w {
+  display: inline-block;
+  white-space: nowrap;
   font-style: italic;
   color: var(--color-accent);
+  transform-origin: left center;
+  transition: opacity 0.42s var(--ease-out), filter 0.42s var(--ease-out), transform 0.42s var(--ease-spring);
+}
+/* sortie : le mot grossit légèrement en se floutant avant de disparaître */
+.ht-rot-w.ht-out { opacity: 0; filter: blur(10px); transform: scale(1.16); }
+.ht-rot-w.ht-in { opacity: 0; filter: blur(10px); transform: scale(1.16); transition: none; }
+
+/* "faire confiance" figé : un trait se dessine dessous — le distingue des mots qui défilent */
+.ht-rot::after {
+  content: '';
+  position: absolute;
+  left: 0.06em;
+  right: 0.06em;
+  bottom: -0.1em;
+  height: 0.045em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.75s var(--ease-spring);
+  pointer-events: none;
+}
+.ht-rot.ht-final::after { transform: scaleX(1); }
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .ht-rot-w {
+    background: linear-gradient(96deg, var(--color-accent) 8%, var(--color-accent-hover) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  /* mot final : dégradé un cran plus profond pour l'ancrer visuellement */
+  .ht-rot.ht-final .ht-rot-w {
+    background: linear-gradient(96deg, var(--color-accent-dark) 0%, var(--color-accent) 48%, var(--color-accent-hover) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 }
 .hero-subtitle {
   font-size: 1.15rem;
@@ -603,8 +676,8 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .prestation-item p { margin-top: 0.3em; font-size: 0.92rem; }
 
 /* ---------- Case study ---------- */
-.case-study { background: var(--color-accent); color: var(--color-bg); border-radius: var(--radius-lg); overflow: hidden; }
-.case-study-inner { padding: var(--space-7) var(--space-4); }
+.case-study { background: var(--color-accent); color: var(--color-bg); border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+.case-study-inner { padding: var(--space-7) var(--space-4); position: relative; z-index: 1; }
 .case-study-grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; align-items: start; }
 @media (min-width: 960px) { .case-study-grid { grid-template-columns: 1fr 1fr; } }
 .case-study .eyebrow { color: rgba(250,246,239,0.75); }
@@ -734,7 +807,8 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .contact-info-row a:hover { color: var(--color-accent); }
 
 /* ---------- Footer ---------- */
-.footer { background: var(--color-accent-dark); color: rgba(250,246,239,0.85); padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h)); }
+.footer { background: var(--color-accent-dark); color: rgba(250,246,239,0.85); padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h)); position: relative; overflow: hidden; }
+.footer .container { position: relative; z-index: 1; }
 @media (min-width: 768px) { .footer { padding-bottom: var(--space-4); } }
 .footer .container { display: flex; flex-direction: column; gap: var(--space-5); }
 .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); }
@@ -856,7 +930,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   .case-study, .footer { background: #fff; color: #000; }
 }
 </style>
-  <noscript><style>.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}</style></noscript>
+  <noscript><style>.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}</style></noscript>
 </head>
 <body id="top">
 <a href="#contenu" class="skip-link">Aller au contenu</a>
@@ -991,6 +1065,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   </div>
 </main>
 <footer class="footer">
+    <canvas class="silk-canvas silk-canvas--footer" data-dark="1" data-strength="1.2" aria-hidden="true"></canvas>
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
@@ -1040,6 +1115,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
+<script src="/silk-bg.js" defer></script>
 <script>(function () {
     var GA_CONFIGURED = false;
 
@@ -1130,6 +1206,67 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
       revealEls.forEach(function (el) { io.observe(el); });
     } else {
       revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    // hero — titre en entrée blur-zoom mot à mot, puis carrousel du dernier mot qui se fige sur "faire confiance"
+    var heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      var htReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var htWords = heroTitle.querySelectorAll('.ht-w');
+      var htEl = heroTitle.querySelector('.ht-rot-w');
+      var htWrap = htEl && htEl.parentNode; // .ht-w.ht-rot
+      var htList = (htEl && htEl.getAttribute('data-rot-words') || '').split('|').filter(Boolean);
+      if (htReduce) {
+        htWords.forEach(function (w) { w.classList.add('is-in'); });
+        if (htWrap) htWrap.classList.add('ht-final'); // texte déjà = mot final
+      } else {
+        if (htEl && htList.length > 1) htEl.textContent = htList[0]; // repart au début du carrousel avant la 1re peinture
+        requestAnimationFrame(function () {
+          htWords.forEach(function (w, i) {
+            w.style.transitionDelay = (120 + i * 55) + 'ms';
+            w.classList.add('is-in');
+          });
+        });
+        var htEnd = 120 + htWords.length * 55 + 650;
+        setTimeout(function () {
+          htWords.forEach(function (w) { w.style.transitionDelay = ''; });
+        }, htEnd);
+
+        if (htEl && htWrap && htList.length > 1) {
+          var htBegin = function () {
+            // largeur naturelle de chaque mot (conteneur en auto), pour animer la largeur ensuite
+            var rest = htEl.textContent, widths = {};
+            htWrap.style.width = '';
+            htList.forEach(function (w) { htEl.textContent = w; widths[w] = Math.ceil(htEl.offsetWidth); });
+            htEl.textContent = rest;
+            htWrap.style.width = widths[rest] + 'px';
+
+            var seq = htList.slice(1); // la liste se déroule dans l'ordre, le dernier mot fige
+            var si = 0;
+            var advance = function () {
+              htEl.classList.add('ht-out'); // le mot grossit + se floute + disparaît
+              setTimeout(function () {
+                var w = seq[si];
+                var last = (si === seq.length - 1);
+                htEl.textContent = w;
+                htWrap.style.width = widths[w] + 'px'; // "de vous" glisse pour se recaler
+                htEl.classList.remove('ht-out');
+                htEl.classList.add('ht-in');
+                void htEl.offsetWidth; // applique l'état d'entrée avant transition
+                htEl.classList.remove('ht-in');
+                si++;
+                if (!last) setTimeout(advance, 1650);
+                else setTimeout(function () {
+                  htWrap.style.width = '';            // figé → largeur redevient responsive
+                  htWrap.classList.add('ht-final');   // trait qui se dessine sous "faire confiance"
+                }, 460);
+              }, 420);
+            };
+            setTimeout(advance, 600);
+          };
+          setTimeout(htBegin, htEnd + 500);
+        }
+      }
     }
 
     // cookie consent — bannière affichée seulement si Analytics est réellement configuré
