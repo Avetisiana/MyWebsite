@@ -119,6 +119,7 @@ export const content = {
     plans: [
       {
         name: 'Essentiel',
+        tabLabel: 'Essentiel',
         price: '990 €',
         note: null,
         tagline: 'Idéal pour une présence simple et efficace.',
@@ -133,6 +134,7 @@ export const content = {
       },
       {
         name: 'Professionnel',
+        tabLabel: 'Pro',
         price: '2 490 €',
         note: null,
         tagline: 'La formule la plus complète pour une activité qui se développe.',
@@ -149,6 +151,7 @@ export const content = {
       },
       {
         name: 'Premium',
+        tabLabel: 'Premium',
         pricePrefix: 'à partir de',
         price: '4 490 €',
         note: 'Sur devis',

@@ -30,7 +30,7 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
@@ -430,6 +430,33 @@ function scripts() {
       }
     }
 
+    // tarifs — onglets Essentiel / Pro / Premium
+    var pTabs = document.querySelector('.pricing-tabs');
+    if (pTabs) {
+      var ptabs = Array.prototype.slice.call(pTabs.querySelectorAll('.pricing-tab'));
+      var ppanels = Array.prototype.slice.call(document.querySelectorAll('.pricing-panel'));
+      var pSelect = function (i, focus) {
+        ptabs.forEach(function (t, k) {
+          var on = k === i;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+          if (ppanels[k]) ppanels[k].classList.toggle('is-active', on);
+        });
+        if (focus && ptabs[i]) ptabs[i].focus();
+      };
+      ptabs.forEach(function (t, i) {
+        t.addEventListener('click', function () { pSelect(i); });
+        t.addEventListener('keydown', function (e) {
+          var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1
+                : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+          if (!d) return;
+          e.preventDefault();
+          pSelect((i + d + ptabs.length) % ptabs.length, true);
+        });
+      });
+    }
+
     // cookie consent — bannière affichée seulement si Analytics est réellement configuré
     var banner = document.getElementById('cookie-banner');
     var acceptBtn = document.getElementById('cookie-accept');
@@ -506,7 +533,7 @@ ${scripts()}
 function heroSection() {
   const h = content.hero;
   return `<section class="hero">
-    <canvas class="silk-canvas silk-canvas--hero" data-strength="1.81" aria-hidden="true"></canvas>
+    <canvas class="silk-canvas silk-canvas--hero" data-opaque="1" data-strength="1.81" aria-hidden="true"></canvas>
     <div class="container">
       <div class="hero-inner">
         <p class="eyebrow hero-eyebrow reveal">${h.eyebrow}</p>
@@ -561,7 +588,7 @@ function prestationsSection() {
         <p class="eyebrow">${p.eyebrow}</p>
         <h2>${p.title}</h2>
       </div>
-      <div class="prestations-grid reveal-stagger">
+      <div class="prestations-grid reveal">
         ${items}
       </div>
     </div>
@@ -616,25 +643,50 @@ function caseStudySection() {
 
 function pricingSection() {
   const p = content.pricing;
-  const cards = p.plans.map(plan => `<div class="card pricing-card${plan.featured ? ' pricing-card--featured' : ''}">
-        ${plan.featured ? `<span class="pricing-badge">${plan.badge}</span>` : ''}
-        <h3>${plan.name}</h3>
-        <div class="pricing-price">${plan.pricePrefix ? `<span class="price-prefix">${plan.pricePrefix}</span>` : ''}${plan.price}</div>
-        ${plan.note ? `<div class="pricing-note">${plan.note}</div>` : ''}
-        <p class="pricing-tagline">${plan.tagline}</p>
-        <ul class="pricing-features">
-          ${plan.features.map(f => `<li>${f}</li>`).join('\n          ')}
-        </ul>
-        <a href="#contact" class="btn ${plan.featured ? 'btn-primary' : 'btn-ghost'}">Demander un devis</a>
-      </div>`).join('\n      ');
+  const defaultIdx = Math.max(0, p.plans.findIndex(pl => pl.featured));
+
+  const tabs = p.plans.map((plan, i) => {
+    const on = i === defaultIdx;
+    const label = plan.tabLabel || plan.name;
+    const star = plan.featured ? '<span class="pricing-tab-star" aria-hidden="true">★</span>' : '';
+    const aria = plan.featured ? ` aria-label="${label} — la formule la plus choisie"` : '';
+    return `<button type="button" role="tab" id="ptab-${i}" class="pricing-tab${on ? ' is-active' : ''}"
+          aria-selected="${on ? 'true' : 'false'}" aria-controls="ppanel-${i}"${on ? '' : ' tabindex="-1"'}${aria}>${star}${label}</button>`;
+  }).join('\n        ');
+
+  const panels = p.plans.map((plan, i) => {
+    const on = i === defaultIdx;
+    const price = `${plan.pricePrefix ? `<span class="price-prefix">${plan.pricePrefix}</span>` : ''}${plan.price}`;
+    return `<div role="tabpanel" id="ppanel-${i}" class="pricing-panel${on ? ' is-active' : ''}" aria-labelledby="ptab-${i}">
+          <div class="pricing-card">
+            <div class="pricing-card-head">
+              <span class="pricing-card-name">${plan.name}</span>
+              ${plan.badge ? `<span class="pricing-badge">${plan.badge}</span>` : ''}
+            </div>
+            <div class="pricing-price">${price}</div>
+            ${plan.note ? `<p class="pricing-note">${plan.note}</p>` : ''}
+            <hr class="pricing-rule">
+            <ul class="pricing-features">
+              ${plan.features.map(f => `<li>${f}</li>`).join('\n              ')}
+            </ul>
+            <a href="/#contact" class="btn pricing-cta">${content.nav.cta}</a>
+          </div>
+        </div>`;
+  }).join('\n        ');
+
   return `<section id="tarifs" class="bg-alt">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${p.eyebrow}</p>
         <h2>${p.title}</h2>
       </div>
-      <div class="pricing-grid reveal-stagger">
-        ${cards}
+      <div class="pricing reveal">
+        <div class="pricing-tabs" role="tablist" aria-label="Formules">
+        ${tabs}
+        </div>
+        <div class="pricing-panels">
+        ${panels}
+        </div>
       </div>
       <p class="pricing-footnote reveal">${p.footnote}</p>
     </div>

@@ -61,7 +61,10 @@ function readVercelConfig() {
 function applyHeaders(res, urlPath, ext) {
   const { globalHeaders, longCacheValue, shortCacheValue } = readVercelConfig();
   for (const h of globalHeaders) res.setHeader(h.key, h.value);
-  if (longCacheValue && ASSET_CACHE_EXT.has(ext)) res.setHeader('Cache-Control', longCacheValue);
+  // Dev uniquement : les .js (silk-bg.js) changent souvent en cours d'itération —
+  // pas de cache immuable en local, sinon il faut vider le cache à chaque test (surtout sur mobile).
+  if (ext === '.js') res.setHeader('Cache-Control', 'no-cache');
+  else if (longCacheValue && ASSET_CACHE_EXT.has(ext)) res.setHeader('Cache-Control', longCacheValue);
   else if (longCacheValue && urlPath.startsWith('/fonts/')) res.setHeader('Cache-Control', longCacheValue);
   else if (shortCacheValue && SHORT_CACHE_FILES.has(urlPath)) res.setHeader('Cache-Control', shortCacheValue);
 }

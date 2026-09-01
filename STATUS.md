@@ -1,10 +1,51 @@
 # STATUS.md — [MOI]
 
 ## Dernière session
-Date : 2026-09-01
+Date : 2026-09-01 (suite)
+Fait : Fond « soie » sur mobile, refonte de la section Tarifs, correctif de survol des Prestations.
+**Poussé sur GitHub** à la fin de la session.
+
+### Fond « soie » — même effet sur mobile que desktop
+Le canvas WebGL **transparent** ne se composait pas sur certains GPU mobiles / iOS Safari (Arthur ne
+voyait rien). Solutions successives (fallback CSS `.hero::before` rejeté) puis **version finale** :
+- **hero : canvas OPAQUE** (`data-opaque="1"`) — le shader peint l'ivoire *et* la soie. Le compositing
+  opaque est fiable partout. Fondu du bas géré **dans le shader** (`fadeBot`, plus de `mask-image`) →
+  bas du hero = ivoire pur = raccord invisible avec « Pour qui ».
+- **footer / étude de cas : canvas transparent** mais sortie **prémultipliée** (`vec4(rgb*a, a)` +
+  `premultipliedAlpha: true`) — le vrai correctif iOS Safari. `mask-image` conservé pour leurs bords.
+- Les **3 surfaces** tournent maintenant sur mobile (avant : hero seul). Correction d'aspect dans le
+  shader (`u_res/min(u_res.x,u_res.y)`) → densité de plis constante même en portrait.
+- Dégradés **gauche/droite retirés** (`fadeX` supprimé) → la texture va bord à bord horizontalement.
+- `clearColor` ivoire (pas de flash noir). Mobile : DPR ≤ 1,25, rendu 0,5×. Garde-fous inchangés
+  (pause hors écran / onglet caché, reduced-motion, WebGL absent, perte de contexte).
+- `serve.mjs` : les `.js` servis en `no-cache` **en local** (dev) — plus besoin de vider le cache
+  navigateur à chaque itération, surtout sur mobile. (serve.mjs n'est pas déployé.)
+- CSS : bloc `@media (max-width: 640px)` du fallback CSS supprimé ; `.silk-canvas--hero` a juste
+  `background: var(--color-bg)` (base avant 1re frame).
+
+### Section Tarifs — refonte (maquette d'Arthur)
+- **Barre d'onglets** en pilule : Essentiel / Pro / Premium (Pro actif par défaut, `role="tablist"`,
+  navigation clavier flèches, `aria-selected` / `tabindex` gérés). Conteneur gris (`rgba(26,25,23,0.06)`)
+  qui contraste, onglet actif blanc + ombre.
+- **Une seule carte** affichée à la fois, en **vert foncé** arrondi : label, badge « LE PLUS CHOISI »
+  (Pro seulement), prix serif crème, filet, liste `—`, bouton crème/vert.
+- **★ verte** devant « Pro » dans l'onglet + `aria-label="Pro — la formule la plus choisie"`.
+- Sans JS : les 3 cartes s'empilent, onglets masqués (`NOSCRIPT_CSS`).
+- `content.pricing.plans[].tabLabel` ajouté (Essentiel / Pro / Premium). `pricingSection()` réécrit,
+  JS d'onglets dans `scripts()`. Anciennes classes `.pricing-grid` / `.pricing-card--featured` /
+  `.pricing-tagline` remplacées.
+
+### Prestations — survol « lent et pas réactif »
+Cause : `reveal-stagger` laissait un `transition-delay` résiduel jusqu'à 0,54 s sur les cases (donc
+au survol, la couleur mettait ~0,7 s à réagir). Corrigé : grille passée de `reveal-stagger` à
+`reveal` (fondu en bloc, plus de délai par case) + transition du fond `0,3 s → 0,16 s`. Vérifié :
+`background-color / 0.16s / delay 0s`.
+
+---
+
+## Session 2026-09-01 (animations hero — poussé : e896ec7, 7fe434d)
 Fait : Animations du hero + fond « soie » animé (demande d'Arthur, réf. Framer "blur-zoom"),
-nombreux allers-retours d'ajustement, puis retrait d'une ligne du bloc contact. **Poussé sur
-GitHub** à la fin de la session.
+nombreux allers-retours d'ajustement, puis retrait d'une ligne du bloc contact.
 
 ### Titre h1 — entrée + carrousel de mots
 - Entrée "blur-zoom" mot à mot : `opacity` + `filter: blur` + `transform: scale`, stagger 55 ms/mot,
@@ -131,7 +172,7 @@ le reste du site, grille "Comment ça marche" bien à 3 colonnes sans case vide.
 
 ## Outils configurés
 - [x] GitHub → https://github.com/Avetisiana/MyWebsite.git (branche `main`, à jour — durcissement
-  technique + 3 offres digitales + animations hero/soie tous poussés)
+  technique + 3 offres digitales + animations hero + soie mobile + refonte tarifs, tous poussés)
 - [ ] Vercel → pas encore connecté à ce repo
 - [ ] Domaine → non configuré (`SITE_URL` retombe sur `https://monsiteaa.vercel.app`, noindex)
 - [ ] Google Search Console → non configuré

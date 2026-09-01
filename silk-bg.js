@@ -1,11 +1,12 @@
-/* Fond "soie" verte animé (WebGL, aucune dépendance).
-   Une seule et même texture qui coule, déclinée sur les surfaces vertes du site :
-   le hero (filets verts sur l'ivoire) + le footer et l'étude de cas (glints clairs sur le vert
-   foncé). Effet volontairement très discret. Se coupe tout seul : prefers-reduced-motion,
-   onglet caché, élément hors écran, WebGL absent, perte de contexte.
-   Sur mobile (<= 640px) : bridé — hero uniquement, rendu 0,35× la résolution, DPR plafonné à 1.
-   Chaque <canvas class="silk-canvas"> lit data-dark ("1" = fond foncé) et data-strength (0-1).
-   Servi tel quel (CSP : script-src 'self'). Max 4 canvas. */
+/* Fond "soie" verte animé (WebGL, aucune dépendance). Même effet sur desktop ET mobile,
+   sur les 3 surfaces : hero, footer, bloc étude de cas.
+   - hero : canvas OPAQUE (le shader dessine l'ivoire + la soie) -> compositing fiable partout.
+   - footer / étude de cas : canvas transparent, sortie prémultipliée (`vec4(rgb*a, a)`) -> fiable
+     iOS Safari inclus ; raccord des bords géré par mask-image en CSS.
+   Se coupe tout seul : prefers-reduced-motion, onglet caché, élément hors écran, WebGL absent,
+   perte de contexte. Mobile : DPR ≤ 1,25 et rendu 0,5× (économie), chaque canvas en pause hors écran.
+   <canvas class="silk-canvas"> : data-opaque ("1" = fond opaque), data-dark ("1" = surface foncée),
+   data-strength (multiplicateur d'intensité). Servi tel quel (CSP : script-src 'self'). Max 4. */
 (function () {
   'use strict';
 
@@ -19,10 +20,11 @@
   var VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
   var FRAG = [
     'precision highp float;',
-    'uniform vec2 u_res;uniform float u_time;uniform float u_dark;uniform float u_strength;',
+    'uniform vec2 u_res;uniform float u_time;uniform float u_dark;uniform float u_strength;uniform float u_opaque;',
     'void main(){',
     ' vec2 uv=gl_FragCoord.xy/u_res;',
-    ' vec2 p=uv*vec2(u_res.x/u_res.y,1.0)*3.2;',
+    ' vec2 asp=u_res/min(u_res.x,u_res.y);', // corrige l'aspect -> densité de plis constante (portrait inclus)
+    ' vec2 p=uv*asp*3.4;',
     ' float t=u_time*0.10;',
     ' for(int i=1;i<6;i++){',
     '   float fi=float(i);',
@@ -36,16 +38,15 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    // fondu gauche/droite + un léger fondu bas ; PAS de fondu haut -> le fond passe pleinement
-    // derrière le nav (transparent). Le raccord bas est géré par mask-image en CSS.
-    ' float fadeX=smoothstep(0.0,0.16,uv.x)*smoothstep(0.0,0.16,1.0-uv.x);',
-    ' float fadeBot=smoothstep(0.0,0.08,uv.y);',
-    ' a*=fadeX*fadeBot;',
-    // sur fond clair (hero) : on calme au centre (zone du texte). Sur fond foncé : uniforme.
+    ' float fadeBot=smoothstep(0.0,mix(0.10,0.42,u_opaque),uv.y);',           // hero opaque : fondu bas long
+    ' a*=fadeBot;',                                                           // pas de fondu gauche/droite ni haut
     ' float cd=mix(0.46+0.54*smoothstep(0.14,0.66,length((uv-vec2(0.5,0.46))*vec2(1.15,1.55))),1.0,u_dark);',
     ' a*=cd*u_strength;',
     ' float peak=mix(0.46,0.16,u_dark);',
-    ' gl_FragColor=vec4(tint,clamp(a,0.0,peak));',
+    ' float A=clamp(a,0.0,peak);',
+    ' vec3 ivory=vec3(0.980,0.965,0.937);',
+    // transparent -> prémultiplié (vec4(rgb*a, a)) ; opaque -> ivoire mélangé, alpha ignoré
+    ' gl_FragColor=mix(vec4(tint*A,A),vec4(mix(ivory,tint,A),1.0),u_opaque);',
     '}'
   ].join('\n');
 
@@ -53,11 +54,12 @@
 
   function initSilk(canvas) {
     var dark = canvas.getAttribute('data-dark') === '1' ? 1 : 0;
+    var opaque = canvas.hasAttribute('data-opaque') ? 1 : 0;
     var strength = parseFloat(canvas.getAttribute('data-strength'));
     if (isNaN(strength)) strength = 1;
 
     var opts = {
-      alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: true,
+      alpha: !opaque, premultipliedAlpha: true, preserveDrawingBuffer: true,
       antialias: false, depth: false, stencil: false, powerPreference: 'low-power'
     };
     var gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
@@ -87,9 +89,14 @@
     var uTime = gl.getUniformLocation(prog, 'u_time');
     gl.uniform1f(gl.getUniformLocation(prog, 'u_dark'), dark);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_strength'), strength);
+    gl.uniform1f(gl.getUniformLocation(prog, 'u_opaque'), opaque);
+    // évite un flash noir sur le canvas opaque avant la 1re frame
+    if (opaque) gl.clearColor(0.980, 0.965, 0.937, 1.0);
+    else gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
-    var DPR = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
-    var SCALE = isMobile ? 0.35 : 0.55;
+    var DPR = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5);
+    var SCALE = isMobile ? 0.5 : 0.55;
     var sized = false;
     function resize() {
       var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -98,6 +105,7 @@
       canvas.height = Math.max(2, Math.round(h * DPR * SCALE));
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.clear(gl.COLOR_BUFFER_BIT);
       sized = true;
     }
 
@@ -150,11 +158,7 @@
   }
 
   var max = Math.min(list.length, 4);
-  for (var i = 0; i < max; i++) {
-    // mobile : le hero uniquement (pas footer / étude de cas)
-    if (isMobile && list[i].className.indexOf('silk-canvas--hero') === -1) continue;
-    initSilk(list[i]);
-  }
+  for (var i = 0; i < max; i++) initSilk(list[i]);
 
   if (mqReduce && mqReduce.addEventListener) {
     mqReduce.addEventListener('change', function (e) {
