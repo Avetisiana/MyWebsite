@@ -542,10 +542,10 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
     rgba(30, 59, 50, 0.185);
   will-change: transform;
   animation: heroDriftFallback 26s var(--ease-out) infinite alternate;
-  /* fondu UNIQUEMENT en bas : grand dégradé qui part au-dessus des CTA et va jusqu'à la section 2
-     (stops calés sur la boîte qui déborde de 6 % : 48 %/95 % ≈ 48 %/100 % du hero) */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 95%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 95%);
+  /* fondu UNIQUEMENT en bas : plein jusqu'au niveau des CTA (~64 % du hero) puis grand dégradé
+     progressif jusqu'à la section 2. Stops calés sur la boîte qui déborde de 6 %. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 96%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 96%);
 }
 @keyframes heroDriftFallback {
   from { transform: translate3d(0, 0, 0) scale(1.04); }

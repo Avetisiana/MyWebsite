@@ -1,12 +1,11 @@
-/* Fond "soie" verte animé (WebGL, aucune dépendance). Même effet sur desktop ET mobile,
-   sur les 3 surfaces : hero, footer, bloc étude de cas.
+/* Fond "soie" verte animé (WebGL, aucune dépendance). hero + footer + bloc étude de cas.
    - hero : canvas OPAQUE (le shader dessine l'ivoire + la soie) -> compositing fiable partout.
-   - footer / étude de cas : canvas transparent, sortie prémultipliée (`vec4(rgb*a, a)`) -> fiable
-     iOS Safari inclus ; raccord des bords géré par mask-image en CSS.
-   Se coupe tout seul : prefers-reduced-motion, onglet caché, élément hors écran, WebGL absent,
-   perte de contexte. Mobile : DPR ≤ 1,25 et rendu 0,5× (économie), chaque canvas en pause hors écran.
-   <canvas class="silk-canvas"> : data-opaque ("1" = fond opaque), data-dark ("1" = surface foncée),
-   data-strength (multiplicateur d'intensité). Servi tel quel (CSP : script-src 'self'). Max 4. */
+   - footer / étude de cas : canvas transparent, sortie prémultipliée (`vec4(rgb*a, a)`).
+   Robustesse : si WebGL absent / shader qui ne compile pas / contexte perdu -> le JS met
+   `.silk-css` sur <html> et un dégradé CSS anime prend le relais sur le hero.
+   prefers-reduced-motion -> rendu STATIQUE (une frame, pas de boucle) au lieu de rien.
+   Pause auto : onglet caché, élément hors écran. Mobile : DPR/résolution un peu réduits.
+   <canvas class="silk-canvas"> : data-opaque, data-dark, data-strength. CSP : script-src 'self'. */
 (function () {
   'use strict';
 
@@ -14,8 +13,13 @@
   if (!list.length) return;
 
   var mqReduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-  if (mqReduce && mqReduce.matches) return;
+  var reduce = !!(mqReduce && mqReduce.matches);
   var isMobile = !!(window.matchMedia && window.matchMedia('(max-width: 640px)').matches);
+
+  function cssFallback(canvas) {
+    // uniquement pour le hero (canvas opaque) — footer/case restent sans fond si WebGL KO
+    if (canvas.hasAttribute('data-opaque')) document.documentElement.classList.add('silk-css');
+  }
 
   var VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
   var FRAG = [
@@ -23,7 +27,7 @@
     'uniform vec2 u_res;uniform float u_time;uniform float u_dark;uniform float u_strength;uniform float u_opaque;uniform float u_desktop;',
     'void main(){',
     ' vec2 uv=gl_FragCoord.xy/u_res;',
-    ' vec2 asp=u_res/min(u_res.x,u_res.y);', // corrige l'aspect -> densité de plis constante (portrait inclus)
+    ' vec2 asp=u_res/min(u_res.x,u_res.y);',
     ' vec2 p=uv*asp*3.4;',
     ' float t=u_time*0.10;',
     ' for(int i=1;i<6;i++){',
@@ -38,9 +42,10 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    // fondu UNIQUEMENT en bas : plein au-dessus de uv.y 0.52 (~48% du haut), grand dégradé
-    // progressif jusqu'à la section 2 (uv.y 0). Transparent (footer/case) : 0.14.
-    ' float fadeBot=smoothstep(0.0,mix(0.14,0.52,u_opaque),uv.y);',
+    // fondu UNIQUEMENT en bas. Desktop-hero : plein jusqu'au niveau des CTA (uv.y ~0.34) puis
+    // grand dégradé progressif jusqu'à la section 2 (uv.y 0). Mobile-hero : 0.52. Transparent : 0.14.
+    ' float heroTop=mix(0.52,0.34,u_desktop);',
+    ' float fadeBot=smoothstep(0.0,mix(0.14,heroTop,u_opaque),uv.y);',
     ' a*=fadeBot;',
     // dim central (zone du texte) : mobile-hero uniquement — retiré sur desktop
     ' float applyDim=u_opaque*(1.0-u_dark)*(1.0-u_desktop);',
@@ -49,7 +54,6 @@
     ' float peak=mix(0.46,0.16,u_dark);',
     ' float A=clamp(a,0.0,peak);',
     ' vec3 ivory=vec3(0.980,0.965,0.937);',
-    // transparent -> prémultiplié (vec4(rgb*a, a)) ; opaque -> ivoire mélangé, alpha ignoré
     ' gl_FragColor=mix(vec4(tint*A,A),vec4(mix(ivory,tint,A),1.0),u_opaque);',
     '}'
   ].join('\n');
@@ -65,15 +69,10 @@
 
     var opts = {
       alpha: !opaque, premultipliedAlpha: true, preserveDrawingBuffer: true,
-      antialias: false, depth: false, stencil: false, powerPreference: 'low-power'
+      antialias: false, depth: false, stencil: false
     };
     var gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
-    if (!gl) {
-      // WebGL indisponible (Chrome sans accélération matérielle, GPU blocklisté, très vieux appareil)
-      // -> fallback CSS animé pour le hero (voir .silk-css dans styles/main.css)
-      if (canvas.hasAttribute('data-opaque')) document.documentElement.classList.add('silk-css');
-      return;
-    }
+    if (!gl) { cssFallback(canvas); return; }
 
     function compile(type, src) {
       var s = gl.createShader(type);
@@ -85,7 +84,7 @@
     gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { cssFallback(canvas); return; }
     gl.useProgram(prog);
 
     var buf = gl.createBuffer();
@@ -101,7 +100,6 @@
     gl.uniform1f(gl.getUniformLocation(prog, 'u_strength'), strength);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_opaque'), opaque);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_desktop'), isMobile ? 0 : 1);
-    // évite un flash noir sur le canvas opaque avant la 1re frame
     if (opaque) gl.clearColor(0.980, 0.965, 0.937, 1.0);
     else gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -118,6 +116,21 @@
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT);
       sized = true;
+    }
+
+    // --- reduced-motion : une frame fixe, pas d'animation ---
+    if (reduce) {
+      function drawStatic() {
+        resize();
+        if (!sized) return;
+        gl.uniform1f(uTime, 6.0);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+      drawStatic();
+      if (window.ResizeObserver) new ResizeObserver(drawStatic).observe(canvas);
+      else window.addEventListener('resize', drawStatic);
+      canvas.addEventListener('webglcontextlost', function (ev) { ev.preventDefault(); cssFallback(canvas); }, false);
+      return;
     }
 
     var raf = 0, playing = false, elapsed = 0, last = 0;
@@ -165,6 +178,7 @@
       ev.preventDefault();
       alive = false;
       pause();
+      cssFallback(canvas); // le hero repasse sur le dégradé CSS
     }, false);
   }
 
