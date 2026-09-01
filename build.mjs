@@ -657,7 +657,7 @@ function pricingSection() {
   const panels = p.plans.map((plan, i) => {
     const on = i === defaultIdx;
     const price = `${plan.pricePrefix ? `<span class="price-prefix">${plan.pricePrefix}</span>` : ''}${plan.price}`;
-    return `<div role="tabpanel" id="ppanel-${i}" class="pricing-panel${on ? ' is-active' : ''}" aria-labelledby="ptab-${i}">
+    return `<div role="tabpanel" id="ppanel-${i}" class="pricing-panel${on ? ' is-active' : ''}${plan.featured ? ' pricing-panel--featured' : ''}" aria-labelledby="ptab-${i}">
           <div class="pricing-card">
             <div class="pricing-card-head">
               <span class="pricing-card-name">${plan.name}</span>
