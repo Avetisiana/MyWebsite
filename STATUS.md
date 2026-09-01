@@ -18,6 +18,8 @@ Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur m
   (vert `--color-accent`, `scale(1.05)`, easing spring). Une seule `is-lit` posée sur le `<ol>`,
   jamais retirée. Choix : allumage à l'arrivée (pas au fil du scroll) — cohérent avec tous les
   `reveal` du site, fiable au tactile, simple en `prefers-reduced-motion`.
+- **Vitesse** : ralentie de 50 % à la demande d'Arthur (durées ×2 : pastilles/titres 0,9 s,
+  remplissage 1,1 s ; délais de cascade ×2 → 0,1 / 0,6 / 1,1 / 1,6 s). Cascade totale ≈ 2,5 s.
 - **Mobile** (`< 860px`) : rail **vertical** (pastille à gauche, texte à droite, ligne verticale
   entre pastilles), `max-width: 360px` centré. **Desktop** (`≥ 860px`) : rail **horizontal** 4 colonnes.
   Segments de liaison = `::before` (piste grise) + `::after` (remplissage vert animé) par étape.
