@@ -533,22 +533,24 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   content: '';
   display: block;
   position: absolute;
-  top: -25%; left: -18%; right: -18%; bottom: -6%;
+  inset: -6% -6% -3% -6%; /* déborde un peu pour que le flou ne crée pas de bord visible */
   z-index: 0;
   pointer-events: none;
+  /* texture pleine partout (base uniforme + 2 nappes qui dérivent). Aucun fondu latéral ni haut. */
   background:
-    radial-gradient(46% 40% at 22% 14%, rgba(30, 59, 50, 0.40), transparent 78%),
-    radial-gradient(52% 44% at 84% 8%, rgba(44, 82, 69, 0.34), transparent 80%),
-    radial-gradient(64% 50% at 56% 82%, rgba(30, 59, 50, 0.28), transparent 82%);
-  filter: blur(20px);
+    linear-gradient(180deg, rgba(30, 59, 50, 0.17), rgba(30, 59, 50, 0.11)),
+    radial-gradient(120% 90% at 32% 22%, rgba(44, 82, 69, 0.26), transparent 92%),
+    radial-gradient(120% 90% at 76% 58%, rgba(30, 59, 50, 0.22), transparent 92%);
+  filter: blur(24px);
   will-change: transform;
   animation: heroDriftFallback 24s var(--ease-out) infinite alternate;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 92%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 92%);
+  /* fondu UNIQUEMENT en bas : plein jusqu'au niveau des CTA (~62 %) puis jusqu'à la section 2 */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 98%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 98%);
 }
 @keyframes heroDriftFallback {
-  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
-  to   { transform: translate3d(7%, -6%, 0) rotate(7deg) scale(1.15); }
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to   { transform: translate3d(4%, -3%, 0) scale(1.14); }
 }
 /* footer : apparaît en douceur depuis le haut du bloc */
 .silk-canvas--footer {

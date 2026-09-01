@@ -20,7 +20,7 @@
   var VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
   var FRAG = [
     'precision highp float;',
-    'uniform vec2 u_res;uniform float u_time;uniform float u_dark;uniform float u_strength;uniform float u_opaque;',
+    'uniform vec2 u_res;uniform float u_time;uniform float u_dark;uniform float u_strength;uniform float u_opaque;uniform float u_desktop;',
     'void main(){',
     ' vec2 uv=gl_FragCoord.xy/u_res;',
     ' vec2 asp=u_res/min(u_res.x,u_res.y);', // corrige l'aspect -> densité de plis constante (portrait inclus)
@@ -38,10 +38,14 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    // hero : texture pleine dans le haut (~52%, derrière le nav), fondu lisse et long sur le bas
-    ' float fadeBot=smoothstep(0.0,mix(0.14,0.52,u_opaque),uv.y);',
-    ' a*=fadeBot;',                                                           // pas de fondu gauche/droite
-    ' float cd=mix(0.46+0.54*smoothstep(0.14,0.66,length((uv-vec2(0.5,0.46))*vec2(1.15,1.55))),1.0,u_dark);',
+    // fondu UNIQUEMENT en bas. Desktop-hero : commence au niveau des CTA (uv.y ~0.34) et va
+    // jusqu'à la section 2 (uv.y 0). Mobile-hero : plein au-dessus de 52%. Transparent : 0.14.
+    ' float heroTop=mix(0.52,0.34,u_desktop);',
+    ' float fadeBot=smoothstep(0.0,mix(0.14,heroTop,u_opaque),uv.y);',
+    ' a*=fadeBot;',
+    // dim central (zone du texte) : mobile-hero uniquement — retiré sur desktop
+    ' float applyDim=u_opaque*(1.0-u_dark)*(1.0-u_desktop);',
+    ' float cd=mix(1.0,0.46+0.54*smoothstep(0.14,0.66,length((uv-vec2(0.5,0.46))*vec2(1.15,1.55))),applyDim);',
     ' a*=cd*u_strength;',
     ' float peak=mix(0.46,0.16,u_dark);',
     ' float A=clamp(a,0.0,peak);',
@@ -97,6 +101,7 @@
     gl.uniform1f(gl.getUniformLocation(prog, 'u_dark'), dark);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_strength'), strength);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_opaque'), opaque);
+    gl.uniform1f(gl.getUniformLocation(prog, 'u_desktop'), isMobile ? 0 : 1);
     // évite un flash noir sur le canvas opaque avant la 1re frame
     if (opaque) gl.clearColor(0.980, 0.965, 0.937, 1.0);
     else gl.clearColor(0.0, 0.0, 0.0, 0.0);
