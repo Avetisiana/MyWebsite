@@ -38,8 +38,8 @@
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
     ' float a=glow*0.14+streak*0.11;',
-    // hero : dissipation continue du haut (plein, derrière le nav) vers le bas (0), très progressive
-    ' float fadeBot=pow(smoothstep(0.0,mix(0.14,1.0,u_opaque),uv.y),mix(1.0,1.8,u_opaque));',
+    // hero : texture pleine dans le haut (~52%, derrière le nav), fondu lisse et long sur le bas
+    ' float fadeBot=smoothstep(0.0,mix(0.14,0.52,u_opaque),uv.y);',
     ' a*=fadeBot;',                                                           // pas de fondu gauche/droite
     ' float cd=mix(0.46+0.54*smoothstep(0.14,0.66,length((uv-vec2(0.5,0.46))*vec2(1.15,1.55))),1.0,u_dark);',
     ' a*=cd*u_strength;',
@@ -58,7 +58,7 @@
     var opaque = canvas.hasAttribute('data-opaque') ? 1 : 0;
     var strength = parseFloat(canvas.getAttribute('data-strength'));
     if (isNaN(strength)) strength = 1;
-    if (!isMobile) strength *= 0.78; // desktop un cran plus discret ; mobile inchangé
+    if (!isMobile) strength *= 0.85; // desktop un cran plus discret ; mobile inchangé
 
     var opts = {
       alpha: !opaque, premultipliedAlpha: true, preserveDrawingBuffer: true,

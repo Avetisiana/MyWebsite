@@ -543,8 +543,8 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   filter: blur(20px);
   will-change: transform;
   animation: heroDriftFallback 24s var(--ease-out) infinite alternate;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.5) 38%, rgba(0,0,0,0.18) 68%, transparent 94%);
-          mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.5) 38%, rgba(0,0,0,0.18) 68%, transparent 94%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 92%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 92%);
 }
 @keyframes heroDriftFallback {
   from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
