@@ -43,9 +43,10 @@ GitHub** à la fin de la session.
 - Raccords gérés par **`mask-image` CSS** par variante (`--hero` fondu long vers le bas invisible avec
   « Pour qui » ; `--footer` apparaît depuis le haut ; `--case` radial doux). Pas de fondu haut sur le
   hero → la soie passe pleinement **derrière le nav** (transparent au scroll 0).
-- Garde-fous : coupé si `prefers-reduced-motion`, écran ≤ 640 px (fond nu + micro-dégradé CSS),
-  onglet caché, élément hors écran (`IntersectionObserver` + `rootMargin 120px`), WebGL absent,
-  perte de contexte. 3 contextes WebGL max sur la home, 0 erreur / 0 perte de contexte vérifiées.
+- Garde-fous : coupé si `prefers-reduced-motion`, onglet caché, élément hors écran
+  (`IntersectionObserver` + `rootMargin 120px`), WebGL absent, perte de contexte.
+  **Mobile (≤ 640 px)** : bridé (choix d'Arthur, option D) — hero uniquement (pas footer / étude de
+  cas), rendu 0,35× la résolution, DPR plafonné à 1. 3 contextes WebGL max sur la home desktop.
 - `serve.mjs` : `.js` ajouté à la liste blanche MIME (sinon `/silk-bg.js` → 404 en local ; Vercel
   le sert nativement en prod, `.vercelignore` ne l'exclut pas).
 

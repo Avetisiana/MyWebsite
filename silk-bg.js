@@ -2,7 +2,8 @@
    Une seule et même texture qui coule, déclinée sur les surfaces vertes du site :
    le hero (filets verts sur l'ivoire) + le footer et l'étude de cas (glints clairs sur le vert
    foncé). Effet volontairement très discret. Se coupe tout seul : prefers-reduced-motion,
-   écran <= 640px, onglet caché, élément hors écran, WebGL absent, perte de contexte.
+   onglet caché, élément hors écran, WebGL absent, perte de contexte.
+   Sur mobile (<= 640px) : bridé — hero uniquement, rendu 0,35× la résolution, DPR plafonné à 1.
    Chaque <canvas class="silk-canvas"> lit data-dark ("1" = fond foncé) et data-strength (0-1).
    Servi tel quel (CSP : script-src 'self'). Max 4 canvas. */
 (function () {
@@ -13,7 +14,7 @@
 
   var mqReduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   if (mqReduce && mqReduce.matches) return;
-  if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) return;
+  var isMobile = !!(window.matchMedia && window.matchMedia('(max-width: 640px)').matches);
 
   var VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
   var FRAG = [
@@ -87,8 +88,8 @@
     gl.uniform1f(gl.getUniformLocation(prog, 'u_dark'), dark);
     gl.uniform1f(gl.getUniformLocation(prog, 'u_strength'), strength);
 
-    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
-    var SCALE = 0.55;
+    var DPR = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+    var SCALE = isMobile ? 0.35 : 0.55;
     var sized = false;
     function resize() {
       var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -149,7 +150,11 @@
   }
 
   var max = Math.min(list.length, 4);
-  for (var i = 0; i < max; i++) initSilk(list[i]);
+  for (var i = 0; i < max; i++) {
+    // mobile : le hero uniquement (pas footer / étude de cas)
+    if (isMobile && list[i].className.indexOf('silk-canvas--hero') === -1) continue;
+    initSilk(list[i]);
+  }
 
   if (mqReduce && mqReduce.addEventListener) {
     mqReduce.addEventListener('change', function (e) {
