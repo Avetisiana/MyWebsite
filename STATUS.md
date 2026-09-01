@@ -2,7 +2,29 @@
 
 ## Dernière session
 Date : 2026-09-01 (suite 4)
-Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile.
+Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile
++ logo « Arthur Avetisian » → accueil + swap « Ce que je propose » ↔ « Un déroulé simple, en 4 étapes ».
+
+### Swap Prestations ↔ Process
+- `buildIndex` : ordre des sections `process` et `prestations` échangé. Nouvel ordre :
+  hero → pour-qui → **comment-ca-se-passe** → realisation → tarifs → **prestations** → solutions
+  → faq → contact.
+- Fonds ajustés pour garder l'alternance ivoire / `bg-alt` (F3EEE4) intacte :
+  `processSection()` gagne `class="bg-alt"`, `prestationsSection()` la perd. Résultat :
+  ivoire / ivoire / alt / ivoire / alt / ivoire / alt / ivoire / ivoire (inchangé).
+- Les `id` d'ancre (`#prestations`, `#comment-ca-se-passe`) ne bougent pas → liens nav OK.
+- Vérifié : capture pleine page desktop + mobile, alternance de fond propre.
+
+### Logo → accueil (au lieu de « haut de page »)
+- `build.mjs` : les deux `.nav-logo` (header + panneau mobile) passent de `href="#top"` à
+  `href="/"`. `#top` ne renvoyait qu'en haut de la page courante (inutile sur les pages légales
+  / solutions).
+- Confort : sur l'accueil, un handler sur `.nav-logo` fait `preventDefault` + `window.scrollTo(0,0)`
+  (respecte `scroll-behavior` CSS, donc reduced-motion) → remontée douce sans rechargement.
+  Ailleurs : navigation normale vers `/`.
+- `<body id="top">` devenu inutilisé mais conservé (ancre légitime, retrait = churn inutile).
+- Vérifié Puppeteer : accueil → scrollY 0 sans changement d'URL ; page légale → `/` ; panneau
+  mobile → ferme + va sur `/`. 0 violation CSP, `vercel.json` régénéré (hash script à jour).
 
 ### Bannière cookies vs CTA collant (mobile)
 - **Signalé par Arthur** : sur certains mobiles, les boutons Refuser/Accepter de la bannière

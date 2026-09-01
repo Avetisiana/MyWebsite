@@ -1045,7 +1045,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 <a href="#contenu" class="skip-link">Aller au contenu</a>
 <header class="nav" id="nav">
     <div class="container">
-      <a href="#top" class="nav-logo">Arthur Avetisian</a>
+      <a href="/" class="nav-logo">Arthur Avetisian</a>
       <nav class="nav-links" aria-label="Navigation principale">
         
         <div class="nav-dropdown">
@@ -1074,7 +1074,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   </header>
   <div class="nav-mobile-panel" id="nav-mobile-panel" role="dialog" aria-modal="true" aria-label="Menu">
     <div class="nav-mobile-top container">
-      <a href="#top" class="nav-logo">Arthur Avetisian</a>
+      <a href="/" class="nav-logo">Arthur Avetisian</a>
       <button class="nav-mobile-close" id="nav-mobile-close" aria-label="Fermer le menu"></button>
     </div>
     <nav class="nav-mobile-links container" aria-label="Navigation mobile">
@@ -1238,6 +1238,16 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
     if (toggle) toggle.addEventListener('click', openPanel);
     if (close) close.addEventListener('click', closePanel);
     if (panel) panel.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closePanel); });
+
+    // logo -> accueil. Déjà sur l'accueil : remonter en haut (respecte scroll-behavior CSS) sans recharger.
+    document.querySelectorAll('.nav-logo').forEach(function (logo) {
+      logo.addEventListener('click', function (e) {
+        if (location.pathname === '/' || location.pathname === '/index.html') {
+          e.preventDefault();
+          window.scrollTo(0, 0);
+        }
+      });
+    });
 
     // dropdown "Solutions" du header desktop — hover en CSS pur (voir style), + clic/clavier ici
     var solutionsDropdown = document.querySelector('.nav-dropdown');

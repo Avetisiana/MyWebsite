@@ -198,7 +198,7 @@ function nav() {
 
   return `<header class="nav" id="nav">
     <div class="container">
-      <a href="#top" class="nav-logo">${content.nav.logo}</a>
+      <a href="/" class="nav-logo">${content.nav.logo}</a>
       <nav class="nav-links" aria-label="Navigation principale">
         ${desktopBefore}
         ${desktopDropdown}
@@ -212,7 +212,7 @@ function nav() {
   </header>
   <div class="nav-mobile-panel" id="nav-mobile-panel" role="dialog" aria-modal="true" aria-label="Menu">
     <div class="nav-mobile-top container">
-      <a href="#top" class="nav-logo">${content.nav.logo}</a>
+      <a href="/" class="nav-logo">${content.nav.logo}</a>
       <button class="nav-mobile-close" id="nav-mobile-close" aria-label="Fermer le menu"></button>
     </div>
     <nav class="nav-mobile-links container" aria-label="Navigation mobile">
@@ -340,6 +340,16 @@ function scripts() {
     if (toggle) toggle.addEventListener('click', openPanel);
     if (close) close.addEventListener('click', closePanel);
     if (panel) panel.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closePanel); });
+
+    // logo -> accueil. Déjà sur l'accueil : remonter en haut (respecte scroll-behavior CSS) sans recharger.
+    document.querySelectorAll('.nav-logo').forEach(function (logo) {
+      logo.addEventListener('click', function (e) {
+        if (location.pathname === '/' || location.pathname === '/index.html') {
+          e.preventDefault();
+          window.scrollTo(0, 0);
+        }
+      });
+    });
 
     // dropdown "Solutions" du header desktop — hover en CSS pur (voir style), + clic/clavier ici
     var solutionsDropdown = document.querySelector('.nav-dropdown');
@@ -590,7 +600,7 @@ function prestationsSection() {
           <p>${it.desc}</p>
         </div>
       </div>`).join('\n      ');
-  return `<section id="prestations" class="bg-alt">
+  return `<section id="prestations">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -712,7 +722,7 @@ function processSection() {
         <h3>${s.title}</h3>
         <p>${s.desc}</p>
       </div>`).join('\n      ');
-  return `<section id="comment-ca-se-passe">
+  return `<section id="comment-ca-se-passe" class="bg-alt">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -889,10 +899,10 @@ function buildIndex() {
   const bodyHTML = [
     heroSection(),
     audiencesSection(),
-    prestationsSection(),
+    processSection(),
     caseStudySection(),
     pricingSection(),
-    processSection(),
+    prestationsSection(),
     digitalSolutionsSection(),
     faqSection(),
     contactSection(),
