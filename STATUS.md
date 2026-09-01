@@ -1,7 +1,27 @@
 # STATUS.md — [MOI]
 
 ## Dernière session
-Date : 2026-09-01 (suite 3)
+Date : 2026-09-01 (suite 4)
+Fait : Cache-busting de `silk-bg.js`.
+
+### `silk-bg.js` — cache-busting
+- **Problème constaté** : Arthur voyait 3 fonds différents entre `:3000`, `:3001` et le site en
+  ligne. Diagnostic : le **code est byte-identique** partout (MD5 `index.html` + `silk-bg.js`
+  identiques sur les 3, ETag Vercel confirmé). La différence = **cache navigateur** — `silk-bg.js`
+  servi en `Cache-Control: immutable` 1 an sur Vercel et référencé en `/silk-bg.js` nu → un
+  visiteur garde l'ancienne version jusqu'à un an après un déploiement (un F5 ne la re-télécharge
+  pas). Onglet `:3001` = serveur lancé 1 h plus tôt, jamais rechargé.
+- **Correctif** (`build.mjs`) : `SILK_JS_V` = SHA-256 du contenu de `silk-bg.js`, 10 hex. Le
+  `<script>` devient `/silk-bg.js?v=${SILK_JS_V}`. L'URL ne change **que** si le fichier change →
+  re-téléchargement forcé au bon moment, cache long conservé sinon.
+- **Sans impact** : même requête / poids / `defer` ; `serve.mjs` (ligne 92) et Vercel strippent la
+  query avant de résoudre le fichier (vérifié : `?v=abc` → 200) ; `script-src 'self'` matche par
+  chemin → `vercel.json` **inchangé**, aucun hash CSP à recalculer ; rendu identique (screenshot) ;
+  neutre SEO (asset non indexé). Hash actuel : `6d857980dc`.
+
+---
+
+## Session 2026-09-01 (suite 3 — fond soie desktop, titre étude de cas, ordre sections — poussé)
 Fait : Ajustements fond « soie » (desktop), titre section étude de cas, ordre des sections.
 Beaucoup d'allers-retours sur le fondu. **Poussé** au fil de l'eau.
 

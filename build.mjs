@@ -12,6 +12,14 @@ import { content } from './content/site-content.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const css = fs.readFileSync(path.join(__dirname, 'styles/main.css'), 'utf-8');
 
+// Cache-busting de silk-bg.js : servi en `immutable` 1 an sur Vercel. Sans ça, un visiteur
+// qui a déjà chargé le fichier garde l'ancienne version jusqu'à un an. Le hash du contenu
+// dans l'URL (`?v=...`) ne change QUE si le fichier change → re-téléchargement au bon moment,
+// cache long conservé le reste du temps. `serve.mjs` et Vercel ignorent la query string.
+const SILK_JS_V = crypto.createHash('sha256')
+  .update(fs.readFileSync(path.join(__dirname, 'silk-bg.js')))
+  .digest('hex').slice(0, 10);
+
 // ---------- URL de base : domaine réel si renseigné, sinon preview Vercel ----------
 
 const SITE_URL = content.meta.domain.includes('DOMAINE-A-DEFINIR') ? content.meta.previewUrl : content.meta.domain;
@@ -522,7 +530,7 @@ ${bodyHTML}
 ${footer()}
 ${cookieBanner()}
 ${includeMobileCta ? mobileCta() : ''}
-<script src="/silk-bg.js" defer></script>
+<script src="/silk-bg.js?v=${SILK_JS_V}" defer></script>
 ${scripts()}
 </body>
 </html>`;
