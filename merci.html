@@ -233,15 +233,15 @@ p { color: var(--color-text-soft); }
   background: var(--color-accent);
 }
 
-.section-head { max-width: 660px; margin: 0 0 var(--space-6); }
+.section-head { max-width: 660px; margin: 0 0 var(--space-5); }
 .section-head h2 { margin-top: var(--space-2); text-wrap: balance; }
 .section-head > p:last-child:not(.eyebrow) { margin-top: var(--space-2); }
 
 .container { width: 100%; max-width: var(--container-w); margin: 0 auto; padding: 0 var(--space-3); }
-section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px; }
+section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px; }
 @media (min-width: 641px) {
   .container { padding: 0 var(--space-4); }
-  section { padding: var(--space-8) 0; }
+  section { padding: var(--space-7) 0; }
 }
 .bg-alt { background: var(--color-bg-alt); }
 
@@ -511,7 +511,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 
 /* ---------- Hero ---------- */
 .hero {
-  padding: calc(var(--space-8) + 3rem) 0 var(--space-8);
+  padding: calc(var(--space-8) + 2rem) 0 var(--space-7);
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -686,7 +686,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   flex-direction: column;
   align-items: center;
   gap: 0.5em;
-  margin: var(--space-7) auto 0;
+  margin: var(--space-5) auto 0;
   width: fit-content;
   font-size: 0.7rem;
   letter-spacing: 0.1em;
@@ -811,7 +811,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 /* ---------- Process — rail « méthode » (accueil) ---------- */
 .process-rail {
   list-style: none;
-  margin: var(--space-6) auto 0;
+  margin: var(--space-5) auto 0;
   padding: 0;
   max-width: 360px;
   display: grid;
@@ -821,7 +821,7 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 @media (min-width: 860px) {
   .process-rail {
     max-width: none;
-    margin-top: var(--space-7);
+    margin-top: var(--space-5);
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-4);
   }
@@ -1196,13 +1196,13 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 @media (min-width: 920px) { .config-disclaimer { margin-top: 0; } }
 
 /* ---------- FAQ ---------- */
-.faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-2); }
+.faq-list { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-1); }
 .faq-item { border-bottom: 1px solid var(--color-border); }
 .faq-item summary {
   list-style: none;
   cursor: pointer;
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
-  padding: var(--space-3) 0;
+  padding: calc(var(--space-2) + 0.35rem) 0;
   font-weight: 600;
   font-size: 1.02rem;
 }

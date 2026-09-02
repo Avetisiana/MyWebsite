@@ -26,8 +26,19 @@ un pas à la fois. Idées A + B gardées en tête pour la suite.
     aucune vie sans WebGL.
   - `transform`/`opacity` uniquement (compositeur). Coupé par le reset en
     `prefers-reduced-motion` → nappes figées, calmes. 0 erreur console/CSP.
-  À faire ensuite : resserrer les sections vides · couleur chaude en touches
-  (à valider — 2ᵉ couleur).
+- **Étape 3 — resserrer les sections vides** (commit local).
+  - `section` padding : desktop 8rem→6rem (`--space-8`→`--space-7`),
+    mobile 6rem→4rem (`--space-7`→`--space-6`).
+  - `.section-head` margin-bottom : 4rem→3rem (`--space-6`→`--space-5`).
+  - Rail « méthode » : `margin-top` 6rem→3rem (le grand vide entre le titre
+    et le rail est parti).
+  - Hero : padding bas 8rem→6rem, haut `+3rem`→`+2rem` ; `.scroll-hint`
+    margin-top 6rem→3rem.
+  - FAQ : `.faq-list` max-width 760→620 px, gap resserré, padding des
+    `summary` 24→~22 px (reste ≥ 44 px de cible tactile).
+  - Résultat : home ~2700 px plus courte. 0 erreur console/CSP sur 9 pages,
+    rien cassé desktop/mobile.
+  À faire ensuite : couleur chaude en touches (à valider — 2ᵉ couleur).
 
 ---
 
