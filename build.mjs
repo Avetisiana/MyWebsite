@@ -38,7 +38,7 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}.proof-bar-fill{transform:none}.config-recap,.config-panel-includes,.config-hint{display:none}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
@@ -104,6 +104,15 @@ function heroTitleHTML() {
 function parsePriceEUR(str) {
   const digits = str.replace(/[^\d]/g, '');
   return digits ? Number(digits) : undefined;
+}
+
+// 2490 -> "2 490" (espace insécable fine comme séparateur de milliers, convention FR)
+function fmtEUR(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function attr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
 function ga() {
@@ -403,6 +412,146 @@ function scripts() {
       }
     }
 
+    // preuve chiffrée — compteurs + barres + jauge, déclenchés à l'entrée dans le champ de vision
+    var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    function frCount(n) { return String(n).replace(/\\B(?=(\\d{3})+(?!\\d))/g, '\\u00a0'); }
+    function runCount(node, dur) {
+      var end = parseFloat(node.getAttribute('data-count'));
+      if (prefersReduce) { node.textContent = frCount(end); return; }
+      var t0 = performance.now();
+      (function step(t) {
+        var pr = Math.min(1, (t - t0) / (dur || 1400));
+        var e = 1 - Math.pow(1 - pr, 3);
+        node.textContent = frCount(Math.round(end * e));
+        if (pr < 1) requestAnimationFrame(step);
+      })(performance.now());
+    }
+    var proof = document.querySelector('[data-proof]');
+    if (proof) {
+      var fillProof = function () {
+        proof.querySelectorAll('[data-count]').forEach(function (n) { runCount(n); });
+        proof.querySelectorAll('.proof-bar-fill').forEach(function (f) {
+          f.style.transform = 'scaleX(' + (parseFloat(f.getAttribute('data-score')) / 100) + ')';
+        });
+        var arc = proof.querySelector('[data-gauge-arc]');
+        if (arc) arc.style.strokeDashoffset = arc.getAttribute('data-offset');
+      };
+      proof.querySelectorAll('.proof-bar-fill').forEach(function (f) { f.style.transform = 'scaleX(0)'; });
+      var arc0 = proof.querySelector('[data-gauge-arc]');
+      if (arc0) arc0.style.strokeDashoffset = arc0.getAttribute('data-empty');
+      if (window.IntersectionObserver) {
+        var pio = new IntersectionObserver(function (en) {
+          en.forEach(function (e) { if (e.isIntersecting) { fillProof(); pio.disconnect(); } });
+        }, { threshold: 0.3 });
+        pio.observe(proof);
+      } else { fillProof(); }
+    }
+
+    // configurateur de devis — total live, détail de la formule, envoi progressif
+    var config = document.querySelector('[data-config]');
+    if (config) {
+      var cBases = config.querySelectorAll('input[name="config-formule"]');
+      var cOpts = config.querySelectorAll('input[name^="config-opt-"]');
+      var cTotal = config.querySelector('[data-config-total]');
+      var cWeeks = config.querySelector('[data-config-weeks]');
+      var cRecap = config.querySelector('[data-config-recap]');
+      var cInc = config.querySelector('[data-config-includes]');
+      var cCta = config.querySelector('[data-config-cta]');
+      var cLead = config.getAttribute('data-lead') || '';
+      var cBasePrefix = config.getAttribute('data-base-prefix') || '';
+      var cIncPrefix = config.getAttribute('data-includes-prefix') || '';
+      var cWeeksSuffix = config.getAttribute('data-weeks-suffix') || '';
+      var cShown = parseFloat((cTotal && cTotal.textContent || '0').replace(/\\D/g, '')) || 0;
+      var cState = { formule: '', type: '', total: 0, weeks: 0, opts: [], recurring: 0 };
+      var cRaf;
+
+      function cAnimate(target) {
+        if (prefersReduce) { if (cTotal) cTotal.textContent = frCount(target); cShown = target; return; }
+        var from = cShown, t0 = performance.now();
+        if (cRaf) cancelAnimationFrame(cRaf);
+        (function step(t) {
+          var pr = Math.min(1, (t - t0) / 420);
+          var e = 1 - Math.pow(1 - pr, 3);
+          if (cTotal) cTotal.textContent = frCount(Math.round(from + (target - from) * e));
+          if (pr < 1) cRaf = requestAnimationFrame(step); else cShown = target;
+        })(performance.now());
+      }
+
+      function cPaint() {
+        var base = null;
+        for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
+        var total = 0, weeks = 0, recurring = 0, extra = 0, opts = [];
+        if (cRecap) cRecap.innerHTML = '';
+        if (base) {
+          total = parseFloat(base.getAttribute('data-price'));
+          weeks = parseFloat(base.getAttribute('data-weeks'));
+          if (cRecap) {
+            var brow = document.createElement('div');
+            brow.className = 'config-recap-row config-recap-row--base';
+            var bn = document.createElement('span'); bn.textContent = base.value;
+            var bp = document.createElement('span'); bp.textContent = frCount(total) + ' \\u20ac';
+            brow.appendChild(bn); brow.appendChild(bp);
+            cRecap.appendChild(brow);
+          }
+        }
+        cOpts.forEach(function (o) {
+          if (!o.checked) return;
+          var nm = o.getAttribute('data-name');
+          var rec = o.getAttribute('data-recurring');
+          if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \\u20ac/mois)'); }
+          else {
+            var pr = parseFloat(o.getAttribute('data-price')) || 0;
+            total += pr; extra++;
+            opts.push(nm + ' (+' + frCount(pr) + ' \\u20ac)');
+          }
+          if (cRecap) {
+            var row = document.createElement('div');
+            row.className = 'config-recap-row';
+            var a = document.createElement('span'); a.textContent = nm;
+            var b = document.createElement('span');
+            b.textContent = rec ? ('+ ' + rec + ' \\u20ac/mois') : ('+ ' + frCount(parseFloat(o.getAttribute('data-price'))) + ' \\u20ac');
+            row.appendChild(a); row.appendChild(b);
+            cRecap.appendChild(row);
+          }
+        });
+        weeks += Math.ceil(extra / 2);
+        if (cWeeks) cWeeks.textContent = String(weeks || '\\u2014');
+        cAnimate(total);
+        if (cInc && base) cInc.textContent = base.value + ' ' + cIncPrefix + ' : ' + (base.getAttribute('data-includes') || '') + '.';
+
+        cState = {
+          formule: base ? base.value : '',
+          type: base ? base.getAttribute('data-type') : '',
+          total: total, weeks: weeks, opts: opts, recurring: recurring
+        };
+      }
+
+      cBases.forEach(function (b) { b.addEventListener('change', cPaint); });
+      cOpts.forEach(function (o) { o.addEventListener('change', cPaint); });
+      cPaint();
+
+      // « Recevoir ce devis détaillé » -> pré-remplit le formulaire de contact, puis y amène
+      if (cCta) cCta.addEventListener('click', function () {
+        var lines = [cLead];
+        if (cState.formule) lines.push('\\u2022 ' + cBasePrefix + ' : ' + cState.formule);
+        cState.opts.forEach(function (o) { lines.push('\\u2022 Option : ' + o); });
+        lines.push('');
+        lines.push('Total estim\\u00e9 : ' + frCount(cState.total) + ' \\u20ac' + (cState.recurring ? (' + ' + cState.recurring + ' \\u20ac/mois') : ''));
+        lines.push('D\\u00e9lai estim\\u00e9 : ' + cState.weeks + ' semaines');
+        var msg = lines.join('\\n');
+        var mEl = document.getElementById('contact-message');
+        var tEl = document.getElementById('contact-project-type');
+        if (mEl) mEl.value = msg;
+        if (tEl && cState.type) {
+          for (var j = 0; j < tEl.options.length; j++) {
+            if (tEl.options[j].value === cState.type) { tEl.selectedIndex = j; break; }
+          }
+        }
+        var focusEl = document.getElementById('contact-name') || document.getElementById('contact-email');
+        if (focusEl) setTimeout(function () { focusEl.focus({ preventScroll: true }); }, 500);
+      });
+    }
+
     // hero — titre en entrée blur-zoom mot à mot, puis carrousel du dernier mot qui se fige sur "faire confiance"
     var heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
@@ -616,7 +765,7 @@ function prestationsSection() {
           <p>${it.desc}</p>
         </div>
       </div>`).join('\n      ');
-  return `<section id="prestations" class="bg-alt">
+  return `<section id="prestations">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -712,7 +861,7 @@ function pricingSection() {
         </div>`;
   }).join('\n        ');
 
-  return `<section id="tarifs">
+  return `<section id="tarifs" class="bg-alt">
     <div class="container">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -787,6 +936,131 @@ function digitalSolutionsSection() {
       </div>
       <div class="solution-teaser-grid reveal-stagger">
         ${cards}
+      </div>
+    </div>
+  </section>`;
+}
+
+function proofSection() {
+  const p = content.proof;
+
+  const stats = p.stats.map(s => {
+    const inner = s.plain
+      ? `${s.value}${s.suffix || ''}`
+      : `<span data-count="${s.value}">${s.value}</span>${s.suffix || ''}`;
+    return `<div class="proof-stat">
+          <span class="proof-stat-num">${inner}</span>
+          <span class="proof-stat-label">${s.label}</span>
+        </div>`;
+  }).join('\n        ');
+
+  const bars = p.metrics.map(m => `<div class="proof-bar">
+          <div class="proof-bar-head"><span>${m.label}</span><span class="proof-bar-score"><span data-count="${m.score}">${m.score}</span></span></div>
+          <div class="proof-bar-track"><span class="proof-bar-fill" data-score="${m.score}"></span></div>
+        </div>`).join('\n        ');
+
+  const R = 54;
+  const C = +(2 * Math.PI * R).toFixed(2);
+  const filled = +(C * (1 - p.gauge.score / 100)).toFixed(2);
+
+  return `<section id="resultats" class="bg-alt">
+    <div class="container">
+      <div class="proof" data-proof>
+        <div class="proof-main">
+          <div class="section-head reveal">
+            <p class="eyebrow">${p.eyebrow}</p>
+            <h2>${p.title}</h2>
+          </div>
+          <div class="proof-stats">
+        ${stats}
+          </div>
+          <div class="proof-perf">
+            <p class="proof-perf-title">${p.perfTitle}</p>
+        ${bars}
+            <p class="proof-perf-note">${p.perfNote} <a href="${p.verifyLink.href}" target="_blank" rel="noopener">${p.verifyLink.label} →</a></p>
+          </div>
+        </div>
+        <aside class="proof-gauge">
+          <p class="proof-gauge-label">${p.gauge.label}</p>
+          <div class="proof-gauge-dial">
+            <svg class="proof-gauge-ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="proof-gauge-track" cx="60" cy="60" r="${R}" fill="none" stroke-width="8"></circle>
+              <circle class="proof-gauge-arc" cx="60" cy="60" r="${R}" fill="none" stroke-width="8" stroke-linecap="round"
+                stroke-dasharray="${C}" stroke-dashoffset="${filled}" transform="rotate(-90 60 60)"
+                data-gauge-arc data-offset="${filled}" data-empty="${C}"></circle>
+            </svg>
+            <p class="proof-gauge-score"><span data-count="${p.gauge.score}">${p.gauge.score}</span><span class="proof-gauge-max">/100</span></p>
+          </div>
+          <p class="proof-gauge-caption">${p.gauge.caption}</p>
+          <a href="${p.cta.href}" class="btn btn-invert proof-gauge-cta">${p.cta.label}</a>
+        </aside>
+      </div>
+    </div>
+  </section>`;
+}
+
+function configuratorSection() {
+  const cf = content.configurator;
+  const pn = cf.panel;
+  const def = cf.bases.find(b => b.recommended) || cf.bases[0];
+
+  const bases = cf.bases.map(b => `<label class="config-choice config-choice--base">
+            <input type="radio" name="config-formule" value="${attr(b.name)}" data-price="${b.price}" data-weeks="${b.weeks}" data-type="${attr(b.contactType)}" data-includes="${attr(b.includes.join(', '))}"${b === def ? ' checked' : ''}>
+            <span class="config-choice-name">${b.name}</span>
+            <span class="config-choice-price">${fmtEUR(b.price)} €</span>
+          </label>`).join('\n          ');
+
+  const allOpts = cf.options.concat([{ ...cf.maintenance, recurring: true }]);
+  const opts = allOpts.map(o => `<label class="config-choice config-choice--opt${o.recurring ? ' config-choice--recurring' : ''}">
+            <input type="checkbox" name="config-opt-${o.id}" data-name="${attr(o.name)}"${o.recurring ? ` data-recurring="${o.price}"` : ` data-price="${o.price}"`}>
+            <span class="config-choice-name">${o.name}</span>
+            <span class="config-choice-price">${o.recurring ? '+ ' : '+ '}${fmtEUR(o.price)}${o.unit || ' €'}</span>
+          </label>`).join('\n          ');
+
+  const exampleLink = pn.exampleDevisUrl
+    ? `<a href="${pn.exampleDevisUrl}" class="config-example">${pn.exampleLabel} →</a>`
+    : '';
+
+  return `<section id="estimation">
+    <div class="container">
+      <div class="section-head section-head--center reveal">
+        <p class="eyebrow">${cf.eyebrow}</p>
+        <h2>${cf.title}</h2>
+        <p>${cf.intro}</p>
+      </div>
+      <div class="config" data-config
+        data-lead="${attr(cf.prefillLead)}"
+        data-base-prefix="${attr(pn.basePrefix)}"
+        data-includes-prefix="${attr(pn.includesPrefix)}"
+        data-weeks-suffix="${attr(pn.weeksSuffix)}">
+        <div class="config-controls">
+          <div class="config-group">
+            <p class="config-group-label">${cf.baseLabel}</p>
+            <div class="config-bases">
+          ${bases}
+            </div>
+          </div>
+          <div class="config-group">
+            <p class="config-group-label">${cf.optionsLabel}</p>
+            <div class="config-opts">
+          ${opts}
+            </div>
+          </div>
+          <p class="config-hint">${pn.hint}</p>
+        </div>
+
+        <aside class="config-panel" aria-live="polite">
+          <p class="config-panel-label">${pn.label}</p>
+          <p class="config-total"><span data-config-total>${fmtEUR(def.price)}</span><span class="config-total-cur">€</span></p>
+          <p class="config-panel-note">${pn.note} <span data-config-weeks>${def.weeks}</span>${pn.weeksSuffix}.</p>
+          <div class="config-recap" data-config-recap></div>
+          <p class="config-panel-includes" data-config-includes></p>
+          <a href="/#contact" class="btn btn-invert config-cta" data-config-cta>${pn.cta}</a>
+          ${exampleLink}
+          <p class="config-reassurance">${pn.reassurance}</p>
+        </aside>
+
+        <p class="config-disclaimer">${pn.disclaimer}</p>
       </div>
     </div>
   </section>`;
@@ -919,8 +1193,10 @@ function buildIndex() {
     audiencesSection(),
     processSection(),
     caseStudySection(),
+    proofSection(),
     prestationsSection(),
     pricingSection(),
+    configuratorSection(),
     digitalSolutionsSection(),
     faqSection(),
     contactSection(),
@@ -1134,6 +1410,72 @@ function build404() {
   });
 }
 
+function buildExempleDevis() {
+  const bodyHTML = `<div class="container">
+    <div class="legal-page devis-page">
+      <p class="eyebrow">Exemple</p>
+      <h1>À quoi ressemble un devis</h1>
+      <p class="devis-intro">Voici un devis type, pour vous donner une idée du niveau de détail. Le vôtre est établi après un premier échange, une fois le périmètre précisé — <a href="/#contact">demandez le vôtre</a>.</p>
+
+      <div class="devis-doc">
+        <div class="devis-head">
+          <div>
+            <p class="devis-label">Prestataire</p>
+            <p>${content.nav.logo}<br>
+            [Statut juridique à compléter]<br>
+            SIRET : [SIRET à compléter]<br>
+            [Adresse à compléter]<br>
+            ${content.meta.email} · ${content.meta.phoneDisplay}</p>
+          </div>
+          <div>
+            <p class="devis-label">Client</p>
+            <p>Client exemple<br>Angoulême (16)</p>
+            <p class="devis-label devis-label--spaced">Devis</p>
+            <p>N° 2026-000 · émis le [date]<br>Valable 30 jours</p>
+          </div>
+        </div>
+
+        <table class="devis-table">
+          <thead>
+            <tr><th>Prestation</th><th>Montant</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, espace d'administration, blog, formulaire qualifié, référencement local de base, 2 h de formation</td><td>2&nbsp;490&nbsp;€</td></tr>
+            <tr><td>Rédaction des textes de l'ensemble des pages</td><td>390&nbsp;€</td></tr>
+            <tr><td>Référencement local renforcé (fiche Google, avis, mots-clés locaux)</td><td>390&nbsp;€</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>Total</td><td>3&nbsp;270&nbsp;€</td></tr>
+          </tfoot>
+        </table>
+        <p class="devis-note">TVA non applicable, article 293 B du CGI. Option : maintenance et mises à jour à 49&nbsp;€/mois, sans engagement.</p>
+
+        <p class="devis-label">Modalités</p>
+        <ul>
+          <li>Acompte de 30 % à la commande, solde à la mise en ligne.</li>
+          <li>Délai indicatif : 4 semaines à compter de la validation de la maquette.</li>
+          <li>Deux séries d'allers-retours incluses sur le design.</li>
+          <li>Le site et son code vous appartiennent à la livraison.</li>
+        </ul>
+      </div>
+
+      <p class="devis-cta-line"><a href="/#estimation" class="btn btn-ghost">Estimer mon projet</a> <a href="/#contact" class="btn btn-primary">Demander mon devis</a></p>
+    </div>
+  </div>`;
+  const title = `Exemple de devis — ${content.nav.logo}`;
+  const description = 'Exemple de devis pour la création d’un site internet à Angoulême : prestations détaillées, montant, modalités.';
+  const pagePath = '/exemple-devis';
+  return page({
+    title,
+    description,
+    pagePath,
+    bodyHTML,
+    robots: 'noindex, follow',
+    includeMobileCta: false,
+    jsonLd: webPageJsonLd({ title, description, pagePath }),
+  });
+}
+
 function buildSitemap() {
   const pages = ['/', '/mentions-legales', '/confidentialite', ...content.digitalSolutions.items.map(it => `/${it.slug}`)];
   const urls = pages.map(p => `  <url>
@@ -1232,6 +1574,7 @@ const outputs = {
   'mentions-legales.html': buildMentionsLegales(),
   'confidentialite.html': buildConfidentialite(),
   ...solutionOutputs,
+  'exemple-devis.html': buildExempleDevis(),
   'merci.html': buildMerci(),
   '404.html': build404(),
   'sitemap.xml': buildSitemap(),

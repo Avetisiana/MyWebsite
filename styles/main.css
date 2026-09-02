@@ -916,6 +916,209 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
   .process-step::after { transition-delay: 0s !important; }
 }
 
+/* ---------- Preuve chiffrée (5c) ---------- */
+.proof {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  box-shadow: var(--shadow-md);
+}
+@media (min-width: 900px) { .proof { grid-template-columns: 1.15fr 0.85fr; align-items: stretch; } }
+
+.proof-main { padding: var(--space-5) var(--space-4); }
+@media (min-width: 900px) { .proof-main { padding: var(--space-6) var(--space-5); } }
+.proof-main .section-head { margin-bottom: 0; }
+
+.proof-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-4);
+  margin-top: var(--space-5);
+}
+.proof-stat { padding-top: var(--space-2); border-top: 2px solid var(--color-accent); }
+.proof-stat:nth-child(n+3) { border-top-color: var(--color-border); }
+.proof-stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw + 1rem, 2.5rem);
+  line-height: 1.05;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+.proof-stat-label { display: block; margin-top: 0.55em; font-size: 0.8rem; line-height: 1.5; color: var(--color-text-soft); }
+
+.proof-perf { margin-top: var(--space-6); }
+.proof-perf-title,
+.config-panel-label,
+.config-includes-title,
+.config-group legend {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.proof-perf-title { color: var(--color-text-faint); }
+.proof-bar { margin-top: var(--space-3); }
+.proof-bar-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.85rem; color: var(--color-text); margin-bottom: 0.45em; }
+.proof-bar-score { font-family: var(--font-display); font-weight: 700; color: var(--color-accent); }
+.proof-bar-track { height: 6px; border-radius: var(--radius-pill); background: var(--color-border-soft); overflow: hidden; }
+.proof-bar-fill {
+  display: block; height: 100%; width: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 1.1s var(--ease-out);
+}
+.proof-bar:nth-of-type(3) .proof-bar-fill { transition-delay: 0.09s; }
+.proof-bar:nth-of-type(4) .proof-bar-fill { transition-delay: 0.18s; }
+.proof-bar:nth-of-type(5) .proof-bar-fill { transition-delay: 0.27s; }
+.proof-perf-note { margin-top: var(--space-3); font-size: 0.8rem; line-height: 1.6; color: var(--color-text-faint); }
+.proof-perf-note a { color: var(--color-accent); font-weight: 600; white-space: nowrap; }
+
+.proof-gauge {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: var(--space-6) var(--space-5);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: var(--space-3);
+}
+.proof-gauge-label {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(250, 246, 239, 0.55);
+}
+.proof-gauge-dial { position: relative; width: 172px; height: 172px; flex: none; display: grid; place-items: center; }
+.proof-gauge-ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.proof-gauge-track { stroke: rgba(250, 246, 239, 0.18); }
+.proof-gauge-arc { stroke: var(--color-bg); transition: stroke-dashoffset 1.6s var(--ease-out); }
+.proof-gauge-score { position: relative; z-index: 1; font-family: var(--font-display); font-weight: 700; font-size: 2.6rem; line-height: 1; }
+.proof-gauge-max { font-size: 0.9rem; font-weight: 400; color: rgba(250, 246, 239, 0.55); }
+.proof-gauge-caption { font-size: 0.9rem; line-height: 1.6; color: rgba(250, 246, 239, 0.8); max-width: 24ch; }
+.proof-gauge-cta { margin-top: var(--space-2); }
+
+.btn-invert { background: var(--color-bg); color: var(--color-accent); box-shadow: var(--shadow-sm); }
+.btn-invert:hover { background: #fff; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-invert:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
+
+@media (prefers-reduced-motion: reduce) {
+  .proof-bar-fill { transition-delay: 0s !important; }
+}
+
+/* ---------- Configurateur de devis (6a) — compact ---------- */
+.config {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  max-width: 980px;
+  margin: var(--space-4) auto 0;
+}
+@media (min-width: 880px) { .config { grid-template-columns: 1fr 340px; align-items: start; } }
+
+.config-controls { display: flex; flex-direction: column; gap: var(--space-4); }
+.config-group { min-width: 0; }
+.config-group-label,
+.config-panel-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-2);
+}
+.config-bases { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+.config-opts { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+@media (min-width: 520px) {
+  .config-opts { grid-template-columns: 1fr 1fr; }
+  .config-choice--recurring { grid-column: 1 / -1; }
+}
+
+.config-choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.16s var(--ease-out), background-color 0.16s var(--ease-out);
+}
+.config-choice:hover { border-color: var(--color-text-faint); }
+.config-choice:has(input:checked) { border-color: var(--color-accent); background: var(--color-accent-tint); }
+.config-choice:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.config-choice input {
+  position: absolute; opacity: 0; width: 0; height: 0; margin: 0;
+}
+
+/* case formule : colonne (nom au-dessus, prix en dessous), centrée */
+.config-choice--base {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15em;
+  padding: 0.75em 0.7em;
+}
+.config-choice--base .config-choice-name { font-weight: 700; font-size: 0.82rem; color: var(--color-text); white-space: nowrap; }
+.config-choice--base .config-choice-price { font-size: 0.8rem; color: var(--color-text-soft); }
+@media (min-width: 520px) {
+  .config-choice--base { padding: 0.9em 1em; }
+  .config-choice--base .config-choice-name { font-size: 0.95rem; }
+}
+
+/* case option : ligne, nom à gauche, prix + coche à droite */
+.config-choice--opt { padding: 0.7em 0.85em; }
+.config-choice--opt .config-choice-name { flex: 1; font-size: 0.86rem; color: var(--color-text); }
+.config-choice--opt .config-choice-price { font-size: 0.78rem; color: var(--color-text-soft); white-space: nowrap; }
+.config-choice--opt::after {
+  content: '';
+  flex: none;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 5px;
+  background: transparent;
+  transition: background-color 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
+}
+.config-choice--opt:has(input:checked)::after {
+  background: var(--color-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23FAF6EF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6.5l2.5 2.5 4.5-5.5'/%3E%3C/svg%3E") center / 12px no-repeat;
+  border-color: var(--color-accent);
+}
+
+.config-hint { font-size: 0.75rem; color: var(--color-text-faint); font-style: italic; }
+
+/* panneau estimation */
+.config-panel {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex; flex-direction: column;
+}
+@media (min-width: 880px) { .config-panel { position: sticky; top: var(--space-5); } }
+.config-panel .config-panel-label { color: rgba(250, 246, 239, 0.55); margin-bottom: 0.2em; }
+.config-total { font-family: var(--font-display); font-weight: 700; line-height: 1; display: flex; align-items: baseline; gap: 0.18em; }
+.config-total [data-config-total] { font-size: clamp(2.2rem, 4vw + 1rem, 2.9rem); letter-spacing: -0.01em; }
+.config-total-cur { font-size: 1.3rem; color: rgba(250, 246, 239, 0.65); }
+.config-panel-note { margin-top: 0.5em; font-size: 0.78rem; line-height: 1.5; color: rgba(250, 246, 239, 0.6); }
+
+.config-recap { display: flex; flex-direction: column; gap: 0.4em; margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid rgba(250, 246, 239, 0.18); }
+.config-recap-row { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 0.82rem; }
+.config-recap-row span:last-child { color: rgba(250, 246, 239, 0.7); white-space: nowrap; }
+.config-recap-row--base { font-weight: 600; }
+
+.config-panel-includes { margin-top: var(--space-2); font-size: 0.74rem; line-height: 1.55; color: rgba(250, 246, 239, 0.55); }
+.config-panel-includes:empty { display: none; }
+
+.config-cta { width: 100%; margin-top: var(--space-4); }
+.config-example {
+  margin-top: 0.8em;
+  text-align: center;
+  font-size: 0.8rem; font-weight: 600;
+  color: rgba(250, 246, 239, 0.8);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.config-example:hover { color: var(--color-bg); }
+.config-reassurance { margin-top: 0.8em; text-align: center; font-size: 0.76rem; color: rgba(250, 246, 239, 0.5); }
+
+.config-disclaimer { font-size: 0.78rem; line-height: 1.6; color: var(--color-text-faint); margin-top: var(--space-2); }
+@media (min-width: 880px) { .config-disclaimer { grid-column: 1 / -1; margin-top: 0; text-align: center; } }
+
 /* ---------- FAQ ---------- */
 .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-2); }
 .faq-item { border-bottom: 1px solid var(--color-border); }
@@ -1093,6 +1296,30 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .legal-page p, .legal-page li { margin-bottom: var(--space-2); }
 .legal-page a { color: var(--color-accent); font-weight: 600; }
 .legal-page ul { padding-left: 1.2em; list-style: disc; }
+
+/* ---------- Exemple de devis ---------- */
+.devis-page .eyebrow { margin-bottom: var(--space-3); }
+.devis-intro { font-size: 1.05rem; line-height: 1.7; color: var(--color-text-soft); margin: var(--space-3) 0 var(--space-6); }
+.devis-doc {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-4);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+@media (min-width: 640px) { .devis-doc { padding: var(--space-6) var(--space-5); } }
+.devis-head { display: grid; gap: var(--space-4); margin-bottom: var(--space-5); }
+@media (min-width: 560px) { .devis-head { grid-template-columns: 1fr 1fr; } }
+.devis-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: 0.4em !important; }
+.devis-label--spaced { margin-top: var(--space-3); }
+.devis-head p { font-size: 0.9rem; line-height: 1.6; margin-bottom: 0; }
+.devis-table { width: 100%; border-collapse: collapse; margin: var(--space-4) 0 var(--space-3); font-size: 0.9rem; }
+.devis-table th { text-align: left; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-faint); padding: 0 0 0.6em; border-bottom: 1.5px solid var(--color-border); }
+.devis-table th:last-child, .devis-table td:last-child { text-align: right; white-space: nowrap; }
+.devis-table td { padding: 0.9em 0; border-bottom: 1px solid var(--color-border-soft); line-height: 1.5; vertical-align: top; }
+.devis-table tfoot td { border-bottom: 0; border-top: 2px solid var(--color-accent); padding-top: 0.9em; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--color-text); }
+.devis-note { font-size: 0.82rem; color: var(--color-text-faint); margin-bottom: var(--space-5) !important; }
+.devis-cta-line { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
 
 /* ---------- 404 ---------- */
 .error-page { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-6) var(--space-4); }

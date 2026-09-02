@@ -1,5 +1,70 @@
 # STATUS.md — [MOI]
 
+## En attente de validation d'Arthur (NON poussé)
+Date : 2026-09-02 (suite 5)
+Deux nouvelles sections sur l'accueil (maquettes 5c et 6a) + page `/exemple-devis`.
+**À valider avant push.**
+
+### Configurateur — rendu compact (v2, retour d'Arthur)
+- Section beaucoup plus courte : formules **en ligne** (3 cartes : Une page / Multi-pages /
+  Sur-mesure, nom + prix, sélection = bord + fond vert clair via `:has()`), options en **grille
+  2 colonnes** (nom + prix + case custom, sans description), maintenance sur toute la largeur.
+- Plus de mini-formulaire dans le panneau : **« Recevoir ce devis détaillé » pré-remplit le
+  formulaire de contact** (`#contact-message` = récap complet + `#contact-project-type` mappé) puis
+  y amène. Sans JS : simple ancre `/#contact`. Le configurateur n'est plus un `<form>`.
+- Panneau : total animé, délai, **récap ligne par ligne** (formule + options), **1 ligne « X
+  comprend : … »** qui change selon la formule, CTA + lien « Voir un exemple de devis » + réassurance.
+- Option **« Site bilingue (FR / EN) » 490 €** ajoutée.
+- Hauteur section : ~1100 px desktop / ~1820 px mobile (avant : ~1800 / ~2900).
+
+### Page `/exemple-devis` (nouveau)
+- `buildExempleDevis()` — devis type : prestataire (`[SIRET/adresse à compléter]`), client exemple,
+  tableau des prestations (Multi-pages 2 490 € + Rédaction 390 € + SEO 390 € = **3 270 €**),
+  « TVA non applicable art. 293 B », modalités (acompte 30 %, délai, AR, propriété du code).
+  `noindex, follow`, sans CTA mobile. Réutilise `.legal-page` + styles `.devis-*`.
+- Lié depuis le panneau du configurateur (`content.configurator.panel.exampleDevisUrl`).
+
+### Preuve chiffrée — scores
+Passés à 98 / 100 / 96 / 100 (jauge 98) pour éviter le « 100 partout ». **Toujours des
+placeholders — Arthur doit mesurer PageSpeed Insights sur le site déployé et donner les vrais.**
+
+### Vérifié Puppeteer
+Desktop + mobile, `:has()`, sans JS (config visible, CTA = ancre, barres pleines), reduced-motion,
+CSP 7 pages (dont `/exemple-devis`), pages Solutions intactes. `vercel.json` régénéré.
+
+### Section « Preuve chiffrée » (5c) — `#resultats`, après l'étude de cas, `bg-alt`
+- `content.proof` : 4 chiffres (990 € / 2–4 sem. / 48 h / 100 % mobile), 4 barres Lighthouse
+  (Perf 99 / Access. 100 / Bonnes pratiques 100 / Réf. 100), jauge « score global » 99, lien
+  PageSpeed Insights. **Les scores sont des placeholders crédibles — Arthur doit les mesurer
+  réellement (PageSpeed Insights sur le site déployé) et ajuster.**
+- Anim déclenchée à l'entrée dans le champ de vision : compteurs qui montent, barres qui se
+  remplissent (`transform: scaleX`), jauge SVG (`stroke-dashoffset`). Reduced-motion → tout
+  d'un coup. Sans JS → affiché plein (NOSCRIPT_CSS).
+- Layout : split blanc / vert foncé (jauge à droite). Mobile : empilé.
+
+### Section « Configurateur de devis » (6a) — `#estimation`, après Tarifs, ivoire
+- `content.configurator` : 3 formules (radio, = pricing.plans, Pro coché par défaut) + 5 options
+  (checkbox) + Maintenance 49 €/mois (séparée du total ponctuel).
+  **Montants des options choisis par moi — à valider par Arthur :** Rédaction textes 390 €,
+  Optimisation photos 190 €, Prise de RDV en ligne 290 €, Réf. local renforcé 390 €,
+  3 pages supp. 450 €.
+- Panneau vert : total live (compteur animé), délai estimé (base + ⌈options/2⌉), **liste
+  « Inclus dans cette formule » qui change selon la formule cochée**, récap des options,
+  champ email (requis) + téléphone (facultatif), consentement RGPD, disclaimer « pas un devis
+  ferme ».
+- Vrais `<input type=radio/checkbox>` (accessibles, `:has()` pour l'état coché, marche sans JS
+  → POST direct à Formsubmit avec `recapitulatif` construit par JS). Même endpoint que le
+  formulaire de contact (`content.contact.form.action`). Envoi progressif (fetch → /merci).
+- Ordre des sections réorganisé + `bg-alt` redistribué pour garder l'alternance :
+  hero · pour-qui · process · realisation · **resultats(alt)** · prestations · tarifs(alt) ·
+  **estimation** · solutions(alt) · faq · contact.
+- Vérifié Puppeteer (desktop + mobile, :has(), sans JS, reduced-motion, CSP 5 pages,
+  pages Solutions intactes). `vercel.json` régénéré.
+- **Idées en plus proposées à Arthur** (voir message) : ajouter « Estimation » au menu ;
+  option « Site bilingue FR/EN » ; pré-remplir le formulaire de contact au lieu d'un 2ᵉ formulaire.
+
+---
+
 ## Dernière session
 Date : 2026-09-01 (suite 4)
 Fait : Cache-busting de `silk-bg.js` + fix bannière cookies / CTA collant sur mobile

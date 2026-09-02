@@ -196,6 +196,87 @@ export const content = {
     ],
   },
 
+  // Section « preuve chiffrée » (5c). Les scores Lighthouse doivent refléter une mesure RÉELLE
+  // du site déployé (PageSpeed Insights) — à ajuster une fois le domaine en ligne.
+  proof: {
+    eyebrow: 'Ce que ça change',
+    title: 'Un site qui travaille, chiffres à l’appui',
+    stats: [
+      { value: 990, suffix: ' €', label: 'à partir de, pour la formule Essentiel' },
+      { value: '2–4', suffix: ' sem.', label: 'de l’échange initial à la mise en ligne', plain: true },
+      { value: 48, suffix: ' h', label: 'délai de réponse maximum à votre demande' },
+      { value: 100, suffix: ' %', label: 'des sites livrés pensés d’abord pour le mobile' },
+    ],
+    perfTitle: 'Performance du site que vous consultez',
+    perfNote: 'Chaque site que je livre est mesuré avant la mise en ligne, et le rapport vous est remis.',
+    // ⚠ Scores à REMPLACER par une vraie mesure PageSpeed Insights du site déployé.
+    metrics: [
+      { label: 'Performance', score: 98 },
+      { label: 'Accessibilité', score: 100 },
+      { label: 'Bonnes pratiques', score: 96 },
+      { label: 'Référencement', score: 100 },
+    ],
+    gauge: {
+      label: 'Score global',
+      score: 98,
+      caption: 'Chargement rapide sur mobile, même en 4G en Charente.',
+    },
+    verifyLink: { label: 'Vérifier sur PageSpeed Insights', href: 'https://pagespeed.web.dev/' },
+    cta: { label: 'Demander un devis', href: '/#contact' },
+  },
+
+  // Configurateur de devis (6a). Montants à valider / ajuster par Arthur.
+  // Le bouton « Recevoir ce devis détaillé » pré-remplit le formulaire de contact (#contact)
+  // — pas de 2ᵉ formulaire. `exampleDevisUrl` : mettre l'URL du PDF d'exemple quand il existe.
+  configurator: {
+    eyebrow: 'Estimation immédiate',
+    title: 'Composez votre projet, le budget suit',
+    intro: 'Pas de « nous contacter pour un tarif ». Vous voyez immédiatement l’ordre de grandeur, et le devis détaillé arrive derrière.',
+    baseLabel: 'Type de site',
+    bases: [
+      {
+        id: 'essentiel', name: 'Une page', price: 990, weeks: 2,
+        contactType: 'Site vitrine une page',
+        includes: ['formulaire de contact', 'affichage mobile', 'mise en ligne', '1 h de prise en main'],
+      },
+      {
+        id: 'pro', name: 'Multi-pages', price: 2490, weeks: 4, recommended: true,
+        contactType: 'Site multi-pages',
+        includes: ['5-6 pages', 'espace d’administration', 'blog', 'formulaire qualifié', 'référencement local', '2 h de formation'],
+      },
+      {
+        id: 'premium', name: 'Sur-mesure', price: 4490, weeks: 6,
+        contactType: 'Site multi-pages',
+        includes: ['périmètre défini ensemble', 'fonctionnalités avancées', 'suivi & accompagnement'],
+      },
+    ],
+    optionsLabel: 'Options',
+    options: [
+      { id: 'redaction', name: 'Rédaction des textes', price: 390 },
+      { id: 'photos', name: 'Optimisation des photos', price: 190 },
+      { id: 'rdv', name: 'Prise de rendez-vous en ligne', price: 290 },
+      { id: 'seo', name: 'Référencement local renforcé', price: 390 },
+      { id: 'pages', name: '3 pages supplémentaires', price: 450 },
+      { id: 'bilingue', name: 'Site bilingue (FR / EN)', price: 490 },
+    ],
+    maintenance: { id: 'maintenance', name: 'Maintenance', price: 49, unit: ' €/mois' },
+    panel: {
+      label: 'Estimation',
+      note: 'TTC, hors maintenance.',
+      weeksSuffix: ' semaines estimées',
+      basePrefix: 'Formule',
+      includesPrefix: 'comprend',
+      cta: 'Recevoir ce devis détaillé',
+      exampleLabel: 'Voir un exemple de devis',
+      exampleDevisUrl: '/exemple-devis',
+      disclaimer: 'Estimation indicative — le montant final est arrêté après un premier échange, une fois le périmètre précisé.',
+      reassurance: 'Sans engagement, réponse sous 24 à 48 h.',
+      hint: 'Cochez : le total et le récapitulatif se mettent à jour.',
+    },
+    // Pré-remplissage du formulaire de contact
+    prefillLead: 'Bonjour, je souhaite un devis pour :',
+  },
+
   faq: {
     eyebrow: 'FAQ',
     title: 'Vos questions, mes réponses',
