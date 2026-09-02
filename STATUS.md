@@ -1,7 +1,114 @@
 # STATUS.md — [MOI]
 
-## En attente de validation d'Arthur (NON poussé)
-Date : 2026-09-02 (suite 5)
+## Session 2026-09-02 (suite 6) — poussé
+Revue design (yeux de webdesigner) → passe de cohérence + fusion Tarifs/Configurateur,
+validées par Arthur et poussées sur `main`.
+
+### Piste écartée
+Exploration de 3 directions visuelles (Éditoriale / Atmosphérique / Graphique) faite
+dans un canvas Claude Design — **Arthur n'est pas fan**. Prochaine étape convenue :
+itérer en direct sur localhost (changement ciblé → rebuild → capture → garde ou
+`git restore`), pas de maquettes. Point de départ pressenti : passe transversale à
+faible risque (profondeur des blocs verts, soie toujours animée + vrai fallback,
+couleur chaude en touches, resserrer les sections vides).
+
+---
+
+### Détail — revue design + passe de cohérence + fusion Tarifs/Configurateur
+
+### Fusion des deux sections tarifs (choix d'Arthur : « configurateur = base »)
+Le site avait **deux sections sur les tarifs** collées (Tarifs `#tarifs` = 3 cartes
+Essentiel/Pro/Premium ; Configurateur `#estimation` = mêmes 3 prix + options + total live).
+Redite des prix, page longue, double logique de choix. **Fusionnées en une seule.**
+- `pricingSection()` **supprimée** (fonction + appel + JS des onglets + `.pricing-*` CSS
+  + `content.pricing` + `parsePriceEUR()` + refs NOSCRIPT_CSS). JSON-LD `hasOfferCatalog`
+  repointé sur `content.configurator.bases`.
+- `configuratorSection()` **réécrit** : `id="tarifs"` (le lien nav « Tarifs » y atterrit),
+  eyebrow « Tarifs », titre « Composez votre projet, le budget suit ».
+  - Bloc « Votre formule » : 3 **cartes riches** `.config-formule` (radio) — nom, prix,
+    accroche, **liste de ce qui est inclus** (— items), badge « Le plus choisi » sur Pro
+    (pré-cochée). Blanc / bord + fond vert clair quand sélectionnée. Sur `bg-alt`.
+  - Bloc « Ajoutez des options » : inchangé (`.config-choice--opt`, 6 options + maintenance).
+  - Panneau vert « Estimation » : total live, délai, récap ligne par ligne, CTA
+    « Recevoir ce devis détaillé » (pré-remplit toujours `#contact`), lien exemple, réassurance.
+    Ligne « X comprend : … » **retirée** (redondante avec les cartes).
+  - Grille desktop (`grid-template-areas`) : formules pleine largeur (3 col) → options + panneau
+    (sticky) → disclaimer. Tablette 640-919 : 3 col compactées. < 640 : tout empilé.
+- `content.configurator.bases[]` enrichi : `blurb`, `badge`, `pricePrefix`, `priceNote`,
+  `features` (reprises des anciennes `pricing.plans[].features`). Noms = Essentiel /
+  Professionnel / Premium (au lieu de Une page / Multi-pages / Sur-mesure).
+- `exemple-devis` : lien `/#estimation` → `/#tarifs`.
+
+### Alternance de fonds — recalage (9 sections, alternance stricte)
+merged tarifs → `bg-alt` ; `#solutions` → ivoire (retiré) ; `#faq` → `bg-alt` (ajouté) ;
+`#contact` → ivoire (retiré). Résultat : pour-qui I · process A · réalisation I · resultats A ·
+prestations I · **tarifs A** · solutions I · faq A · contact I · footer (foncé).
+`.contact-info` reste en carte blanche (posée la session d'avant) — OK sur ivoire.
+
+### Vérifié
+`node build.mjs` OK, `vercel.json` régénéré, **0 erreur console/CSP sur 9 pages**.
+Configurateur testé (Essentiel 990 + 2 options 390+390 = 1 770 ✓, récap live ✓).
+Captures 1440 / 820 / 390 de la section fusionnée + sections déplacées.
+NB : la capture pleine-page mobile Puppeteer montre un artefact de « duplication »
+(bug de stitching connu avec le canvas soie animé) — le rendu réel est bon (captures par section).
+
+---
+
+Date : 2026-09-02 (suite 6, 1re partie) — revue design + passe de cohérence
+
+### Revue « yeux de webdesigner » (demandée par Arthur)
+Audit complet desktop + mobile des 12 sections. Verdict : DA forte, quelques
+incohérences de système + bugs d'affichage sur les moments « vitrine ». Arthur a
+choisi le périmètre **bugs + cohérence** (points 4 à 8), titres **tout à gauche**,
+bloc témoignage **redessiné sans citation**.
+
+### Corrigé cette session (`build.mjs`, `styles/main.css`, `content/site-content.mjs`)
+- **Bug — chiffres illisibles sur fond vert.** `.proof-gauge-score` (« 98 ») et
+  `.config-total` (« 2 490 € ») étaient des `<p>` sans `color` → la règle de base
+  `p { color: var(--color-text-soft) }` gagnait sur le crème hérité (contraste ~1.5:1).
+  Ajout de `color: var(--on-dark)` sur les deux. Le prix des cartes Tarifs (déjà un
+  `<div>` avec `color`) n'était pas touché.
+- **Bug — placeholder témoignage.** `.testimonial-frame` « Témoignage client à
+  intégrer » remplacé par un encart `.case-study-facts` « Ce qui a été livré »
+  (4 lignes, marqueur `—`, même langage que `.pricing-features`). Contenu :
+  `content.caseStudy.deliverables` (éditable). Équilibre la colonne droite (point 8).
+- **Bug — bordures boutons fantômes** quasi invisibles : `.btn-ghost`
+  `rgba(26,25,23,0.10)` → `0.28` ; `.btn-ghost--invert` `0.3` → `0.45`.
+- **Cohérence #4 — titres de section tous à gauche.** `section-head--center`
+  retiré des 7 sections (+ règle CSS supprimée). Centré réservé au hero.
+  `.section-head` : `max-width` 640→660, `text-wrap: balance` sur h2, marge
+  auto pour le `<p>` d'intro sous le titre.
+- **Cohérence #5 — numérotation ramenée à 1 langage.** `.prestation-item .mark`
+  généralisé en `.mark` (pastille cercle contour). Adopté par : pour-qui
+  (`.index` supprimé), prestations, étapes des pages Solutions (`.step .n` + filet
+  `border-top` supprimés). Le rail « méthode » de l'accueil garde sa variante
+  animée (même cercle au repos → se remplit en vert au scroll).
+- **Cohérence #6 — alternance de fonds.** `--color-bg-alt` `#F3EEE4` → `#F1E9DA`
+  (plus lisible). `#contact` passe en `bg-alt` → alternance stricte
+  ivoire/beige de pour-qui à contact. `.contact-info` (carte « Mes coordonnées »)
+  passe de `bg-alt` à `--color-surface` + bordure + `shadow-sm` (sinon invisible
+  sur la section beige ; s'aligne aussi avec les inputs blancs).
+- **Cohérence #7 — hiérarchie de texte sur vert.** 3 tokens : `--on-dark` (plein),
+  `--on-dark-soft` (0.82), `--on-dark-mute` (0.64). Les labels/notes/légendes
+  ≤ 0.6 des panneaux (proof, config, pricing, case-study) remontés sur ces tokens.
+- **Cohérence #8 — vide sous les panneaux verts.** Jauge « preuve chiffrée » :
+  la colonne étirée cale le contenu en haut (`justify-content: flex-start`) et
+  ancre le CTA en bas (`margin-top: auto`, ≥900px). Case study : réglé via le
+  nouvel encart livrables.
+- Vérifié : `node build.mjs` OK, `vercel.json` régénéré, **0 erreur console/CSP**
+  sur `/`, `/videos-ia`, `/mentions-legales`, `/exemple-devis`. Captures desktop
+  (1440) + mobile (390) des sections modifiées.
+
+### Reste à trancher (Arthur)
+- **Email `@hotmail.com`** dans le bloc contact + footer : contre-signal sur un
+  site « présence pro crédible ». Alias / Gmail en attendant le domaine ?
+- Points polish non traités (hors périmètre choisi) : eyebrow hero qui casse en
+  mobile, CTA des 3 cartes tarifs à hauteurs différentes, FAQ pleine largeur,
+  libellé « Demander un devis » répété 6×, « Gérer les cookies » seul lien souligné.
+
+---
+
+## (archive) suite 5
 Deux nouvelles sections sur l'accueil (maquettes 5c et 6a) + page `/exemple-devis`.
 **À valider avant push.**
 

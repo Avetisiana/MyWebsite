@@ -112,61 +112,13 @@ export const content = {
     responseLabel: 'La réponse',
     response: "Un site multi-pages à l'identité soignée, un espace d'administration permettant au cabinet de gérer lui-même ses contenus, une attention particulière portée à la conformité déontologique propre à la profession d'avocat, et un référencement local pensé pour Angoulême et la Charente.",
     link: { label: 'Voir le site en ligne', href: 'https://laperonnie-avocat.fr/' },
-    testimonialPlaceholder: 'Témoignage client à intégrer',
-  },
-
-  pricing: {
-    eyebrow: 'Tarifs',
-    title: 'Des formules claires',
-    plans: [
-      {
-        name: 'Essentiel',
-        tabLabel: 'Essentiel',
-        price: '990 €',
-        note: null,
-        tagline: 'Idéal pour une présence simple et efficace.',
-        features: [
-          'Site une page (landing)',
-          'Formulaire de contact',
-          '100 % adapté mobile',
-          'Mise en ligne incluse',
-          '1h de prise en main',
-        ],
-        featured: false,
-      },
-      {
-        name: 'Professionnel',
-        tabLabel: 'Pro',
-        price: '2 490 €',
-        note: null,
-        tagline: 'La formule la plus complète pour une activité qui se développe.',
-        features: [
-          'Site multi-pages (jusqu’à 5-6 pages)',
-          'Espace d’administration pour gérer son contenu',
-          'Blog / actualités',
-          'Formulaire qualifié',
-          'Référencement local de base',
-          '2h de formation',
-        ],
-        featured: true,
-        badge: 'Le plus choisi',
-      },
-      {
-        name: 'Premium',
-        tabLabel: 'Premium',
-        pricePrefix: 'à partir de',
-        price: '4 490 €',
-        note: 'Sur devis',
-        tagline: 'Suivi et accompagnement pour un projet complet sur-mesure.',
-        features: [
-          'Site complet sur-mesure',
-          'Fonctionnalités avancées',
-          'Suivi et accompagnement',
-        ],
-        featured: false,
-      },
+    deliverablesLabel: 'Ce qui a été livré',
+    deliverables: [
+      'Site multi-pages sur-mesure',
+      "Espace d'administration autonome",
+      'Conformité déontologique (profession d’avocat)',
+      'Référencement local — Angoulême & Charente',
     ],
-    footnote: 'Maintenance et mises à jour disponibles en option à 49 €/mois.',
   },
 
   process: {
@@ -225,32 +177,55 @@ export const content = {
     cta: { label: 'Demander un devis', href: '/#contact' },
   },
 
-  // Configurateur de devis (6a). Montants à valider / ajuster par Arthur.
-  // Le bouton « Recevoir ce devis détaillé » pré-remplit le formulaire de contact (#contact)
-  // — pas de 2ᵉ formulaire. `exampleDevisUrl` : mettre l'URL du PDF d'exemple quand il existe.
+  // Section « Tarifs » (fusion de l'ancienne grille de tarifs + du configurateur).
+  // On choisit une formule (avec ce qu'elle contient), on ajoute des options, le total
+  // se calcule en direct. « Recevoir ce devis détaillé » pré-remplit le formulaire de
+  // contact (#contact) — pas de 2ᵉ formulaire. Montants à valider / ajuster par Arthur.
   configurator: {
-    eyebrow: 'Estimation immédiate',
+    eyebrow: 'Tarifs',
     title: 'Composez votre projet, le budget suit',
-    intro: 'Pas de « nous contacter pour un tarif ». Vous voyez immédiatement l’ordre de grandeur, et le devis détaillé arrive derrière.',
-    baseLabel: 'Type de site',
+    intro: 'Pas de « nous contacter pour un tarif ». Vous choisissez une formule, vous ajoutez ce dont vous avez besoin, et le budget s’affiche — le devis détaillé arrive derrière.',
+    baseLabel: 'Votre formule',
     bases: [
       {
-        id: 'essentiel', name: 'Une page', price: 990, weeks: 2,
+        id: 'essentiel', name: 'Essentiel', price: 990, weeks: 2,
         contactType: 'Site vitrine une page',
-        includes: ['formulaire de contact', 'affichage mobile', 'mise en ligne', '1 h de prise en main'],
+        blurb: 'Pour une présence simple et efficace.',
+        features: [
+          'Site une page (landing)',
+          'Formulaire de contact',
+          '100 % adapté mobile',
+          'Mise en ligne incluse',
+          '1 h de prise en main',
+        ],
       },
       {
-        id: 'pro', name: 'Multi-pages', price: 2490, weeks: 4, recommended: true,
+        id: 'pro', name: 'Professionnel', price: 2490, weeks: 4, recommended: true,
+        badge: 'Le plus choisi',
         contactType: 'Site multi-pages',
-        includes: ['5-6 pages', 'espace d’administration', 'blog', 'formulaire qualifié', 'référencement local', '2 h de formation'],
+        blurb: 'La formule la plus complète pour une activité qui se développe.',
+        features: [
+          'Site multi-pages (jusqu’à 5-6 pages)',
+          'Espace d’administration pour gérer son contenu',
+          'Blog / actualités',
+          'Formulaire qualifié',
+          'Référencement local de base',
+          '2 h de formation',
+        ],
       },
       {
-        id: 'premium', name: 'Sur-mesure', price: 4490, weeks: 6,
+        id: 'premium', name: 'Premium', price: 4490, weeks: 6,
+        pricePrefix: 'à partir de', priceNote: 'Sur devis',
         contactType: 'Site multi-pages',
-        includes: ['périmètre défini ensemble', 'fonctionnalités avancées', 'suivi & accompagnement'],
+        blurb: 'Suivi et accompagnement pour un projet complet sur-mesure.',
+        features: [
+          'Site complet sur-mesure',
+          'Fonctionnalités avancées',
+          'Suivi et accompagnement',
+        ],
       },
     ],
-    optionsLabel: 'Options',
+    optionsLabel: 'Ajoutez des options',
     options: [
       { id: 'redaction', name: 'Rédaction des textes', price: 390 },
       { id: 'photos', name: 'Optimisation des photos', price: 190 },
@@ -265,7 +240,6 @@ export const content = {
       note: 'TTC, hors maintenance.',
       weeksSuffix: ' semaines estimées',
       basePrefix: 'Formule',
-      includesPrefix: 'comprend',
       cta: 'Recevoir ce devis détaillé',
       exampleLabel: 'Voir un exemple de devis',
       exampleDevisUrl: '/exemple-devis',

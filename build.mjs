@@ -38,7 +38,7 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.pricing-tabs{display:none!important}.pricing-panel{display:block!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}.proof-bar-fill{transform:none}.config-recap,.config-panel-includes,.config-hint{display:none}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}.proof-bar-fill{transform:none}.config-recap,.config-hint{display:none}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
@@ -99,11 +99,6 @@ function heroTitleHTML() {
   // Le JS repart sur rotList[0] pour lancer le carrousel.
   const finalWord = rotList[rotList.length - 1];
   return `${staticWords} <span class="ht-w ht-rot" aria-hidden="true"><span class="ht-rot-w" data-rot-words="${rotList.join('|')}">${finalWord}</span></span>`;
-}
-
-function parsePriceEUR(str) {
-  const digits = str.replace(/[^\d]/g, '');
-  return digits ? Number(digits) : undefined;
 }
 
 // 2490 -> "2 490" (espace insécable fine comme séparateur de milliers, convention FR)
@@ -455,11 +450,9 @@ function scripts() {
       var cTotal = config.querySelector('[data-config-total]');
       var cWeeks = config.querySelector('[data-config-weeks]');
       var cRecap = config.querySelector('[data-config-recap]');
-      var cInc = config.querySelector('[data-config-includes]');
       var cCta = config.querySelector('[data-config-cta]');
       var cLead = config.getAttribute('data-lead') || '';
       var cBasePrefix = config.getAttribute('data-base-prefix') || '';
-      var cIncPrefix = config.getAttribute('data-includes-prefix') || '';
       var cWeeksSuffix = config.getAttribute('data-weeks-suffix') || '';
       var cShown = parseFloat((cTotal && cTotal.textContent || '0').replace(/\\D/g, '')) || 0;
       var cState = { formule: '', type: '', total: 0, weeks: 0, opts: [], recurring: 0 };
@@ -517,7 +510,6 @@ function scripts() {
         weeks += Math.ceil(extra / 2);
         if (cWeeks) cWeeks.textContent = String(weeks || '\\u2014');
         cAnimate(total);
-        if (cInc && base) cInc.textContent = base.value + ' ' + cIncPrefix + ' : ' + (base.getAttribute('data-includes') || '') + '.';
 
         cState = {
           formule: base ? base.value : '',
@@ -611,33 +603,6 @@ function scripts() {
           setTimeout(htBegin, htEnd + 500);
         }
       }
-    }
-
-    // tarifs — onglets Essentiel / Pro / Premium
-    var pTabs = document.querySelector('.pricing-tabs');
-    if (pTabs) {
-      var ptabs = Array.prototype.slice.call(pTabs.querySelectorAll('.pricing-tab'));
-      var ppanels = Array.prototype.slice.call(document.querySelectorAll('.pricing-panel'));
-      var pSelect = function (i, focus) {
-        ptabs.forEach(function (t, k) {
-          var on = k === i;
-          t.classList.toggle('is-active', on);
-          t.setAttribute('aria-selected', on ? 'true' : 'false');
-          t.tabIndex = on ? 0 : -1;
-          if (ppanels[k]) ppanels[k].classList.toggle('is-active', on);
-        });
-        if (focus && ptabs[i]) ptabs[i].focus();
-      };
-      ptabs.forEach(function (t, i) {
-        t.addEventListener('click', function () { pSelect(i); });
-        t.addEventListener('keydown', function (e) {
-          var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1
-                : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
-          if (!d) return;
-          e.preventDefault();
-          pSelect((i + d + ptabs.length) % ptabs.length, true);
-        });
-      });
     }
 
     // cookie consent — bannière affichée seulement si Analytics est réellement configuré
@@ -738,14 +703,14 @@ function heroSection() {
 function audiencesSection() {
   const a = content.audiences;
   const cards = a.items.map((it, i) => `<div class="card audience-card">
-        <span class="index">0${i + 1}</span>
+        <span class="mark">0${i + 1}</span>
         <h3>${it.label}</h3>
         <p class="detail">${it.detail}</p>
         <p class="need">${it.need}</p>
       </div>`).join('\n      ');
   return `<section id="pour-qui">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${a.eyebrow}</p>
         <h2>${a.title}</h2>
       </div>
@@ -782,7 +747,7 @@ function caseStudySection() {
   const c = content.caseStudy;
   return `<section id="realisation">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${c.sectionEyebrow}</p>
         <h2>${c.sectionTitle}</h2>
       </div>
@@ -819,63 +784,16 @@ function caseStudySection() {
                     width="1200" height="750" loading="lazy" decoding="async">
                 </picture>
               </div>
-              <div class="testimonial-frame">“${c.testimonialPlaceholder}”</div>
+              <div class="case-study-facts">
+                <p class="label">${c.deliverablesLabel}</p>
+                <ul>
+                  ${c.deliverables.map(d => `<li>${d}</li>`).join('\n                  ')}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>`;
-}
-
-function pricingSection() {
-  const p = content.pricing;
-  const defaultIdx = Math.max(0, p.plans.findIndex(pl => pl.featured));
-
-  const tabs = p.plans.map((plan, i) => {
-    const on = i === defaultIdx;
-    const label = plan.tabLabel || plan.name;
-    const star = plan.featured ? '<span class="pricing-tab-star" aria-hidden="true">★</span>' : '';
-    const aria = plan.featured ? ` aria-label="${label} — la formule la plus choisie"` : '';
-    return `<button type="button" role="tab" id="ptab-${i}" class="pricing-tab${on ? ' is-active' : ''}"
-          aria-selected="${on ? 'true' : 'false'}" aria-controls="ppanel-${i}"${on ? '' : ' tabindex="-1"'}${aria}>${star}${label}</button>`;
-  }).join('\n        ');
-
-  const panels = p.plans.map((plan, i) => {
-    const on = i === defaultIdx;
-    const price = `${plan.pricePrefix ? `<span class="price-prefix">${plan.pricePrefix}</span>` : ''}${plan.price}`;
-    return `<div role="tabpanel" id="ppanel-${i}" class="pricing-panel${on ? ' is-active' : ''}${plan.featured ? ' pricing-panel--featured' : ''}" aria-labelledby="ptab-${i}">
-          <div class="pricing-card">
-            <div class="pricing-card-head">
-              <span class="pricing-card-name">${plan.name}</span>
-              ${plan.badge ? `<span class="pricing-badge">${plan.badge}</span>` : ''}
-            </div>
-            <div class="pricing-price">${price}</div>
-            ${plan.note ? `<p class="pricing-note">${plan.note}</p>` : ''}
-            <hr class="pricing-rule">
-            <ul class="pricing-features">
-              ${plan.features.map(f => `<li>${f}</li>`).join('\n              ')}
-            </ul>
-            <a href="/#contact" class="btn pricing-cta">${content.nav.cta}</a>
-          </div>
-        </div>`;
-  }).join('\n        ');
-
-  return `<section id="tarifs" class="bg-alt">
-    <div class="container">
-      <div class="section-head section-head--center reveal">
-        <p class="eyebrow">${p.eyebrow}</p>
-        <h2>${p.title}</h2>
-      </div>
-      <div class="pricing reveal">
-        <div class="pricing-tabs" role="tablist" aria-label="Formules">
-        ${tabs}
-        </div>
-        <div class="pricing-panels">
-        ${panels}
-        </div>
-      </div>
-      <p class="pricing-footnote reveal">${p.footnote}</p>
     </div>
   </section>`;
 }
@@ -891,7 +809,7 @@ function processSection() {
         </li>`).join('\n        ');
   return `<section id="comment-ca-se-passe" class="bg-alt">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
         <h2>${p.title}</h2>
       </div>
@@ -908,9 +826,9 @@ function faqSection() {
         <summary>${it.q}<span class="plus"></span></summary>
         <p>${it.a}</p>
       </details>`).join('\n      ');
-  return `<section id="faq">
+  return `<section id="faq" class="bg-alt">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${f.eyebrow}</p>
         <h2>${f.title}</h2>
       </div>
@@ -928,9 +846,9 @@ function digitalSolutionsSection() {
         <p>${it.cardDesc}</p>
         <a href="/${it.slug}" class="link-arrow">En savoir plus →</a>
       </div>`).join('\n      ');
-  return `<section id="solutions" class="bg-alt">
+  return `<section id="solutions">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${s.eyebrow}</p>
         <h2>${s.title}</h2>
       </div>
@@ -1004,11 +922,21 @@ function configuratorSection() {
   const pn = cf.panel;
   const def = cf.bases.find(b => b.recommended) || cf.bases[0];
 
-  const bases = cf.bases.map(b => `<label class="config-choice config-choice--base">
-            <input type="radio" name="config-formule" value="${attr(b.name)}" data-price="${b.price}" data-weeks="${b.weeks}" data-type="${attr(b.contactType)}" data-includes="${attr(b.includes.join(', '))}"${b === def ? ' checked' : ''}>
-            <span class="config-choice-name">${b.name}</span>
-            <span class="config-choice-price">${fmtEUR(b.price)} €</span>
-          </label>`).join('\n          ');
+  const bases = cf.bases.map(b => {
+    const price = `${b.pricePrefix ? `<span class="config-formule-prefix">${b.pricePrefix}</span>` : ''}${fmtEUR(b.price)} €${b.priceNote ? `<span class="config-formule-pricenote">${b.priceNote}</span>` : ''}`;
+    return `<label class="config-formule${b.recommended ? ' config-formule--reco' : ''}">
+            <input type="radio" name="config-formule" value="${attr(b.name)}" data-price="${b.price}" data-weeks="${b.weeks}" data-type="${attr(b.contactType)}"${b === def ? ' checked' : ''}>
+            <span class="config-formule-top">
+              <span class="config-formule-name">${b.name}</span>
+              ${b.badge ? `<span class="config-formule-badge">${b.badge}</span>` : ''}
+            </span>
+            <span class="config-formule-price">${price}</span>
+            <span class="config-formule-blurb">${b.blurb}</span>
+            <span class="config-formule-list">
+              ${b.features.map(f => `<span class="config-formule-feat">${f}</span>`).join('\n              ')}
+            </span>
+          </label>`;
+  }).join('\n          ');
 
   const allOpts = cf.options.concat([{ ...cf.maintenance, recurring: true }]);
   const opts = allOpts.map(o => `<label class="config-choice config-choice--opt${o.recurring ? ' config-choice--recurring' : ''}">
@@ -1021,25 +949,25 @@ function configuratorSection() {
     ? `<a href="${pn.exampleDevisUrl}" class="config-example">${pn.exampleLabel} →</a>`
     : '';
 
-  return `<section id="estimation">
+  return `<section id="tarifs" class="bg-alt">
     <div class="container">
-      <div class="section-head section-head--center reveal">
+      <div class="section-head reveal">
         <p class="eyebrow">${cf.eyebrow}</p>
         <h2>${cf.title}</h2>
         <p>${cf.intro}</p>
       </div>
-      <div class="config" data-config
+      <div class="config reveal" data-config
         data-lead="${attr(cf.prefillLead)}"
         data-base-prefix="${attr(pn.basePrefix)}"
-        data-includes-prefix="${attr(pn.includesPrefix)}"
         data-weeks-suffix="${attr(pn.weeksSuffix)}">
-        <div class="config-controls">
-          <div class="config-group">
-            <p class="config-group-label">${cf.baseLabel}</p>
-            <div class="config-bases">
+        <div class="config-formules">
+          <p class="config-group-label">${cf.baseLabel}</p>
+          <div class="config-formules-grid">
           ${bases}
-            </div>
           </div>
+        </div>
+
+        <div class="config-controls">
           <div class="config-group">
             <p class="config-group-label">${cf.optionsLabel}</p>
             <div class="config-opts">
@@ -1054,7 +982,6 @@ function configuratorSection() {
           <p class="config-total"><span data-config-total>${fmtEUR(def.price)}</span><span class="config-total-cur">€</span></p>
           <p class="config-panel-note">${pn.note} <span data-config-weeks>${def.weeks}</span>${pn.weeksSuffix}.</p>
           <div class="config-recap" data-config-recap></div>
-          <p class="config-panel-includes" data-config-includes></p>
           <a href="/#contact" class="btn btn-invert config-cta" data-config-cta>${pn.cta}</a>
           ${exampleLink}
           <p class="config-reassurance">${pn.reassurance}</p>
@@ -1168,12 +1095,12 @@ function buildIndex() {
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Formules de création de site internet',
-      itemListElement: content.pricing.plans.map(plan => ({
+      itemListElement: content.configurator.bases.map(base => ({
         '@type': 'Offer',
-        name: plan.name,
-        description: plan.tagline,
+        name: base.name,
+        description: base.blurb,
         priceCurrency: 'EUR',
-        price: parsePriceEUR(plan.price),
+        price: base.price,
       })),
     },
   };
@@ -1195,7 +1122,6 @@ function buildIndex() {
     caseStudySection(),
     proofSection(),
     prestationsSection(),
-    pricingSection(),
     configuratorSection(),
     digitalSolutionsSection(),
     faqSection(),
@@ -1215,7 +1141,7 @@ function buildSolutionPage(item) {
   const pagePath = `/${item.slug}`;
   const audienceItems = item.audience.map(a => `<li>${a}</li>`).join('\n            ');
   const steps = item.steps.map(s => `<div class="step">
-          <span class="n">${s.n}</span>
+          <span class="mark">${s.n}</span>
           <h3>${s.title}</h3>
           <p>${s.desc}</p>
         </div>`).join('\n        ');
@@ -1459,7 +1385,7 @@ function buildExempleDevis() {
         </ul>
       </div>
 
-      <p class="devis-cta-line"><a href="/#estimation" class="btn btn-ghost">Estimer mon projet</a> <a href="/#contact" class="btn btn-primary">Demander mon devis</a></p>
+      <p class="devis-cta-line"><a href="/#tarifs" class="btn btn-ghost">Estimer mon projet</a> <a href="/#contact" class="btn btn-primary">Demander mon devis</a></p>
     </div>
   </div>`;
   const title = `Exemple de devis — ${content.nav.logo}`;
