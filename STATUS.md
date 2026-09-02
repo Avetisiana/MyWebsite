@@ -6,11 +6,19 @@ validées par Arthur et poussées sur `main`.
 
 ### Piste écartée
 Exploration de 3 directions visuelles (Éditoriale / Atmosphérique / Graphique) faite
-dans un canvas Claude Design — **Arthur n'est pas fan**. Prochaine étape convenue :
-itérer en direct sur localhost (changement ciblé → rebuild → capture → garde ou
-`git restore`), pas de maquettes. Point de départ pressenti : passe transversale à
-faible risque (profondeur des blocs verts, soie toujours animée + vrai fallback,
-couleur chaude en touches, resserrer les sections vides).
+dans un canvas Claude Design — **Arthur n'est pas fan**. Méthode convenue : itérer en
+direct sur localhost (changement ciblé → rebuild → capture → garde ou `git revert`),
+un pas à la fois. Idées A + B gardées en tête pour la suite.
+
+### Passe transversale « moins fade » — pas à pas (commits locaux, non poussés)
+- **Étape 1 — profondeur des blocs verts** (commit local). `.case-study`,
+  `.proof-gauge`, `.config-panel`, `.footer` : `background` plat → + 2 nappes
+  `radial-gradient` (claire haut-gauche, creux sombre bas-droite) + `box-shadow:
+  inset` filet lumineux. Pur CSS non animé, 0 coût perf. La couleur de fond
+  d'origine reste posée (repli si les gradients échouent). Texte toujours lisible,
+  0 erreur console/CSP, rien cassé desktop/mobile.
+  À faire ensuite : soie toujours animée + vrai fallback · resserrer les sections
+  vides · couleur chaude en touches (à valider — 2ᵉ couleur).
 
 ---
 

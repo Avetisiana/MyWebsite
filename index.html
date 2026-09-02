@@ -1120,6 +1120,19 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 }
 @media (min-width: 920px) { .config-panel { position: sticky; top: var(--space-5); align-self: start; } }
 .config-panel .config-panel-label { color: var(--on-dark-mute); margin-bottom: 0.2em; }
+
+/* Profondeur des surfaces vert foncé — nappe claire en haut-gauche, creux sombre
+   en bas-droite, filet lumineux au ras du bord. Pur CSS, non animé (0 coût perf).
+   La couleur de fond (var(--color-accent)) reste posée par chaque règle : si les
+   gradients ne se peignent pas, le vert plat d'origine subsiste. */
+.case-study,
+.proof-gauge,
+.config-panel {
+  background-image:
+    radial-gradient(88% 78% at 12% 0%, rgba(70, 112, 92, 0.5), transparent 56%),
+    radial-gradient(100% 100% at 100% 100%, rgba(8, 18, 14, 0.55), transparent 58%);
+  box-shadow: inset 0 1px 0 rgba(250, 246, 239, 0.06);
+}
 .config-total { font-family: var(--font-display); font-weight: 700; line-height: 1; display: flex; align-items: baseline; gap: 0.18em; color: var(--on-dark); }
 .config-total [data-config-total] { font-size: clamp(2.2rem, 4vw + 1rem, 2.9rem); letter-spacing: -0.01em; }
 .config-total-cur { font-size: 1.3rem; color: var(--on-dark-mute); }
@@ -1202,7 +1215,17 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 .contact-info-row a:hover { color: var(--color-accent); }
 
 /* ---------- Footer ---------- */
-.footer { background: var(--color-accent-dark); color: rgba(250,246,239,0.85); padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h)); position: relative; overflow: hidden; }
+.footer {
+  background-color: var(--color-accent-dark);
+  background-image:
+    radial-gradient(85% 65% at 88% 0%, rgba(44, 82, 69, 0.42), transparent 62%),
+    radial-gradient(70% 85% at 2% 100%, rgba(4, 12, 9, 0.5), transparent 66%);
+  box-shadow: inset 0 1px 0 rgba(250, 246, 239, 0.05);
+  color: rgba(250,246,239,0.85);
+  padding: var(--space-6) 0 calc(var(--space-4) + var(--mobile-cta-h));
+  position: relative;
+  overflow: hidden;
+}
 .footer .container { position: relative; z-index: 1; }
 @media (min-width: 768px) { .footer { padding-bottom: var(--space-4); } }
 .footer .container { display: flex; flex-direction: column; gap: var(--space-5); }
