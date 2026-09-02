@@ -842,6 +842,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .case-study .eyebrow::before { background: rgba(250,246,239,0.5); }
 .case-study h3 { color: var(--color-bg); margin-top: var(--space-2); font-size: clamp(1.5rem, 2vw + 1rem, 2rem); }
 .case-study .subtitle { color: var(--on-dark-soft); font-size: 1.05rem; margin-top: 0.3em; font-family: var(--font-display); font-style: italic; }
+.case-study-duration { display: flex; flex-wrap: wrap; gap: 0.45em 0.8em; margin-top: var(--space-2); font-size: 0.76rem; color: var(--on-dark-soft); }
+.case-study-duration span { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-dark-mute); }
 .case-study-link { flex: none; }
 .case-study-devices { position: relative; margin: var(--space-5) 0 clamp(4.5rem, 8vw, 7rem); padding-right: clamp(2.6rem, 9vw, 7rem); }
 .case-study-desktop {
@@ -1658,6 +1660,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
               <p class="eyebrow">Étude de cas</p>
               <h3>Cabinet Laperonnie</h3>
               <p class="subtitle">Avocat à Angoulême</p>
+              <p class="case-study-duration"><span>Durée du projet</span>4 à 5 semaines</p>
             </div>
             <a href="https://laperonnie-avocat.fr/" class="btn btn-invert case-study-link" target="_blank" rel="noopener">Découvrir le site du cabinet <span aria-hidden="true">↗</span></a>
           </div>
@@ -1812,18 +1815,17 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
       <div class="config reveal" data-config
         data-lead="Bonjour, je souhaite un devis pour :"
-        data-base-prefix="Formule"
-        data-weeks-suffix=" semaines estimées">
+        data-base-prefix="Formule">
         <div class="config-formules">
           <p class="config-group-label">Votre formule</p>
           <div class="config-formules-grid">
           <label class="config-formule">
-            <input type="radio" name="config-formule" value="Essentiel" data-price="990" data-weeks="2" data-type="Site vitrine une page">
+            <input type="radio" name="config-formule" value="Essentiel" data-price="1290" data-timeline="2 semaines" data-type="Site vitrine une page">
             <span class="config-formule-top">
               <span class="config-formule-name">Essentiel</span>
               
             </span>
-            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>990 €</span>
+            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>1 290 €</span>
             <span class="config-formule-blurb">Pour une présence simple et efficace.</span>
             <span class="config-formule-list">
               <span class="config-formule-feat">Site une page (landing)</span>
@@ -1834,12 +1836,12 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             </span>
           </label>
           <label class="config-formule config-formule--reco">
-            <input type="radio" name="config-formule" value="Professionnel" data-price="2490" data-weeks="4" data-type="Site multi-pages" checked>
+            <input type="radio" name="config-formule" value="Professionnel" data-price="2990" data-timeline="3 semaines" data-type="Site multi-pages" checked>
             <span class="config-formule-top">
               <span class="config-formule-name">Professionnel</span>
               <span class="config-formule-badge">Recommandée</span>
             </span>
-            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>2 490 €</span>
+            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>2 990 €</span>
             <span class="config-formule-blurb">La formule la plus complète pour une activité qui se développe.</span>
             <span class="config-formule-list">
               <span class="config-formule-feat">Site multi-pages (jusqu’à 5-6 pages)</span>
@@ -1850,12 +1852,12 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             </span>
           </label>
           <label class="config-formule">
-            <input type="radio" name="config-formule" value="Premium" data-price="4490" data-weeks="6" data-type="Site multi-pages">
+            <input type="radio" name="config-formule" value="Premium" data-price="5490" data-timeline="4 semaines ou plus" data-type="Site multi-pages">
             <span class="config-formule-top">
               <span class="config-formule-name">Premium</span>
               
             </span>
-            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>4 490 €</span>
+            <span class="config-formule-price"><span class="config-formule-prefix">à partir de</span>5 490 €</span>
             <span class="config-formule-blurb">Suivi et accompagnement pour un projet complet sur-mesure.</span>
             <span class="config-formule-list">
               <span class="config-formule-feat">Site complet sur-mesure</span>
@@ -1907,9 +1909,9 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="config-choice-price">+ 490 €</span>
           </label>
           <label class="config-choice config-choice--opt config-choice--recurring">
-            <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance &amp; hébergement" data-recurring="49">
+            <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance &amp; hébergement" data-recurring="59">
             <span class="config-choice-name">Maintenance & hébergement</span>
-            <span class="config-choice-price">+ 49 €/mois</span>
+            <span class="config-choice-price">+ 59 €/mois</span>
           </label>
             </div>
           </div>
@@ -1918,8 +1920,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 
         <aside class="config-panel" aria-live="polite">
           <p class="config-panel-label">Estimation indicative</p>
-          <p class="config-total"><span data-config-total>2 490</span><span class="config-total-cur">€</span></p>
-          <p class="config-panel-note">Hors option maintenance & hébergement. <span data-config-weeks>4</span> semaines estimées.</p>
+          <p class="config-total"><span data-config-total>2 990</span><span class="config-total-cur">€</span></p>
+          <p class="config-panel-note">Hors option maintenance & hébergement. Délai indicatif : <span data-config-weeks>3 semaines</span>.</p>
           <div class="config-recap" data-config-recap></div>
           <a href="/#contact" class="btn btn-invert config-cta" data-config-cta>Demander une estimation personnalisée</a>
           <a href="/exemple-devis" class="config-example">Voir un exemple de devis →</a>
@@ -2326,9 +2328,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       var cCta = config.querySelector('[data-config-cta]');
       var cLead = config.getAttribute('data-lead') || '';
       var cBasePrefix = config.getAttribute('data-base-prefix') || '';
-      var cWeeksSuffix = config.getAttribute('data-weeks-suffix') || '';
       var cShown = parseFloat((cTotal && cTotal.textContent || '0').replace(/\D/g, '')) || 0;
-      var cState = { formule: '', type: '', total: 0, weeks: 0, opts: [], recurring: 0 };
+      var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
       function cAnimate(target) {
@@ -2346,11 +2347,11 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, weeks = 0, recurring = 0, extra = 0, opts = [];
+        var total = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
           total = parseFloat(base.getAttribute('data-price'));
-          weeks = parseFloat(base.getAttribute('data-weeks'));
+          timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
             brow.className = 'config-recap-row config-recap-row--base';
@@ -2367,7 +2368,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \u20ac/mois)'); }
           else {
             var pr = parseFloat(o.getAttribute('data-price')) || 0;
-            total += pr; extra++;
+            total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \u20ac)');
           }
           if (cRecap) {
@@ -2380,14 +2381,13 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             cRecap.appendChild(row);
           }
         });
-        weeks += Math.ceil(extra / 2);
-        if (cWeeks) cWeeks.textContent = String(weeks || '\u2014');
+        if (cWeeks) cWeeks.textContent = timeline || '\u2014';
         cAnimate(total);
 
         cState = {
           formule: base ? base.value : '',
           type: base ? base.getAttribute('data-type') : '',
-          total: total, weeks: weeks, opts: opts, recurring: recurring
+          total: total, timeline: timeline, opts: opts, recurring: recurring
         };
       }
 
@@ -2402,7 +2402,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
         cState.opts.forEach(function (o) { lines.push('\u2022 Option : ' + o); });
         lines.push('');
         lines.push('Total estim\u00e9 : ' + frCount(cState.total) + ' \u20ac' + (cState.recurring ? (' + ' + cState.recurring + ' \u20ac/mois') : ''));
-        lines.push('D\u00e9lai estim\u00e9 : ' + cState.weeks + ' semaines');
+        lines.push('D\u00e9lai estim\u00e9 : ' + cState.timeline);
         var msg = lines.join('\n');
         var mEl = document.getElementById('contact-message');
         var tEl = document.getElementById('contact-project-type');

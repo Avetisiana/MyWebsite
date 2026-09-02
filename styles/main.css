@@ -791,6 +791,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .case-study .eyebrow::before { background: rgba(250,246,239,0.5); }
 .case-study h3 { color: var(--color-bg); margin-top: var(--space-2); font-size: clamp(1.5rem, 2vw + 1rem, 2rem); }
 .case-study .subtitle { color: var(--on-dark-soft); font-size: 1.05rem; margin-top: 0.3em; font-family: var(--font-display); font-style: italic; }
+.case-study-duration { display: flex; flex-wrap: wrap; gap: 0.45em 0.8em; margin-top: var(--space-2); font-size: 0.76rem; color: var(--on-dark-soft); }
+.case-study-duration span { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-dark-mute); }
 .case-study-link { flex: none; }
 .case-study-devices { position: relative; margin: var(--space-5) 0 clamp(4.5rem, 8vw, 7rem); padding-right: clamp(2.6rem, 9vw, 7rem); }
 .case-study-desktop {

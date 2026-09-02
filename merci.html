@@ -841,6 +841,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .case-study .eyebrow::before { background: rgba(250,246,239,0.5); }
 .case-study h3 { color: var(--color-bg); margin-top: var(--space-2); font-size: clamp(1.5rem, 2vw + 1rem, 2rem); }
 .case-study .subtitle { color: var(--on-dark-soft); font-size: 1.05rem; margin-top: 0.3em; font-family: var(--font-display); font-style: italic; }
+.case-study-duration { display: flex; flex-wrap: wrap; gap: 0.45em 0.8em; margin-top: var(--space-2); font-size: 0.76rem; color: var(--on-dark-soft); }
+.case-study-duration span { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-dark-mute); }
 .case-study-link { flex: none; }
 .case-study-devices { position: relative; margin: var(--space-5) 0 clamp(4.5rem, 8vw, 7rem); padding-right: clamp(2.6rem, 9vw, 7rem); }
 .case-study-desktop {
@@ -1819,9 +1821,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       var cCta = config.querySelector('[data-config-cta]');
       var cLead = config.getAttribute('data-lead') || '';
       var cBasePrefix = config.getAttribute('data-base-prefix') || '';
-      var cWeeksSuffix = config.getAttribute('data-weeks-suffix') || '';
       var cShown = parseFloat((cTotal && cTotal.textContent || '0').replace(/\D/g, '')) || 0;
-      var cState = { formule: '', type: '', total: 0, weeks: 0, opts: [], recurring: 0 };
+      var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
       function cAnimate(target) {
@@ -1839,11 +1840,11 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, weeks = 0, recurring = 0, extra = 0, opts = [];
+        var total = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
           total = parseFloat(base.getAttribute('data-price'));
-          weeks = parseFloat(base.getAttribute('data-weeks'));
+          timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
             brow.className = 'config-recap-row config-recap-row--base';
@@ -1860,7 +1861,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \u20ac/mois)'); }
           else {
             var pr = parseFloat(o.getAttribute('data-price')) || 0;
-            total += pr; extra++;
+            total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \u20ac)');
           }
           if (cRecap) {
@@ -1873,14 +1874,13 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             cRecap.appendChild(row);
           }
         });
-        weeks += Math.ceil(extra / 2);
-        if (cWeeks) cWeeks.textContent = String(weeks || '\u2014');
+        if (cWeeks) cWeeks.textContent = timeline || '\u2014';
         cAnimate(total);
 
         cState = {
           formule: base ? base.value : '',
           type: base ? base.getAttribute('data-type') : '',
-          total: total, weeks: weeks, opts: opts, recurring: recurring
+          total: total, timeline: timeline, opts: opts, recurring: recurring
         };
       }
 
@@ -1895,7 +1895,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
         cState.opts.forEach(function (o) { lines.push('\u2022 Option : ' + o); });
         lines.push('');
         lines.push('Total estim\u00e9 : ' + frCount(cState.total) + ' \u20ac' + (cState.recurring ? (' + ' + cState.recurring + ' \u20ac/mois') : ''));
-        lines.push('D\u00e9lai estim\u00e9 : ' + cState.weeks + ' semaines');
+        lines.push('D\u00e9lai estim\u00e9 : ' + cState.timeline);
         var msg = lines.join('\n');
         var mEl = document.getElementById('contact-message');
         var tEl = document.getElementById('contact-project-type');

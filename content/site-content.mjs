@@ -99,6 +99,8 @@ export const content = {
     eyebrow: 'Étude de cas',
     title: 'Cabinet Laperonnie',
     subtitle: 'Avocat à Angoulême',
+    durationLabel: 'Durée du projet',
+    duration: '4 à 5 semaines',
     needLabel: 'Le besoin',
     need: "Présenter clairement les expertises du cabinet, notamment son activité en droit des cryptomonnaies, tout en installant une image sérieuse et immédiatement crédible.",
     choicesLabel: 'Les choix de conception',
@@ -179,7 +181,7 @@ export const content = {
     baseLabel: 'Votre formule',
     bases: [
       {
-        id: 'essentiel', name: 'Essentiel', price: 990, weeks: 2,
+        id: 'essentiel', name: 'Essentiel', price: 1290, timeline: '2 semaines',
         pricePrefix: 'à partir de',
         contactType: 'Site vitrine une page',
         blurb: 'Pour une présence simple et efficace.',
@@ -192,7 +194,7 @@ export const content = {
         ],
       },
       {
-        id: 'pro', name: 'Professionnel', price: 2490, weeks: 4, recommended: true,
+        id: 'pro', name: 'Professionnel', price: 2990, timeline: '3 semaines', recommended: true,
         pricePrefix: 'à partir de',
         badge: 'Recommandée',
         contactType: 'Site multi-pages',
@@ -206,7 +208,7 @@ export const content = {
         ],
       },
       {
-        id: 'premium', name: 'Premium', price: 4490, weeks: 6,
+        id: 'premium', name: 'Premium', price: 5490, timeline: '4 semaines ou plus',
         pricePrefix: 'à partir de',
         contactType: 'Site multi-pages',
         blurb: 'Suivi et accompagnement pour un projet complet sur-mesure.',
@@ -228,11 +230,10 @@ export const content = {
       { id: 'pages', name: '3 pages supplémentaires', price: 450 },
       { id: 'bilingue', name: 'Site bilingue (FR / EN)', price: 490 },
     ],
-    maintenance: { id: 'maintenance', name: 'Maintenance & hébergement', price: 49, unit: ' €/mois' },
+    maintenance: { id: 'maintenance', name: 'Maintenance & hébergement', price: 59, unit: ' €/mois' },
     panel: {
       label: 'Estimation indicative',
-      note: 'Hors option maintenance & hébergement.',
-      weeksSuffix: ' semaines estimées',
+      note: 'Hors option maintenance & hébergement. Délai indicatif :',
       basePrefix: 'Formule',
       cta: 'Demander une estimation personnalisée',
       exampleLabel: 'Voir un exemple de devis',

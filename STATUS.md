@@ -7,6 +7,31 @@ Vérifié de bout en bout : **build OK, 0 erreur console/CSP sur les 9 pages**,
 desktop + mobile OK, aucune règle CSS orpheline (l'ancien bloc `.proof-gauge*`,
 `.pricing-*`, `.testimonial-frame`, `.case-study-facts` ont bien été retirés).
 
+## Session 2026-09-03 — grille tarifaire de lancement + lots 6/7
+
+### Fait et vérifié avant push
+
+- Étude de cas Laperonnie enrichie avec captures desktop/mobile optimisées, besoin,
+  choix de conception, durée réelle (4 à 5 semaines), contrainte déontologique,
+  livrables et CTA vers le site public.
+- Manifeste déplacé entre « Pour qui » et « Réalisation », avec une présentation
+  éditoriale plus légère et lisible sur mobile.
+- Grille de lancement appliquée : Essentiel 1 290 €, Professionnel 2 990 €,
+  Premium à partir de 5 490 €.
+- Maintenance et hébergement passés à 59 €/mois ; le périmètre reste celui des
+  petites modifications dans un usage raisonnable.
+- Exemple de devis harmonisé avec la formule Professionnel à 2 990 € et le total
+  indicatif à 4 160 €.
+- Délais du configurateur alignés sur 2 semaines, 3 semaines, puis 4 semaines ou plus.
+- Build, vérifications JavaScript, contrôle du diff et tests responsive validés.
+
+### État actuel
+
+- Site local prêt sur `http://localhost:3000`.
+- Aucun domaine définitif, SIRET ou témoignage client renseigné.
+- Les prix restent des prix de lancement et pourront être recalculés après le suivi
+  des jours réellement travaillés sur plusieurs projets.
+
 ### Ce qu'Arthur a fait
 - **Section « manifeste »** habillée : `.manifeste-rail` (pastille « À retenir » +
   eyebrow à gauche, filet vertical, phrase Playfair + ligne verte à droite).

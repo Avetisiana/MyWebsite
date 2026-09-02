@@ -467,9 +467,8 @@ function scripts() {
       var cCta = config.querySelector('[data-config-cta]');
       var cLead = config.getAttribute('data-lead') || '';
       var cBasePrefix = config.getAttribute('data-base-prefix') || '';
-      var cWeeksSuffix = config.getAttribute('data-weeks-suffix') || '';
       var cShown = parseFloat((cTotal && cTotal.textContent || '0').replace(/\\D/g, '')) || 0;
-      var cState = { formule: '', type: '', total: 0, weeks: 0, opts: [], recurring: 0 };
+      var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
       function cAnimate(target) {
@@ -487,11 +486,11 @@ function scripts() {
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, weeks = 0, recurring = 0, extra = 0, opts = [];
+        var total = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
           total = parseFloat(base.getAttribute('data-price'));
-          weeks = parseFloat(base.getAttribute('data-weeks'));
+          timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
             brow.className = 'config-recap-row config-recap-row--base';
@@ -508,7 +507,7 @@ function scripts() {
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \\u20ac/mois)'); }
           else {
             var pr = parseFloat(o.getAttribute('data-price')) || 0;
-            total += pr; extra++;
+            total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \\u20ac)');
           }
           if (cRecap) {
@@ -521,14 +520,13 @@ function scripts() {
             cRecap.appendChild(row);
           }
         });
-        weeks += Math.ceil(extra / 2);
-        if (cWeeks) cWeeks.textContent = String(weeks || '\\u2014');
+        if (cWeeks) cWeeks.textContent = timeline || '\\u2014';
         cAnimate(total);
 
         cState = {
           formule: base ? base.value : '',
           type: base ? base.getAttribute('data-type') : '',
-          total: total, weeks: weeks, opts: opts, recurring: recurring
+          total: total, timeline: timeline, opts: opts, recurring: recurring
         };
       }
 
@@ -543,7 +541,7 @@ function scripts() {
         cState.opts.forEach(function (o) { lines.push('\\u2022 Option : ' + o); });
         lines.push('');
         lines.push('Total estim\\u00e9 : ' + frCount(cState.total) + ' \\u20ac' + (cState.recurring ? (' + ' + cState.recurring + ' \\u20ac/mois') : ''));
-        lines.push('D\\u00e9lai estim\\u00e9 : ' + cState.weeks + ' semaines');
+        lines.push('D\\u00e9lai estim\\u00e9 : ' + cState.timeline);
         var msg = lines.join('\\n');
         var mEl = document.getElementById('contact-message');
         var tEl = document.getElementById('contact-project-type');
@@ -792,6 +790,7 @@ function caseStudySection() {
               <p class="eyebrow">${c.eyebrow}</p>
               <h3>${c.title}</h3>
               <p class="subtitle">${c.subtitle}</p>
+              <p class="case-study-duration"><span>${c.durationLabel}</span>${c.duration}</p>
             </div>
             <a href="${c.link.href}" class="btn btn-invert case-study-link" target="_blank" rel="noopener">${c.link.label} <span aria-hidden="true">↗</span></a>
           </div>
@@ -964,7 +963,7 @@ function configuratorSection() {
   const bases = cf.bases.map(b => {
     const price = `${b.pricePrefix ? `<span class="config-formule-prefix">${b.pricePrefix}</span>` : ''}${fmtEUR(b.price)} €${b.priceNote ? `<span class="config-formule-pricenote">${b.priceNote}</span>` : ''}`;
     return `<label class="config-formule${b.recommended ? ' config-formule--reco' : ''}">
-            <input type="radio" name="config-formule" value="${attr(b.name)}" data-price="${b.price}" data-weeks="${b.weeks}" data-type="${attr(b.contactType)}"${b === def ? ' checked' : ''}>
+            <input type="radio" name="config-formule" value="${attr(b.name)}" data-price="${b.price}" data-timeline="${attr(b.timeline)}" data-type="${attr(b.contactType)}"${b === def ? ' checked' : ''}>
             <span class="config-formule-top">
               <span class="config-formule-name">${b.name}</span>
               ${b.badge ? `<span class="config-formule-badge">${b.badge}</span>` : ''}
@@ -997,8 +996,7 @@ function configuratorSection() {
       </div>
       <div class="config reveal" data-config
         data-lead="${attr(cf.prefillLead)}"
-        data-base-prefix="${attr(pn.basePrefix)}"
-        data-weeks-suffix="${attr(pn.weeksSuffix)}">
+        data-base-prefix="${attr(pn.basePrefix)}">
         <div class="config-formules">
           <p class="config-group-label">${cf.baseLabel}</p>
           <div class="config-formules-grid">
@@ -1019,7 +1017,7 @@ function configuratorSection() {
         <aside class="config-panel" aria-live="polite">
           <p class="config-panel-label">${pn.label}</p>
           <p class="config-total"><span data-config-total>${fmtEUR(def.price)}</span><span class="config-total-cur">€</span></p>
-          <p class="config-panel-note">${pn.note} <span data-config-weeks>${def.weeks}</span>${pn.weeksSuffix}.</p>
+          <p class="config-panel-note">${pn.note} <span data-config-weeks>${def.timeline}</span>.</p>
           <div class="config-recap" data-config-recap></div>
           <a href="/#contact" class="btn btn-invert config-cta" data-config-cta>${pn.cta}</a>
           ${exampleLink}
@@ -1394,16 +1392,16 @@ function buildExempleDevis() {
             <tr><th>Prestation</th><th>Montant</th></tr>
           </thead>
           <tbody>
-            <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, blog, formulaire qualifié et référencement local de base</td><td>2&nbsp;490&nbsp;€</td></tr>
+            <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, blog, formulaire qualifié et référencement local de base</td><td>2&nbsp;990&nbsp;€</td></tr>
             <tr><td>Option espace d’administration</td><td>390&nbsp;€</td></tr>
             <tr><td>Rédaction des textes de l'ensemble des pages</td><td>390&nbsp;€</td></tr>
             <tr><td>Référencement renforcé — textes enrichis et suivi personnalisé dans le temps</td><td>390&nbsp;€</td></tr>
           </tbody>
           <tfoot>
-            <tr><td>Total</td><td>3&nbsp;660&nbsp;€</td></tr>
+            <tr><td>Total</td><td>4&nbsp;160&nbsp;€</td></tr>
           </tfoot>
         </table>
-        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et petites mises à jour à 49&nbsp;€/mois, sans engagement.</p>
+        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et petites mises à jour à 59&nbsp;€/mois, sans engagement.</p>
 
         <p class="devis-label">Modalités</p>
         <ul>
