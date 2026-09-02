@@ -483,31 +483,70 @@ section { padding: var(--space-7) 0; position: relative; scroll-margin-top: 96px
 }
 .silk-canvas--hero { background: var(--color-bg); }
 
-/* Fallback CSS (uniquement si WebGL KO) : dégradés verts qui dérivent en transform */
-.hero::before { display: none; }
+/* Fallback CSS (WebGL indisponible — Chrome sans accélération, GPU blocklisté).
+   Deux nappes vertes qui dérivent lentement, en sens opposés, sur le hero + le footer
+   + le bloc étude de cas → le site reste vivant même sans shader.
+   Transform/opacity uniquement (compositeur). Coupé par le reset en reduced-motion. */
+.hero::before, .hero::after { display: none; }
 .silk-css .silk-canvas--hero { background: transparent; }
-.silk-css .hero::before {
+
+.silk-css .hero::before,
+.silk-css .hero::after {
   content: '';
   display: block;
   position: absolute;
-  inset: -6%;
+  inset: -12%;
   z-index: 0;
   pointer-events: none;
-  /* teinte verte UNIFORME partout (pas de flou -> aucun fondu sur les bords ni les coins).
-     Une seule nappe plus claire qui dérive pour donner un peu de vie. */
-  background:
-    radial-gradient(150% 130% at 38% 30%, rgba(52, 88, 74, 0.16), rgba(52, 88, 74, 0) 85%),
-    rgba(30, 59, 50, 0.185);
   will-change: transform;
-  animation: heroDriftFallback 26s var(--ease-out) infinite alternate;
-  /* fondu UNIQUEMENT en bas : plein jusqu'au niveau des CTA (~64 % du hero) puis grand dégradé
-     progressif jusqu'à la section 2. Stops calés sur la boîte qui déborde de 6 %. */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 96%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 96%);
+  /* fondu bas (plein jusqu'au niveau des CTA puis dégradé vers la section 2) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 94%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 94%);
 }
-@keyframes heroDriftFallback {
-  from { transform: translate3d(0, 0, 0) scale(1.04); }
-  to   { transform: translate3d(3%, -2%, 0) scale(1.12); }
+.silk-css .hero::before {
+  background:
+    radial-gradient(78% 68% at 26% 22%, rgba(52, 92, 76, 0.30), transparent 60%),
+    radial-gradient(66% 58% at 80% 14%, rgba(30, 59, 50, 0.20), transparent 62%),
+    rgba(30, 59, 50, 0.09);
+  animation: silkDriftA 32s ease-in-out infinite alternate;
+}
+.silk-css .hero::after {
+  background:
+    radial-gradient(72% 62% at 66% 74%, rgba(46, 84, 70, 0.22), transparent 58%),
+    radial-gradient(58% 52% at 12% 56%, rgba(66, 106, 88, 0.15), transparent 60%);
+  animation: silkDriftB 46s ease-in-out infinite alternate;
+}
+
+/* footer + étude de cas : une nappe qui dérive par-dessus la profondeur statique */
+.silk-css .case-study::before,
+.silk-css .footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  animation: silkDriftA 44s ease-in-out infinite alternate;
+}
+.silk-css .case-study::before {
+  background:
+    radial-gradient(80% 72% at 18% 14%, rgba(58, 98, 82, 0.34), transparent 56%),
+    radial-gradient(78% 76% at 92% 96%, rgba(8, 18, 14, 0.28), transparent 58%);
+}
+.silk-css .footer::before {
+  background:
+    radial-gradient(90% 64% at 86% 6%, rgba(56, 96, 80, 0.24), transparent 60%),
+    radial-gradient(66% 78% at 6% 100%, rgba(8, 18, 14, 0.28), transparent 64%);
+  animation-duration: 54s;
+}
+
+@keyframes silkDriftA {
+  from { transform: translate3d(-3%, -1%, 0) scale(1.08); }
+  to   { transform: translate3d(4%, 3%, 0) scale(1.2); }
+}
+@keyframes silkDriftB {
+  from { transform: translate3d(3%, 2%, 0) scale(1.14); }
+  to   { transform: translate3d(-4%, -3%, 0) scale(1.24); }
 }
 /* footer : apparaît en douceur depuis le haut du bloc */
 .silk-canvas--footer {

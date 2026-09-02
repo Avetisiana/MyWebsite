@@ -11,14 +11,23 @@ direct sur localhost (changement ciblé → rebuild → capture → garde ou `gi
 un pas à la fois. Idées A + B gardées en tête pour la suite.
 
 ### Passe transversale « moins fade » — pas à pas (commits locaux, non poussés)
-- **Étape 1 — profondeur des blocs verts** (commit local). `.case-study`,
-  `.proof-gauge`, `.config-panel`, `.footer` : `background` plat → + 2 nappes
-  `radial-gradient` (claire haut-gauche, creux sombre bas-droite) + `box-shadow:
-  inset` filet lumineux. Pur CSS non animé, 0 coût perf. La couleur de fond
-  d'origine reste posée (repli si les gradients échouent). Texte toujours lisible,
-  0 erreur console/CSP, rien cassé desktop/mobile.
-  À faire ensuite : soie toujours animée + vrai fallback · resserrer les sections
-  vides · couleur chaude en touches (à valider — 2ᵉ couleur).
+- **Étape 1 — profondeur des blocs verts** (commit `3509e2a`). `.case-study`,
+  `.proof-gauge`, `.config-panel`, `.footer` : + 2 nappes `radial-gradient`
+  (claire haut-gauche, creux sombre bas-droite) + `box-shadow: inset` filet.
+  Pur CSS non animé. Repli : la couleur de fond d'origine reste posée.
+- **Étape 2 — soie toujours vivante + vrai fallback animé** (commit local).
+  - `silk-bg.js` (shader) : `t` 0.10→0.11, alpha base 0.14/0.11→0.15/0.12,
+    ajout d'une « respiration » de luminance lente (`0.93+0.07*sin(u_time*0.11)`).
+    Léger, pour la majorité qui a WebGL.
+  - Fallback CSS (Chrome sans GPU d'Arthur) refait : `.silk-css .hero::before`
+    + nouveau `::after` = 2 nappes qui dérivent en sens opposés (`silkDriftA/B`,
+    32 s / 46 s) au lieu d'un aplat uniforme. **Étendu au footer et à l'étude de
+    cas** (`.silk-css .footer::before` / `.case-study::before`) qui n'avaient
+    aucune vie sans WebGL.
+  - `transform`/`opacity` uniquement (compositeur). Coupé par le reset en
+    `prefers-reduced-motion` → nappes figées, calmes. 0 erreur console/CSP.
+  À faire ensuite : resserrer les sections vides · couleur chaude en touches
+  (à valider — 2ᵉ couleur).
 
 ---
 

@@ -29,7 +29,7 @@
     ' vec2 uv=gl_FragCoord.xy/u_res;',
     ' vec2 asp=u_res/min(u_res.x,u_res.y);',
     ' vec2 p=uv*asp*3.4;',
-    ' float t=u_time*0.10;',
+    ' float t=u_time*0.11;',
     ' for(int i=1;i<6;i++){',
     '   float fi=float(i);',
     '   p.x+=0.62/fi*sin(fi*2.3*p.y+t)+0.35;',
@@ -38,10 +38,11 @@
     ' float folds=0.5+0.5*sin(p.x+p.y);',
     ' float streak=pow(0.5+0.5*sin(p.x*1.7-p.y*0.6+t*2.4),3.0);',
     ' float glow=pow(folds,1.6);',
+    ' float breathe=0.93+0.07*sin(u_time*0.11);',
     ' vec3 lo=mix(vec3(0.086,0.188,0.157),vec3(0.176,0.322,0.271),u_dark);',
     ' vec3 hi=mix(vec3(0.404,0.556,0.478),vec3(0.62,0.71,0.63),u_dark);',
     ' vec3 tint=mix(lo,hi,clamp(glow*0.45+streak*0.6,0.0,1.0));',
-    ' float a=glow*0.14+streak*0.11;',
+    ' float a=(glow*0.15+streak*0.12)*breathe;',
     // fondu UNIQUEMENT en bas. Desktop-hero : plein jusqu'au niveau des CTA (uv.y ~0.34) puis
     // grand dégradé progressif jusqu'à la section 2 (uv.y 0). Mobile-hero : 0.52. Transparent : 0.14.
     ' float heroTop=mix(0.52,0.34,u_desktop);',
