@@ -1,5 +1,45 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-03 — refonte contenu (Arthur) + étape 4 typo (non poussé)
+
+Arthur a repris la main sur le contenu et la structure pendant un reset de session.
+Vérifié de bout en bout : **build OK, 0 erreur console/CSP sur les 9 pages**,
+desktop + mobile OK, aucune règle CSS orpheline (l'ancien bloc `.proof-gauge*`,
+`.pricing-*`, `.testimonial-frame`, `.case-study-facts` ont bien été retirés).
+
+### Ce qu'Arthur a fait
+- **Section « manifeste »** habillée : `.manifeste-rail` (pastille « À retenir » +
+  eyebrow à gauche, filet vertical, phrase Playfair + ligne verte à droite).
+- **Étude de cas** : vraie maquette d'appareils — cadre navigateur (capture desktop)
+  + téléphone en surimpression, nouvelles images `cabinet-laperonnie-desktop/mobile`
+  (.jpg + .avif). Contenu restructuré (besoin / choix de conception / contrainte
+  métier / livrables) + CTA « Découvrir le site du cabinet ↗ ».
+- **Section preuve → « Mes engagements »** : plus aucun score Lighthouse inventé.
+  4 repères en texte (24–48 h, Budget clair, Mobile d'abord, Votre site) + liste
+  « Défini avant le lancement » sur le panneau vert. `.proof-stat-num` redimensionné
+  pour des libellés (pas des chiffres) + `overflow-wrap: anywhere`.
+- **Prestations** : 8 items → **4 piliers**. **Process** : étapes 03/04 réécrites.
+- **Tarifs** : « Budgets indicatifs », montants annoncés comme provisoires,
+  « Espace d'administration » passe en option, maintenance = maintenance + hébergement.
+- Nav (« Réalisation » au singulier, « Autres services »), sous-titre du hero,
+  ligne de réassurance, ordre des sections revu.
+
+### Étape 4 (moi) — typo plus tranchée + moment éditorial : **terminée**
+- `h1` `clamp(2.6rem, 5.2vw+1rem, 4.7rem)` / `h2` `clamp(2.15rem, 3.6vw+1rem, 3.65rem)`,
+  tracking resserré (-0.038 / -0.036em). Vérifié : aucun débordement, `text-wrap: balance`
+  gère les veuves.
+- Chiffres traités en éléments graphiques : `.config-formule-price` 1.7→2.05rem,
+  `.config-total` max 2.9→3.6rem.
+- Moment éditorial = la section manifeste (fonction + contenu posés par moi,
+  habillage par Arthur).
+
+### Reste
+- **Non poussé** : étapes 1-3 (commits `3509e2a`, `8488530`, `1e36236`) + ce commit.
+- Toujours en attente : l'adresse `@hotmail.com` (contact + footer).
+- `AGENTS.md` et `ETUDE-TARIFAIRE.md` non suivis par git (docs de travail d'Arthur).
+
+---
+
 ## Session 2026-09-02 (suite 6) — poussé
 Revue design (yeux de webdesigner) → passe de cohérence + fusion Tarifs/Configurateur,
 validées par Arthur et poussées sur `main`.

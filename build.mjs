@@ -38,7 +38,7 @@ function sha256b64(str) {
 
 cspStyleHashes.add(sha256b64(css));
 
-const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}.proof-bar-fill{transform:none}.config-recap,.config-hint{display:none}';
+const NOSCRIPT_CSS = '.reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}.ht-w{opacity:1!important;filter:none!important;transform:none!important}.process-rail .process-step-dot{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-bg)}.process-rail .process-step:not(:last-child)::after{transform:none}.config-recap,.config-hint{display:none}';
 cspStyleHashes.add(sha256b64(NOSCRIPT_CSS));
 
 // Préchargement des fontes critiques (auto-hébergées, /fonts/)
@@ -169,8 +169,8 @@ function head({ title, description, pagePath, ogType = 'website', jsonLd = null,
 }
 
 function nav() {
-  // le dropdown "Solutions" s'insère juste avant Prestations, sur desktop comme sur mobile
-  const insertIndex = content.nav.links.findIndex(l => l.label === 'Prestations');
+  // Les services complémentaires viennent après le cœur de l'offre, juste avant Contact.
+  const insertIndex = content.nav.links.findIndex(l => l.label === 'Contact');
   const before = content.nav.links.slice(0, insertIndex === -1 ? 0 : insertIndex);
   const after = content.nav.links.slice(insertIndex === -1 ? 0 : insertIndex);
   const solutionItems = content.digitalSolutions.items;
@@ -248,7 +248,7 @@ function footer() {
             ${anchorLinks}
           </div>
           <div class="footer-col">
-            <span class="head">Solutions</span>
+            <span class="head">${content.nav.solutionsLabel}</span>
             ${solutionLinks}
           </div>
           <div class="footer-col">
@@ -300,6 +300,51 @@ function scripts() {
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // CTA mobile : utile pendant la lecture, discret là où un CTA existe déjà ou quand le
+    // clavier recouvre la page (hero, formulaire, footer et saisie dans un champ).
+    var mobileCtaEl = document.querySelector('.mobile-cta');
+    if (mobileCtaEl) {
+      var mobileCtaZones = new Set();
+      var mobileCtaFieldFocused = false;
+      var mobileCtaTargets = document.querySelectorAll('.hero, #contact, .footer');
+      function updateMobileCta() {
+        mobileCtaEl.classList.toggle('is-hidden', mobileCtaZones.size > 0 || mobileCtaFieldFocused);
+      }
+      function syncMobileCtaZones() {
+        mobileCtaZones.clear();
+        mobileCtaTargets.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.bottom > 0 && r.top < window.innerHeight) mobileCtaZones.add(el);
+        });
+        updateMobileCta();
+      }
+      syncMobileCtaZones();
+      if ('IntersectionObserver' in window) {
+        var mobileCtaIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) mobileCtaZones.add(entry.target);
+            else mobileCtaZones.delete(entry.target);
+          });
+          updateMobileCta();
+        }, { threshold: 0 });
+        mobileCtaTargets.forEach(function (el) { mobileCtaIo.observe(el); });
+      } else {
+        window.addEventListener('scroll', syncMobileCtaZones, { passive: true });
+        window.addEventListener('resize', syncMobileCtaZones);
+      }
+      document.addEventListener('focusin', function (e) {
+        if (!e.target.matches('input, textarea, select')) return;
+        mobileCtaFieldFocused = true;
+        updateMobileCta();
+      });
+      document.addEventListener('focusout', function () {
+        setTimeout(function () {
+          mobileCtaFieldFocused = !!(document.activeElement && document.activeElement.matches('input, textarea, select'));
+          updateMobileCta();
+        }, 80);
+      });
+    }
 
     // mobile menu — ouverture/fermeture + piège de focus + Échap + retour de focus
     var toggle = document.getElementById('nav-toggle');
@@ -407,40 +452,9 @@ function scripts() {
       }
     }
 
-    // preuve chiffrée — compteurs + barres + jauge, déclenchés à l'entrée dans le champ de vision
+    // Utilitaires partagés par le configurateur.
     var prefersReduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     function frCount(n) { return String(n).replace(/\\B(?=(\\d{3})+(?!\\d))/g, '\\u00a0'); }
-    function runCount(node, dur) {
-      var end = parseFloat(node.getAttribute('data-count'));
-      if (prefersReduce) { node.textContent = frCount(end); return; }
-      var t0 = performance.now();
-      (function step(t) {
-        var pr = Math.min(1, (t - t0) / (dur || 1400));
-        var e = 1 - Math.pow(1 - pr, 3);
-        node.textContent = frCount(Math.round(end * e));
-        if (pr < 1) requestAnimationFrame(step);
-      })(performance.now());
-    }
-    var proof = document.querySelector('[data-proof]');
-    if (proof) {
-      var fillProof = function () {
-        proof.querySelectorAll('[data-count]').forEach(function (n) { runCount(n); });
-        proof.querySelectorAll('.proof-bar-fill').forEach(function (f) {
-          f.style.transform = 'scaleX(' + (parseFloat(f.getAttribute('data-score')) / 100) + ')';
-        });
-        var arc = proof.querySelector('[data-gauge-arc]');
-        if (arc) arc.style.strokeDashoffset = arc.getAttribute('data-offset');
-      };
-      proof.querySelectorAll('.proof-bar-fill').forEach(function (f) { f.style.transform = 'scaleX(0)'; });
-      var arc0 = proof.querySelector('[data-gauge-arc]');
-      if (arc0) arc0.style.strokeDashoffset = arc0.getAttribute('data-empty');
-      if (window.IntersectionObserver) {
-        var pio = new IntersectionObserver(function (en) {
-          en.forEach(function (e) { if (e.isIntersecting) { fillProof(); pio.disconnect(); } });
-        }, { threshold: 0.3 });
-        pio.observe(proof);
-      } else { fillProof(); }
-    }
 
     // configurateur de devis — total live, détail de la formule, envoi progressif
     var config = document.querySelector('[data-config]');
@@ -691,9 +705,28 @@ function heroSection() {
           <a href="${h.ctaPrimary.href}" class="btn btn-primary">${h.ctaPrimary.label}</a>
           <a href="${h.ctaSecondary.href}" class="btn btn-ghost">${h.ctaSecondary.label}</a>
         </div>
+        <p class="hero-reassurance reveal">${h.reassurance}</p>
         <div class="scroll-hint reveal">
           <span>${h.scrollHint}</span>
           <span class="scroll-hint-line"></span>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function manifesteSection() {
+  const m = content.manifeste;
+  return `<section id="manifeste" class="bg-alt">
+    <div class="container">
+      <div class="manifeste-rail reveal">
+        <div class="manifeste-meta">
+          <span class="manifeste-mark" aria-hidden="true">À retenir</span>
+          <p class="eyebrow manifeste-eyebrow">${m.eyebrow}</p>
+        </div>
+        <div class="manifeste-copy">
+          <p class="manifeste-lead">${m.lead}</p>
+          <p class="manifeste-em">${m.emphasis}</p>
         </div>
       </div>
     </div>
@@ -730,7 +763,7 @@ function prestationsSection() {
           <p>${it.desc}</p>
         </div>
       </div>`).join('\n      ');
-  return `<section id="prestations">
+  return `<section id="prestations" class="bg-alt">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -754,43 +787,66 @@ function caseStudySection() {
       <div class="case-study reveal">
         <canvas class="silk-canvas silk-canvas--case" data-dark="1" data-strength="1.1" aria-hidden="true"></canvas>
         <div class="case-study-inner">
-          <div class="case-study-grid">
+          <div class="case-study-head">
             <div>
               <p class="eyebrow">${c.eyebrow}</p>
               <h3>${c.title}</h3>
               <p class="subtitle">${c.subtitle}</p>
-              <div class="case-study-block">
-                <p class="label">${c.needLabel}</p>
-                <p>${c.need}</p>
-              </div>
-              <div class="case-study-block">
-                <p class="label">${c.responseLabel}</p>
-                <p>${c.response}</p>
-              </div>
-              <a href="${c.link.href}" class="btn btn-ghost btn-ghost--invert" target="_blank" rel="noopener">${c.link.label}</a>
             </div>
-            <div class="case-study-visual">
-              <div class="screenshot-frame">
+            <a href="${c.link.href}" class="btn btn-invert case-study-link" target="_blank" rel="noopener">${c.link.label} <span aria-hidden="true">↗</span></a>
+          </div>
+
+          <div class="case-study-devices" aria-label="Aperçus du site sur ordinateur et téléphone">
+            <figure class="case-study-desktop">
+              <div class="device-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="device-screen">
                 <picture>
                   <source
                     type="image/avif"
-                    srcset="/images/cabinet-laperonnie-600.avif 600w, /images/cabinet-laperonnie-900.avif 900w, /images/cabinet-laperonnie-1200.avif 1200w"
-                    sizes="(min-width: 960px) 540px, 92vw">
+                    srcset="/images/cabinet-laperonnie-desktop.avif">
                   <img
-                    src="/images/cabinet-laperonnie-1200.jpg"
-                    srcset="/images/cabinet-laperonnie-600.jpg 600w, /images/cabinet-laperonnie-900.jpg 900w, /images/cabinet-laperonnie-1200.jpg 1200w"
-                    sizes="(min-width: 960px) 540px, 92vw"
-                    alt="Site internet du Cabinet Laperonnie, avocat à Angoulême"
-                    width="1200" height="750" loading="lazy" decoding="async">
+                    src="/images/cabinet-laperonnie-desktop.jpg"
+                    alt="Page d’accueil du Cabinet Laperonnie affichée sur ordinateur"
+                    width="1440" height="900" loading="lazy" decoding="async">
                 </picture>
               </div>
-              <div class="case-study-facts">
-                <p class="label">${c.deliverablesLabel}</p>
-                <ul>
-                  ${c.deliverables.map(d => `<li>${d}</li>`).join('\n                  ')}
-                </ul>
+            </figure>
+            <figure class="case-study-phone">
+              <span class="device-phone-speaker" aria-hidden="true"></span>
+              <div class="device-phone-screen">
+                <picture>
+                  <source type="image/avif" srcset="/images/cabinet-laperonnie-mobile.avif">
+                  <img
+                    src="/images/cabinet-laperonnie-mobile.jpg"
+                    alt="Page d’accueil du Cabinet Laperonnie affichée sur téléphone"
+                    width="390" height="844" loading="lazy" decoding="async">
+                </picture>
               </div>
+            </figure>
+          </div>
+
+          <div class="case-study-details">
+            <div class="case-study-block">
+              <p class="label">${c.needLabel}</p>
+              <p>${c.need}</p>
             </div>
+            <div class="case-study-block">
+              <p class="label">${c.choicesLabel}</p>
+              <ul class="case-study-list">
+                ${c.choices.map(choice => `<li>${choice}</li>`).join('\n                ')}
+              </ul>
+            </div>
+            <div class="case-study-block case-study-block--facts">
+              <p class="label">${c.deliverablesLabel}</p>
+              <ul class="case-study-list">
+                ${c.deliverables.map(d => `<li>${d}</li>`).join('\n                ')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="case-study-constraint">
+            <p class="label">${c.constraintLabel}</p>
+            <p>${c.constraint}</p>
           </div>
         </div>
       </div>
@@ -807,7 +863,7 @@ function processSection() {
             <p class="process-step-desc">${s.desc}</p>
           </div>
         </li>`).join('\n        ');
-  return `<section id="comment-ca-se-passe" class="bg-alt">
+  return `<section id="comment-ca-se-passe">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${p.eyebrow}</p>
@@ -826,7 +882,7 @@ function faqSection() {
         <summary>${it.q}<span class="plus"></span></summary>
         <p>${it.a}</p>
       </details>`).join('\n      ');
-  return `<section id="faq" class="bg-alt">
+  return `<section id="faq">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${f.eyebrow}</p>
@@ -846,7 +902,7 @@ function digitalSolutionsSection() {
         <p>${it.cardDesc}</p>
         <a href="/${it.slug}" class="link-arrow">En savoir plus →</a>
       </div>`).join('\n      ');
-  return `<section id="solutions">
+  return `<section id="solutions" class="bg-alt">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${s.eyebrow}</p>
@@ -872,45 +928,28 @@ function proofSection() {
         </div>`;
   }).join('\n        ');
 
-  const bars = p.metrics.map(m => `<div class="proof-bar">
-          <div class="proof-bar-head"><span>${m.label}</span><span class="proof-bar-score"><span data-count="${m.score}">${m.score}</span></span></div>
-          <div class="proof-bar-track"><span class="proof-bar-fill" data-score="${m.score}"></span></div>
-        </div>`).join('\n        ');
+  const details = p.details.map(item => `<li>${item}</li>`).join('\n            ');
 
-  const R = 54;
-  const C = +(2 * Math.PI * R).toFixed(2);
-  const filled = +(C * (1 - p.gauge.score / 100)).toFixed(2);
-
-  return `<section id="resultats" class="bg-alt">
+  return `<section id="resultats">
     <div class="container">
-      <div class="proof" data-proof>
+      <div class="proof">
         <div class="proof-main">
           <div class="section-head reveal">
             <p class="eyebrow">${p.eyebrow}</p>
             <h2>${p.title}</h2>
+            <p>${p.intro}</p>
           </div>
           <div class="proof-stats">
         ${stats}
           </div>
-          <div class="proof-perf">
-            <p class="proof-perf-title">${p.perfTitle}</p>
-        ${bars}
-            <p class="proof-perf-note">${p.perfNote} <a href="${p.verifyLink.href}" target="_blank" rel="noopener">${p.verifyLink.label} →</a></p>
-          </div>
         </div>
-        <aside class="proof-gauge">
-          <p class="proof-gauge-label">${p.gauge.label}</p>
-          <div class="proof-gauge-dial">
-            <svg class="proof-gauge-ring" viewBox="0 0 120 120" aria-hidden="true">
-              <circle class="proof-gauge-track" cx="60" cy="60" r="${R}" fill="none" stroke-width="8"></circle>
-              <circle class="proof-gauge-arc" cx="60" cy="60" r="${R}" fill="none" stroke-width="8" stroke-linecap="round"
-                stroke-dasharray="${C}" stroke-dashoffset="${filled}" transform="rotate(-90 60 60)"
-                data-gauge-arc data-offset="${filled}" data-empty="${C}"></circle>
-            </svg>
-            <p class="proof-gauge-score"><span data-count="${p.gauge.score}">${p.gauge.score}</span><span class="proof-gauge-max">/100</span></p>
-          </div>
-          <p class="proof-gauge-caption">${p.gauge.caption}</p>
-          <a href="${p.cta.href}" class="btn btn-invert proof-gauge-cta">${p.cta.label}</a>
+        <aside class="proof-commitments">
+          <p class="proof-commitments-label">${p.detailsLabel}</p>
+          <ul class="proof-commitments-list">
+            ${details}
+          </ul>
+          <p class="proof-commitments-note">${p.note}</p>
+          <a href="${p.cta.href}" class="btn btn-invert proof-commitments-cta">${p.cta.label}</a>
         </aside>
       </div>
     </div>
@@ -996,7 +1035,7 @@ function configuratorSection() {
 function contactSection() {
   const c = content.contact;
   const fl = c.form.fields;
-  return `<section id="contact">
+  return `<section id="contact" class="bg-alt">
     <div class="container">
       <div class="section-head reveal">
         <p class="eyebrow">${c.eyebrow}</p>
@@ -1035,7 +1074,7 @@ function contactSection() {
           </div>
           <div class="field">
             <label for="${fl.message.id}">${fl.message.label}</label>
-            <textarea id="${fl.message.id}" name="message" required></textarea>
+            <textarea id="${fl.message.id}" name="message" placeholder="${attr(fl.message.placeholder)}" required></textarea>
           </div>
           <p class="form-consent">${c.form.consentText} <a href="${c.form.consentLink.href}">${c.form.consentLink.label}</a>.</p>
           <button type="submit" class="btn btn-primary">${c.form.submit}</button>
@@ -1091,18 +1130,6 @@ function buildIndex() {
     },
     knowsLanguage: 'fr',
     founder: { '@type': 'Person', name: content.nav.logo },
-    priceRange: '990€ - 4490€+',
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: 'Formules de création de site internet',
-      itemListElement: content.configurator.bases.map(base => ({
-        '@type': 'Offer',
-        name: base.name,
-        description: base.blurb,
-        priceCurrency: 'EUR',
-        price: base.price,
-      })),
-    },
   };
 
   const faqPage = {
@@ -1118,11 +1145,12 @@ function buildIndex() {
   const bodyHTML = [
     heroSection(),
     audiencesSection(),
-    processSection(),
+    manifesteSection(),
     caseStudySection(),
-    proofSection(),
     prestationsSection(),
+    proofSection(),
     configuratorSection(),
+    processSection(),
     digitalSolutionsSection(),
     faqSection(),
     contactSection(),
@@ -1341,7 +1369,7 @@ function buildExempleDevis() {
     <div class="legal-page devis-page">
       <p class="eyebrow">Exemple</p>
       <h1>À quoi ressemble un devis</h1>
-      <p class="devis-intro">Voici un devis type, pour vous donner une idée du niveau de détail. Le vôtre est établi après un premier échange, une fois le périmètre précisé — <a href="/#contact">demandez le vôtre</a>.</p>
+      <p class="devis-intro">Voici un document fictif pour vous donner une idée du niveau de détail. Les montants sont provisoires : votre devis est établi après un premier échange, une fois le périmètre précisé — <a href="/#contact">demandez le vôtre</a>.</p>
 
       <div class="devis-doc">
         <div class="devis-head">
@@ -1366,21 +1394,22 @@ function buildExempleDevis() {
             <tr><th>Prestation</th><th>Montant</th></tr>
           </thead>
           <tbody>
-            <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, espace d'administration, blog, formulaire qualifié, référencement local de base, 2 h de formation</td><td>2&nbsp;490&nbsp;€</td></tr>
+            <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, blog, formulaire qualifié et référencement local de base</td><td>2&nbsp;490&nbsp;€</td></tr>
+            <tr><td>Option espace d’administration</td><td>390&nbsp;€</td></tr>
             <tr><td>Rédaction des textes de l'ensemble des pages</td><td>390&nbsp;€</td></tr>
-            <tr><td>Référencement local renforcé (fiche Google, avis, mots-clés locaux)</td><td>390&nbsp;€</td></tr>
+            <tr><td>Référencement renforcé — textes enrichis et suivi personnalisé dans le temps</td><td>390&nbsp;€</td></tr>
           </tbody>
           <tfoot>
-            <tr><td>Total</td><td>3&nbsp;270&nbsp;€</td></tr>
+            <tr><td>Total</td><td>3&nbsp;660&nbsp;€</td></tr>
           </tfoot>
         </table>
-        <p class="devis-note">TVA non applicable, article 293 B du CGI. Option : maintenance et mises à jour à 49&nbsp;€/mois, sans engagement.</p>
+        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et petites mises à jour à 49&nbsp;€/mois, sans engagement.</p>
 
         <p class="devis-label">Modalités</p>
         <ul>
           <li>Acompte de 30 % à la commande, solde à la mise en ligne.</li>
           <li>Délai indicatif : 4 semaines à compter de la validation de la maquette.</li>
-          <li>Deux séries d'allers-retours incluses sur le design.</li>
+          <li>Trois séries de corrections incluses sur le design.</li>
           <li>Le site et son code vous appartiennent à la livraison.</li>
         </ul>
       </div>

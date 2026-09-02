@@ -19,11 +19,11 @@ export const content = {
     logo: 'Arthur Avetisian',
     links: [
       { label: 'Prestations', href: '/#prestations' },
-      { label: 'Réalisations', href: '/#realisation' },
+      { label: 'Réalisation', href: '/#realisation' },
       { label: 'Tarifs', href: '/#tarifs' },
       { label: 'Contact', href: '/#contact' },
     ],
-    solutionsLabel: 'Solutions',
+    solutionsLabel: 'Autres services',
     cta: 'Demander un devis',
   },
 
@@ -34,10 +34,18 @@ export const content = {
     // Le carrousel défile dans cet ordre puis se fige sur le dernier ("faire confiance").
     // La partie fixe s'arrête à "…de vous" ; "faire" ne revient qu'avec le mot final.
     titleAccentWords: ['remarquer', 'choisir', 'contacter', 'connaître', 'faire confiance'],
-    subtitle: "Je conçois des sites sur-mesure pour les professionnels d'Angoulême et de Charente — avocats, artisans, indépendants — pensés pour transformer vos visiteurs en clients.",
+    subtitle: "Je conçois à Angoulême des sites professionnels, rapides et simples à gérer, avec une attention particulière portée aux professions libérales — ainsi qu'aux artisans, indépendants et TPE.",
     ctaPrimary: { label: 'Demander un devis', href: '/#contact' },
     ctaSecondary: { label: 'Voir une réalisation', href: '/#realisation' },
+    reassurance: 'Premier échange gratuit, sans engagement. Réponse sous 24 à 48 h.',
     scrollHint: 'Découvrir',
+  },
+
+  // Phrase-manifeste, en grand, juste après le hero. À réécrire dans les mots d'Arthur.
+  manifeste: {
+    eyebrow: 'Votre présence en ligne',
+    lead: 'Un futur client voit souvent votre site avant de vous rencontrer.',
+    emphasis: 'Ce premier regard décide de la suite.',
   },
 
   audiences: {
@@ -64,54 +72,44 @@ export const content = {
 
   prestations: {
     eyebrow: 'Prestations',
-    title: 'Ce que je propose',
+    title: 'Les quatre piliers de votre site',
     items: [
       {
-        title: 'Site vitrine sur-mesure',
-        desc: 'Un design pensé pour votre activité et votre image, jamais un thème générique.',
+        title: 'Conception & identité',
+        desc: 'Une structure et un design conçus pour votre activité, vos clients et les codes de votre profession.',
       },
       {
-        title: "Espace d'administration",
-        desc: 'Modifiez vous-même vos textes, vos images et vos actualités, sans aucune compétence technique.',
+        title: 'Mobile, rapidité & contact',
+        desc: 'Une expérience fluide sur tous les écrans et un parcours clair pour faciliter les prises de contact.',
       },
       {
-        title: 'Blog & actualités',
-        desc: 'Publiez vos actualités, cas clients ou conseils pour rester visible et actif.',
+        title: 'Un site adapté à vos besoins',
+        desc: 'Votre site reste simple et efficace. Un espace d’administration peut être ajouté en option si vous souhaitez gérer vous-même vos contenus.',
       },
       {
-        title: 'Formulaire de contact qualifié',
-        desc: 'Récupérez des demandes déjà qualifiées, prêtes à être traitées.',
-      },
-      {
-        title: 'Optimisation mobile',
-        desc: 'Un site pensé mobile-first, agréable à consulter sur tous les écrans.',
-      },
-      {
-        title: 'Mise en ligne & nom de domaine',
-        desc: "Je m'occupe de l'hébergement et du nom de domaine : clé en main.",
-      },
-      {
-        title: 'Référencement local de base',
-        desc: 'Votre activité visible sur Angoulême et en Charente dès la mise en ligne.',
-      },
-      {
-        title: 'Maintenance & mises à jour',
-        desc: 'Un suivi mensuel en option pour garder votre site à jour et fonctionnel, sans y penser.',
+        title: 'Mise en ligne & accompagnement',
+        desc: 'Je prépare la publication du site. La maintenance optionnelle inclut ensuite l’hébergement et les petites mises à jour.',
       },
     ],
   },
 
   caseStudy: {
-    sectionEyebrow: 'Réalisations',
+    sectionEyebrow: 'Réalisation',
     sectionTitle: 'Une réalisation récente',
     eyebrow: 'Étude de cas',
     title: 'Cabinet Laperonnie',
     subtitle: 'Avocat à Angoulême',
     needLabel: 'Le besoin',
-    need: "Le Cabinet Laperonnie souhaitait une présence en ligne à la hauteur de son expertise, avec une mise en avant particulière de son activité en droit des cryptomonnaies — un domaine de niche qui demande à la fois pédagogie et crédibilité renforcée.",
-    responseLabel: 'La réponse',
-    response: "Un site multi-pages à l'identité soignée, un espace d'administration permettant au cabinet de gérer lui-même ses contenus, une attention particulière portée à la conformité déontologique propre à la profession d'avocat, et un référencement local pensé pour Angoulême et la Charente.",
-    link: { label: 'Voir le site en ligne', href: 'https://laperonnie-avocat.fr/' },
+    need: "Présenter clairement les expertises du cabinet, notamment son activité en droit des cryptomonnaies, tout en installant une image sérieuse et immédiatement crédible.",
+    choicesLabel: 'Les choix de conception',
+    choices: [
+      'Une direction visuelle sobre et haut de gamme, adaptée aux codes de la profession',
+      'Une hiérarchie claire pour rendre les domaines d’intervention faciles à comprendre',
+      'Des accès visibles vers la prise de rendez-vous et le contact, également sur mobile',
+    ],
+    constraintLabel: 'Contrainte métier',
+    constraint: "Présenter les expertises avec pédagogie tout en respectant le cadre déontologique propre à la communication d’un avocat.",
+    link: { label: 'Découvrir le site du cabinet', href: 'https://laperonnie-avocat.fr/' },
     deliverablesLabel: 'Ce qui a été livré',
     deliverables: [
       'Site multi-pages sur-mesure',
@@ -138,57 +136,51 @@ export const content = {
       {
         n: '03',
         title: 'Validation',
-        desc: 'Des allers-retours jusqu’à ce que vous soyez pleinement satisfait.',
+        desc: 'Deux à trois séries de corrections sont prévues selon la formule ; la formule Premium permet davantage d’ajustements dans le périmètre validé.',
       },
       {
         n: '04',
-        title: 'Mise en ligne & formation',
-        desc: 'Votre site est publié et vous savez le gérer en autonomie.',
+        title: 'Mise en ligne & accompagnement',
+        desc: 'Votre site est préparé, vérifié puis publié dans les conditions définies ensemble.',
       },
     ],
   },
 
-  // Section « preuve chiffrée » (5c). Les scores Lighthouse doivent refléter une mesure RÉELLE
-  // du site déployé (PageSpeed Insights) — à ajuster une fois le domaine en ligne.
+  // Engagements factuels — aucune statistique de performance non vérifiée n'est publiée.
   proof: {
-    eyebrow: 'Ce que ça change',
-    title: 'Un site qui travaille, chiffres à l’appui',
+    eyebrow: 'Mes engagements',
+    title: 'Un cadre clair avant de commencer',
+    intro: 'Vous savez ce qui est prévu, ce qui reste optionnel et comment votre projet va avancer.',
     stats: [
-      { value: 990, suffix: ' €', label: 'à partir de, pour la formule Essentiel' },
-      { value: '2–4', suffix: ' sem.', label: 'de l’échange initial à la mise en ligne', plain: true },
-      { value: 48, suffix: ' h', label: 'délai de réponse maximum à votre demande' },
-      { value: 100, suffix: ' %', label: 'des sites livrés pensés d’abord pour le mobile' },
+      { value: '24–48 h', label: 'pour recevoir une première réponse', plain: true },
+      { value: 'Budget clair', label: 'une estimation visible puis un devis adapté au périmètre', plain: true },
+      { value: 'Mobile d’abord', label: 'une expérience conçue pour tous les écrans', plain: true },
+      { value: 'Votre site', label: 'des accès et une propriété précisés dans le devis', plain: true },
     ],
-    perfTitle: 'Performance du site que vous consultez',
-    perfNote: 'Chaque site que je livre est mesuré avant la mise en ligne, et le rapport vous est remis.',
-    // ⚠ Scores à REMPLACER par une vraie mesure PageSpeed Insights du site déployé.
-    metrics: [
-      { label: 'Performance', score: 98 },
-      { label: 'Accessibilité', score: 100 },
-      { label: 'Bonnes pratiques', score: 96 },
-      { label: 'Référencement', score: 100 },
+    detailsLabel: 'Défini avant le lancement',
+    details: [
+      'Le périmètre et le calendrier du projet',
+      'Le nombre de séries de corrections incluses',
+      'Les coûts ponctuels et récurrents',
+      'L’hébergement uniquement avec la maintenance',
     ],
-    gauge: {
-      label: 'Score global',
-      score: 98,
-      caption: 'Chargement rapide sur mobile, même en 4G en Charente.',
-    },
-    verifyLink: { label: 'Vérifier sur PageSpeed Insights', href: 'https://pagespeed.web.dev/' },
+    note: 'Chaque point est confirmé dans le devis avant le début de la création.',
     cta: { label: 'Demander un devis', href: '/#contact' },
   },
 
   // Section « Tarifs » (fusion de l'ancienne grille de tarifs + du configurateur).
   // On choisit une formule (avec ce qu'elle contient), on ajoute des options, le total
-  // se calcule en direct. « Recevoir ce devis détaillé » pré-remplit le formulaire de
+  // se calcule en direct. Le CTA d'estimation pré-remplit le formulaire de
   // contact (#contact) — pas de 2ᵉ formulaire. Montants à valider / ajuster par Arthur.
   configurator: {
-    eyebrow: 'Tarifs',
-    title: 'Composez votre projet, le budget suit',
-    intro: 'Pas de « nous contacter pour un tarif ». Vous choisissez une formule, vous ajoutez ce dont vous avez besoin, et le budget s’affiche — le devis détaillé arrive derrière.',
+    eyebrow: 'Budgets indicatifs',
+    title: 'Composez votre projet, estimez votre budget',
+    intro: 'Choisissez une base et les options utiles pour obtenir un premier ordre de grandeur. Les montants présentés sont provisoires et seront confirmés après échange sur votre besoin.',
     baseLabel: 'Votre formule',
     bases: [
       {
         id: 'essentiel', name: 'Essentiel', price: 990, weeks: 2,
+        pricePrefix: 'à partir de',
         contactType: 'Site vitrine une page',
         blurb: 'Pour une présence simple et efficace.',
         features: [
@@ -196,54 +188,56 @@ export const content = {
           'Formulaire de contact',
           '100 % adapté mobile',
           'Mise en ligne incluse',
-          '1 h de prise en main',
+          '2 séries de corrections',
         ],
       },
       {
         id: 'pro', name: 'Professionnel', price: 2490, weeks: 4, recommended: true,
-        badge: 'Le plus choisi',
+        pricePrefix: 'à partir de',
+        badge: 'Recommandée',
         contactType: 'Site multi-pages',
         blurb: 'La formule la plus complète pour une activité qui se développe.',
         features: [
           'Site multi-pages (jusqu’à 5-6 pages)',
-          'Espace d’administration pour gérer son contenu',
           'Blog / actualités',
           'Formulaire qualifié',
           'Référencement local de base',
-          '2 h de formation',
+          '3 séries de corrections',
         ],
       },
       {
         id: 'premium', name: 'Premium', price: 4490, weeks: 6,
-        pricePrefix: 'à partir de', priceNote: 'Sur devis',
+        pricePrefix: 'à partir de',
         contactType: 'Site multi-pages',
         blurb: 'Suivi et accompagnement pour un projet complet sur-mesure.',
         features: [
           'Site complet sur-mesure',
           'Fonctionnalités avancées',
           'Suivi et accompagnement',
+          'Ajustements jusqu’à validation dans le périmètre convenu',
         ],
       },
     ],
     optionsLabel: 'Ajoutez des options',
     options: [
+      { id: 'administration', name: 'Espace d’administration', price: 390 },
       { id: 'redaction', name: 'Rédaction des textes', price: 390 },
       { id: 'photos', name: 'Optimisation des photos', price: 190 },
       { id: 'rdv', name: 'Prise de rendez-vous en ligne', price: 290 },
-      { id: 'seo', name: 'Référencement local renforcé', price: 390 },
+      { id: 'seo', name: 'Référencement renforcé & suivi', price: 390 },
       { id: 'pages', name: '3 pages supplémentaires', price: 450 },
       { id: 'bilingue', name: 'Site bilingue (FR / EN)', price: 490 },
     ],
-    maintenance: { id: 'maintenance', name: 'Maintenance', price: 49, unit: ' €/mois' },
+    maintenance: { id: 'maintenance', name: 'Maintenance & hébergement', price: 49, unit: ' €/mois' },
     panel: {
-      label: 'Estimation',
-      note: 'TTC, hors maintenance.',
+      label: 'Estimation indicative',
+      note: 'Hors option maintenance & hébergement.',
       weeksSuffix: ' semaines estimées',
       basePrefix: 'Formule',
-      cta: 'Recevoir ce devis détaillé',
+      cta: 'Demander une estimation personnalisée',
       exampleLabel: 'Voir un exemple de devis',
       exampleDevisUrl: '/exemple-devis',
-      disclaimer: 'Estimation indicative — le montant final est arrêté après un premier échange, une fois le périmètre précisé.',
+      disclaimer: 'Estimations provisoires — le montant final, les coûts récurrents et les conditions d’hébergement sont arrêtés dans le devis après un premier échange.',
       reassurance: 'Sans engagement, réponse sous 24 à 48 h.',
       hint: 'Cochez : le total et le récapitulatif se mettent à jour.',
     },
@@ -261,19 +255,19 @@ export const content = {
       },
       {
         q: 'Est-ce que je pourrai le modifier moi-même ?',
-        a: 'Oui, à partir de la formule Professionnel, vous disposez d’un espace d’administration simple pour modifier vos textes, images et actualités sans aucune compétence technique.',
+        a: 'Un espace d’administration peut être ajouté en option à votre projet si vous souhaitez modifier vous-même vos textes, images et actualités.',
       },
       {
-        q: 'Le nom de domaine et l’hébergement sont-ils inclus ?',
-        a: 'Oui, la mise en ligne, le nom de domaine et l’hébergement sont inclus dans chaque formule.',
+        q: 'La mise en ligne et l’hébergement sont-ils inclus ?',
+        a: 'La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis.',
       },
       {
         q: 'Que se passe-t-il après la livraison ?',
-        a: 'Vous êtes formé à la gestion de votre site et je reste disponible. Une option de maintenance mensuelle existe si vous préférez déléguer les mises à jour.',
+        a: 'Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement ainsi que les petites modifications de textes, d’images ou de couleurs. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé.',
       },
       {
         q: 'Que se passe-t-il si je ne suis pas satisfait du résultat ?',
-        a: 'Chaque formule inclut des allers-retours de validation avant la mise en ligne : nous ajustons ensemble jusqu’à ce que le résultat vous corresponde.',
+        a: 'La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ.',
       },
       {
         q: 'Travaillez-vous avec des clients hors d’Angoulême ?',
@@ -343,13 +337,13 @@ export const content = {
         stepsLabel: 'Comment ça marche',
         steps: [
           { n: '01', title: 'Vos photos', desc: 'Vous m’envoyez vos photos existantes, sans mise en scène particulière.' },
-          { n: '02', title: 'Génération', desc: 'Je génère des formats courts adaptés aux réseaux (réels, stories).' },
-          { n: '03', title: 'Livraison', desc: 'Prête à publier, au rythme qui vous convient — ponctuel ou mensuel.' },
+          { n: '02', title: 'Génération', desc: 'Je génère des formats courts adaptés aux réseaux (Reels, stories).' },
+          { n: '03', title: 'Livraison', desc: 'Prêts à publier, au rythme qui vous convient — ponctuel ou mensuel.' },
         ],
         benefitsLabel: 'Pourquoi cette approche',
         benefits: [
           { title: 'Régulier', desc: 'Un flux de contenu sans avoir à y penser chaque semaine.' },
-          { title: 'Adapté aux formats courts', desc: 'Pensé pour les réels et stories, pas du contenu recyclé au format inadapté.' },
+          { title: 'Adapté aux formats courts', desc: 'Pensé pour les Reels et stories, pas du contenu recyclé au format inadapté.' },
           { title: 'Sans matériel supplémentaire', desc: 'Vos photos existantes suffisent, pas besoin de nouvelle séance.' },
         ],
         faqLabel: 'Questions fréquentes',
@@ -406,13 +400,13 @@ export const content = {
   contact: {
     eyebrow: 'Contact',
     title: 'Discutons de votre projet',
-    subtitle: 'Décrivez-moi votre besoin, je reviens vers vous sous 24 à 48h.',
+    subtitle: 'Parlez-moi de votre activité, de votre objectif et de votre échéance. Je vous réponds sous 24 à 48 h avec les prochaines étapes.',
     form: {
       action: 'https://formsubmit.co/arthur.avetisian@hotmail.com',
       fields: {
         name: { label: 'Nom', id: 'contact-name', type: 'text', required: true },
         email: { label: 'Email', id: 'contact-email', type: 'email', required: true },
-        phone: { label: 'Téléphone', id: 'contact-phone', type: 'tel', required: false },
+        phone: { label: 'Téléphone — facultatif', id: 'contact-phone', type: 'tel', required: false },
         projectType: {
           label: 'Type de projet',
           id: 'contact-project-type',
@@ -428,7 +422,7 @@ export const content = {
             'Autre',
           ],
         },
-        message: { label: 'Message', id: 'contact-message', required: true },
+        message: { label: 'Message', id: 'contact-message', placeholder: 'Votre activité, ce que vous souhaitez améliorer et votre échéance…', required: true },
       },
       submit: 'Envoyer ma demande',
       consentText: 'En envoyant ce formulaire, j’accepte que mes données soient utilisées pour traiter ma demande. Voir la',
