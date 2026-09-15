@@ -4,3 +4,8 @@ ui_design/
 .vercel
 .DS_Store
 *.log
+
+# Données de prospection (contacts, brouillons d'emails) — jamais dans le dépôt du site
+prospection/
+outputs/
+.artifact-work/

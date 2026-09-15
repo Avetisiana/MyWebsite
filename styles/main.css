@@ -75,6 +75,7 @@ input, textarea, select { font: inherit; color: inherit; }
 :root {
   --color-bg: #FAF6EF;
   --color-bg-alt: #F1E9DA;
+  --section-tone-fade: clamp(3rem, 6vw, 6rem);
   --color-surface: #FFFFFF;
   --color-text: #1A1917;
   --color-text-soft: #5B5852;
@@ -193,7 +194,26 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   .container { padding: 0 var(--space-4); }
   section { padding: var(--space-7) 0; }
 }
-.bg-alt { background: var(--color-bg-alt); }
+.bg-alt {
+  padding-block: clamp(5.5rem, 9vw, 8rem);
+  background-color: var(--color-bg-alt);
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg) 0,
+    var(--color-bg-alt) var(--section-tone-fade),
+    var(--color-bg-alt) calc(100% - var(--section-tone-fade)),
+    var(--color-bg) 100%
+  );
+}
+
+/* Le contact se fond dans la page en haut, puis reste beige avant la rupture sombre du footer. */
+#contact.bg-alt {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg) 0,
+    var(--color-bg-alt) var(--section-tone-fade)
+  );
+}
 
 /* Utility: visually hidden (honeypot field) — replaces inline style="display:none" for CSP */
 .hp { display: none; }
@@ -657,10 +677,6 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 @keyframes scrollpulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* ---------- Manifeste ---------- */
-#manifeste {
-  padding-block: clamp(3rem, 7vw, 5.5rem);
-  border-block: 1px solid rgba(30, 59, 50, 0.12);
-}
 .manifeste-rail {
   max-width: 1040px;
   margin: 0 auto;
@@ -715,7 +731,6 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   color: var(--color-accent);
 }
 @media (max-width: 700px) {
-  #manifeste { padding-block: var(--space-4); }
   .manifeste-rail { grid-template-columns: 1fr; gap: var(--space-3); }
   .manifeste-meta {
     flex-direction: row;
@@ -1067,15 +1082,16 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 }
 @media (min-width: 920px) {
   .config {
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 360px);
     grid-template-areas:
       "formules   formules"
       "options    panel"
-      "disclaimer disclaimer";
+      "disclaimer .";
     column-gap: var(--space-5);
     row-gap: var(--space-5);
     align-items: start;
   }
+  .config::after { content: ''; grid-column: 1 / -1; height: 0; }
   .config-formules { grid-area: formules; }
   .config-controls { grid-area: options; }
   .config-panel { grid-area: panel; }
@@ -1234,7 +1250,13 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   padding: var(--space-4);
   display: flex; flex-direction: column;
 }
-@media (min-width: 920px) { .config-panel { position: sticky; top: var(--space-5); align-self: start; } }
+@media (min-width: 920px) {
+  .config-panel {
+    position: sticky;
+    top: calc(var(--space-7) + var(--space-1));
+    align-self: start;
+  }
+}
 .config-panel .config-panel-label { color: var(--on-dark-mute); margin-bottom: 0.2em; }
 
 /* Profondeur des surfaces vert foncé — nappe claire en haut-gauche, creux sombre
@@ -1278,7 +1300,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   text-decoration: underline; text-underline-offset: 3px;
 }
 .config-example:hover { color: var(--color-bg); }
-.config-reassurance { margin-top: 0.8em; text-align: center; font-size: 0.76rem; color: var(--on-dark-mute); }
+.config-reassurance { margin-top: 0.8em; text-align: center; text-wrap: balance; font-size: 0.76rem; color: var(--on-dark-mute); }
 
 .config-disclaimer { font-size: 0.78rem; line-height: 1.6; color: var(--color-text-faint); margin-top: var(--space-2); }
 @media (min-width: 920px) { .config-disclaimer { margin-top: 0; } }

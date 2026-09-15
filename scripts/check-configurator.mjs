@@ -74,7 +74,7 @@ if (results.prefill.projectType !== 'Site multi-pages' || !normalizedPrefill.inc
 if (errors.length) failures.push('erreurs console');
 
 const overflow = {};
-for (const width of [390, 1440]) {
+for (const width of [390, 920, 1080, 1440, 1920]) {
   await page.setViewport({ width, height: 900 });
   await page.goto('http://localhost:3000/#tarifs', { waitUntil: 'networkidle2' });
   overflow[width] = await page.evaluate(() => ({

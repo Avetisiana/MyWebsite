@@ -6,9 +6,9 @@ export const content = {
     siteName: 'Arthur Avetisian',
     title: 'Arthur Avetisian — Création de sites internet à Angoulême',
     description: "Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.",
-    domain: 'https://DOMAINE-A-DEFINIR.fr',
+    domain: 'https://deux-as.fr',
     previewUrl: 'https://monsiteaa.vercel.app',
-    email: 'arthur.avetisian@hotmail.com',
+    email: 'contact@deux-as.fr',
     phone: '+33646456925',
     phoneDisplay: '06 46 45 69 25',
     gaId: '[GA_MEASUREMENT_ID]',
@@ -499,7 +499,7 @@ export const content = {
     title: 'Discutons de votre projet',
     subtitle: 'Parlez-moi de votre activité, de votre objectif et de votre échéance. Je vous réponds sous 24 à 48 h avec les prochaines étapes.',
     form: {
-      action: 'https://formsubmit.co/arthur.avetisian@hotmail.com',
+      action: 'https://formsubmit.co/contact@deux-as.fr',
       fields: {
         name: { label: 'Nom', id: 'contact-name', type: 'text', required: true },
         email: { label: 'Email', id: 'contact-email', type: 'email', required: true },

@@ -44,17 +44,15 @@ node screenshot.mjs http://localhost:3000 [label] [largeur] [hauteur] [full]
   (ex. `/build.mjs`, `/CLAUDE.md` répondaient 200 avant correction).
 - `cleanUrls: true` dans `vercel.json` : les pages sont accessibles sans `.html`
   (`/mentions-legales`, `/confidentialite`, `/merci`).
-- Le domaine de preview actuel (`https://monsiteaa.vercel.app`) est en **`noindex, follow`** tant que
-  `content.meta.domain` reste le placeholder `DOMAINE-A-DEFINIR.fr`. Dès que le vrai domaine est
-  renseigné dans `content/site-content.mjs` puis qu'un `node build.mjs` est relancé, canonical,
-  og:url, JSON-LD, sitemap et l'indexation basculent **automatiquement** sur `index, follow`.
+- Le domaine de production est `https://deux-as.fr`. L'URL `https://monsiteaa.vercel.app` reste
+  uniquement la valeur de secours technique utilisée si `content.meta.domain` est remis sur le
+  placeholder. Canonical, og:url, JSON-LD et sitemap sont générés depuis le domaine de production,
+  avec une directive **`index, follow`**.
 
 ## Placeholders à compléter avant la mise en production
 
-Tous dans `content/site-content.mjs` sauf mention contraire — chercher `[…]` ou `DOMAINE-A-DEFINIR` :
+Tous dans `content/site-content.mjs` sauf mention contraire — chercher `[…]` :
 
-- `content.meta.domain` — domaine final (actuellement le placeholder, le site tourne sur l'URL de
-  preview Vercel en attendant)
 - `content.meta.gaId` — identifiant Google Analytics (`[GA_MEASUREMENT_ID]`). Tant qu'il contient
   `[`, aucune requête n'est faite vers Google et la bannière cookies ne s'affiche même pas.
 - Mentions légales (`build.mjs`, fonction `buildMentionsLegales`) : nom complet, statut juridique,
@@ -65,7 +63,7 @@ Tous dans `content/site-content.mjs` sauf mention contraire — chercher `[…]`
 
 ### Formsubmit
 
-Le formulaire pointe vers `https://formsubmit.co/arthur.avetisian@hotmail.com`. Formsubmit exige
+Le formulaire pointe vers `https://formsubmit.co/contact@deux-as.fr`. Formsubmit exige
 une activation à la toute première soumission (email de confirmation à cliquer). **Après
 activation**, remplacer cette URL par l'alias aléatoire fourni par Formsubmit
 (`content.contact.form.action`) pour ne plus exposer l'adresse email en clair dans le HTML.

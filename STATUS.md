@@ -1,5 +1,81 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-16 — domaine définitif deux-as.fr (poussée)
+
+- Domaine `deux-as.fr` acheté par Arthur chez OVH, relié au projet Vercel (`mon_site_aa`) :
+  `deux-as.fr` ajouté + `www.deux-as.fr`, zone DNS OVH mise à jour (A `76.76.21.21` sur `@`,
+  CNAME `www` → cible Vercel), anciens enregistrements de parking OVH supprimés, MX/SPF de la
+  messagerie OVH conservés intacts.
+- Sens de redirection choisi et vérifié en direct : **`deux-as.fr` (sans www) est le domaine
+  canonique**, `www.deux-as.fr` redirige dessus (307). Décision motivée : aucun sous-domaine
+  prévu (donc pas d'enjeu de partage de cookies), domaine tout neuf (rien à perdre côté SEO),
+  et plus court à l'oral / sur une carte de visite pour une activité locale.
+- `content.meta.domain` confirmé sur `https://deux-as.fr` (déjà en place), `meta.email` sur
+  `contact@deux-as.fr`. `node build.mjs` relancé : `SITE_URL = https://deux-as.fr` sans le
+  marqueur preview → le site est sorti du mode `noindex`. Vérifié : `<meta name="robots"
+  content="index, follow">`, `<link rel="canonical" href="https://deux-as.fr/">`,
+  `sitemap.xml` et `robots.txt` pointent bien vers le domaine définitif.
+- **Repéré et corrigé au passage** : un dossier `prospection/` (base de contacts B2B et
+  brouillons d'e-mails de démarchage, données personnelles de tiers) ainsi que `outputs/` et
+  `.artifact-work/` traînaient en non suivi à la racine du dépôt — ajoutés à `.gitignore` pour
+  qu'ils ne partent jamais sur GitHub par erreur. Rien de ce dossier n'a été poussé.
+- Poussé uniquement les fichiers du site (contenu, HTML régénérés, `styles/main.css`,
+  `scripts/check-configurator.mjs`, `README.md`, `robots.txt`/`sitemap.xml`/`vercel.json`,
+  `.gitignore`) — la campagne de prospection (`STATUS.md` sessions du 15-16/09) reste un sujet
+  à part, non lié au code du site.
+
+## Session 2026-09-16 — préparation de la vague 2 (non poussée)
+
+- Les 25 prospects restants ont été revérifiés ; P015 est bien active et a été requalifiée.
+- 25 e-mails individualisés ont été préparés dans Zimbra, avec le modèle HTML validé, puis contrôlés par destinataire, objet et aperçu. Le dossier Brouillons contient exactement 25 messages.
+- Le retour de non-distribution du message P026 a été analysé : Orange/Wanadoo refuse actuellement `contact@deux-as.fr` avec un code `550 5.1.0`, en indiquant un signalement Abusix ou Spamhaus.
+- Huit brouillons de la vague 2 sont donc suspendus pour délivrabilité : P015, P016, P017, P021, P023, P024, P025 et P027. Les 17 autres sont techniquement prêts à partir après confirmation immédiate d'Arthur.
+- Les textes complets et l'état de préparation sont conservés dans `prospection/prospects-data.json`; la source éditable de la vague est `prospection/wave-2-drafts.json`.
+- Le classeur local et le fichier Google Drive ne doivent passer en statut `Envoyé` qu'après l'envoi effectif.
+
+## Session 2026-09-15 — prospection commerciale Charente (non poussée)
+
+- Base de 30 prospects B2B qualifiés et sourcés, dont 21 en priorité A.
+- Classeur de suivi final : `outputs/prospection-deux-as/prospection-charente.xlsx`.
+- Base structurée et passation : `prospection/prospects-data.json` et `prospection/HANDOFF.md`.
+- Cinq e-mails personnalisés, mis en forme et envoyés depuis Zimbra le 15/09/2026 à P009, P010, P013, P018 et P026 ; P026 a ensuite été rejeté par le serveur Orange/Wanadoo.
+- Chaque action d'envoi a été confirmée dans Zimbra ; quatre messages n'ont pas généré de retour d'échec et P026 est enregistré comme non distribué.
+- Le classeur et la base structurée indiquent désormais le statut `Envoyé`, la date d'envoi et la prochaine action.
+- Le fichier Drive existant `prospection-charente.xlsm` (ID `16--lmrfcCcnhA0-PluOOpAvMRNOF-Bz4`) a été mis à jour sur place, sans doublon ; son tableau de bord affiche 0 brouillon prêt et 5 messages envoyés.
+- Tout nouvel envoi doit être validé explicitement par Arthur au moment de l'envoi.
+- Pour reprendre la campagne dans un autre chat, lire d'abord `prospection/HANDOFF.md`, puis réconcilier
+  les statuts avec le classeur et le dossier Envoyés de Zimbra.
+
+## Session 2026-09-15 — domaine et e-mail professionnels (non poussé)
+
+- Domaine de production renseigné : `https://deux-as.fr`.
+- Adresse de contact remplacée partout par `contact@deux-as.fr`, y compris pour l'action Formsubmit.
+- Les pages générées utilisent désormais le nouveau domaine pour les canonical, Open Graph,
+  JSON-LD, l'image sociale, la redirection après formulaire, le sitemap et `robots.txt`.
+- L'URL `https://monsiteaa.vercel.app` reste uniquement le fallback technique de preview dans la
+  source et n'apparaît plus dans les fichiers publics générés.
+- Vérifications réussies : build complet, configurateur, absence d'anciennes valeurs, JSON-LD,
+  canonical/robots et rendu du contact/footer en 1440 px et 390 px.
+- Informations légales de l'entreprise toujours en attente : nom complet, statut juridique, SIRET,
+  adresse et date de mise à jour des pages légales.
+
+## Session 2026-09-15 — fondus et panneau tarifs (non poussé)
+
+- Les sections ivoire et beige s’enchaînent désormais avec un fondu vertical CSS sans animation :
+  environ 96 px sur ordinateur et 48 px sur mobile.
+- Le beige reste plein au cœur des sections pour conserver leur identité et la lisibilité des cartes.
+- L’ancien filet haut/bas du manifeste a été retiré afin de ne plus recréer une coupure franche.
+- La section Contact ne fond qu’en entrée et garde une rupture nette avant le footer vert foncé.
+- Deux passes visuelles effectuées sur le manifeste, puis contrôle des prestations et du contact en
+  1440 px et 390 px.
+- Les marges internes des sections beiges passent à environ 128 px sur ordinateur et 88 px sur
+  mobile afin que les textes restent nettement éloignés des transitions.
+- Le panneau vert du configurateur est légèrement élargi sur grand écran et son décalage sticky
+  tient compte de la navbar fixe. Une réserve de grille évite qu’il soit repoussé sous la navigation
+  à l’approche de la fin de la section.
+- Le texte « Estimations provisoires » reste dans la colonne gauche et ne peut plus passer sous le
+  panneau ; la phrase de réassurance est équilibrée pour éviter une dernière ligne « h. » isolée.
+
 ## Session 2026-09-15 — options tarifaires et maintenance (poussé)
 
 ### Réalisé
@@ -95,7 +171,7 @@ desktop + mobile OK, aucune règle CSS orpheline (l'ancien bloc `.proof-gauge*`,
 
 ### Reste
 - **Non poussé** : étapes 1-3 (commits `3509e2a`, `8488530`, `1e36236`) + ce commit.
-- Toujours en attente : l'adresse `@hotmail.com` (contact + footer).
+- Résolu depuis : l'adresse professionnelle `contact@deux-as.fr` remplace l'adresse Hotmail.
 - `AGENTS.md` et `ETUDE-TARIFAIRE.md` non suivis par git (docs de travail d'Arthur).
 
 ---
@@ -228,8 +304,7 @@ bloc témoignage **redessiné sans citation**.
   (1440) + mobile (390) des sections modifiées.
 
 ### Reste à trancher (Arthur)
-- **Email `@hotmail.com`** dans le bloc contact + footer : contre-signal sur un
-  site « présence pro crédible ». Alias / Gmail en attendant le domaine ?
+- **Résolu depuis** : le bloc contact et le footer utilisent `contact@deux-as.fr`.
 - Points polish non traités (hors périmètre choisi) : eyebrow hero qui casse en
   mobile, CTA des 3 cartes tarifs à hauteurs différentes, FAQ pleine largeur,
   libellé « Demander un devis » répété 6×, « Gérer les cookies » seul lien souligné.
@@ -594,7 +669,7 @@ le reste du site, grille "Comment ça marche" bien à 3 colonnes sans case vide.
 - [x] GitHub → https://github.com/Avetisiana/MyWebsite.git (branche `main`, à jour — durcissement
   technique + 3 offres digitales + animations hero + soie mobile + refonte tarifs, tous poussés)
 - [ ] Vercel → pas encore connecté à ce repo
-- [ ] Domaine → non configuré (`SITE_URL` retombe sur `https://monsiteaa.vercel.app`, noindex)
+- [x] Domaine de production → `https://deux-as.fr` (`index, follow`)
 - [ ] Google Search Console → non configuré
 - [ ] Google Analytics → non configuré (`content.meta.gaId`)
 - [x] Formulaire de contact → Formsubmit + fetch progressif, dropdown à jour avec les 3 nouvelles offres
@@ -602,7 +677,7 @@ le reste du site, grille "Comment ça marche" bien à 3 colonnes sans case vide.
 
 ## Ce qui reste à faire
 - Connecter le repo à un projet Vercel
-- Renseigner `content.meta.domain` (vrai domaine) puis rebuild → bascule auto index/noindex
+- Vérifier le premier déploiement public sur `https://deux-as.fr` après publication des changements
 - Renseigner `content.meta.gaId` une fois Google Analytics créé
 - Compléter les pages légales : nom complet, statut juridique, SIRET, adresse, date de MAJ
 - Après la première soumission réelle du formulaire : remplacer l'email en clair dans

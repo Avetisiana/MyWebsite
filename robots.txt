@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /merci
 Allow: /
 
-Sitemap: https://monsiteaa.vercel.app/sitemap.xml
+Sitemap: https://deux-as.fr/sitemap.xml
