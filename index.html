@@ -31,7 +31,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://monsiteaa.vercel.app/#organization","name":"Arthur Avetisian","description":"Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.","url":"https://monsiteaa.vercel.app","image":"https://monsiteaa.vercel.app/og/og-default.png","logo":"https://monsiteaa.vercel.app/icon-512.png","email":"arthur.avetisian@hotmail.com","telephone":"+33646456925","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"address":{"@type":"PostalAddress","addressLocality":"Angoulême","addressRegion":"Charente","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":45.6486,"longitude":0.1557},"knowsLanguage":"fr","founder":{"@type":"Person","name":"Arthur Avetisian"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Un espace d’administration peut être ajouté en option à votre projet si vous souhaitez modifier vous-même vos textes, images et actualités."}},{"@type":"Question","name":"La mise en ligne et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement ainsi que les petites modifications de textes, d’images ou de couleurs. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Un espace d’administration standard peut être ajouté à partir de 690 € si vous souhaitez modifier vous-même vos textes et images. Le tarif est adapté lorsque le site comprend un blog ou des contenus plus complexes."}},{"@type":"Question","name":"La mise en ligne et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement et jusqu’à 30 minutes de modifications légères par mois, non cumulables. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
   <script>(function () {
     var GA_ID = '[GA_MEASUREMENT_ID]';
     window.__loadGA = function () {
@@ -1144,6 +1144,43 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   color: var(--color-text-faint);
   margin-bottom: var(--space-2);
 }
+.config-option-groups { display: flex; flex-direction: column; gap: var(--space-5); }
+.config-option-group { min-width: 0; padding: 0; }
+.config-option-group-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  margin-bottom: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+.config-option-group-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+.config-option-group-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+.config-option-group-head p {
+  margin-top: 0.2em;
+  max-width: 58ch;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--color-text-faint);
+}
 .config-opts { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
 @media (min-width: 520px) {
   .config-opts { grid-template-columns: 1fr 1fr; }
@@ -1218,8 +1255,10 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .config-choice:has(input:checked) { border-color: var(--color-accent); background: var(--color-accent-tint); }
 .config-choice:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .config-choice input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
-.config-choice--opt { padding: 0.7em 0.85em; }
-.config-choice--opt .config-choice-name { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--color-text); overflow-wrap: anywhere; }
+.config-choice--opt { padding: 0.82em 0.85em; align-items: flex-start; }
+.config-choice-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 0.2em; }
+.config-choice--opt .config-choice-name { min-width: 0; font-size: 0.86rem; line-height: 1.35; color: var(--color-text); overflow-wrap: anywhere; }
+.config-choice-desc { font-size: 0.71rem; line-height: 1.45; color: var(--color-text-faint); overflow-wrap: anywhere; }
 .config-choice--opt .config-choice-price { font-size: 0.78rem; color: var(--color-text-soft); white-space: nowrap; text-align: right; }
 .config-choice--opt::after {
   content: '';
@@ -1228,6 +1267,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   border: 1.5px solid var(--color-border);
   border-radius: 5px;
   background: transparent;
+  margin-top: 0.05em;
   transition: background-color 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
 }
 .config-choice--opt:has(input:checked)::after {
@@ -1478,7 +1518,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 @media (max-width: 359px) {
   .container { padding-inline: var(--space-2); }
   .proof-main, .proof-commitments, .config-panel { padding-inline: var(--space-3); }
-  .config-choice--opt { align-items: flex-start; flex-wrap: wrap; }
+  .config-choice--opt { flex-wrap: wrap; }
   .config-choice--opt .config-choice-price { white-space: normal; }
 }
 
@@ -1871,48 +1911,145 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 
         <div class="config-controls">
           <div class="config-group">
-            <p class="config-group-label">Ajoutez des options</p>
+            <p class="config-group-label">Personnalisez votre projet</p>
+            <div class="config-option-groups">
+          <section class="config-option-group" aria-labelledby="config-group-contenu">
+            <div class="config-option-group-head">
+              <span class="config-option-group-index" aria-hidden="true">01</span>
+              <div>
+                <h3 id="config-group-contenu">Contenu & autonomie</h3>
+                <p>Pour préparer vos contenus et garder la main après la livraison.</p>
+              </div>
+            </div>
             <div class="config-opts">
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-administration" data-name="Espace d’administration" data-price="390">
-            <span class="config-choice-name">Espace d’administration</span>
-            <span class="config-choice-price">+ 390 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-redaction" data-name="Rédaction des textes" data-price="390">
-            <span class="config-choice-name">Rédaction des textes</span>
-            <span class="config-choice-price">+ 390 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-photos" data-name="Optimisation des photos" data-price="190">
-            <span class="config-choice-name">Optimisation des photos</span>
-            <span class="config-choice-price">+ 190 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-rdv" data-name="Prise de rendez-vous en ligne" data-price="290">
-            <span class="config-choice-name">Prise de rendez-vous en ligne</span>
-            <span class="config-choice-price">+ 290 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-seo" data-name="Référencement renforcé &amp; suivi" data-price="390">
-            <span class="config-choice-name">Référencement renforcé & suivi</span>
-            <span class="config-choice-price">+ 390 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-pages" data-name="3 pages supplémentaires" data-price="450">
-            <span class="config-choice-name">3 pages supplémentaires</span>
-            <span class="config-choice-price">+ 450 €</span>
-          </label>
-          <label class="config-choice config-choice--opt">
-            <input type="checkbox" name="config-opt-bilingue" data-name="Site bilingue (FR / EN)" data-price="490">
-            <span class="config-choice-name">Site bilingue (FR / EN)</span>
-            <span class="config-choice-price">+ 490 €</span>
-          </label>
-          <label class="config-choice config-choice--opt config-choice--recurring">
-            <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance &amp; hébergement" data-recurring="59">
-            <span class="config-choice-name">Maintenance & hébergement</span>
-            <span class="config-choice-price">+ 59 €/mois</span>
-          </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-administration" data-name="Espace d’administration standard" data-price="690">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Espace d’administration standard</span>
+                <span class="config-choice-desc">Modification autonome des textes et images.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 690 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-reecriture" data-name="Réécriture &amp; optimisation" data-price="390" data-exclusive-group="textes">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Réécriture & optimisation</span>
+                <span class="config-choice-desc">Jusqu’à 5 pages à partir de vos textes.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 390 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-redaction" data-name="Rédaction complète" data-price="690" data-exclusive-group="textes">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Rédaction complète</span>
+                <span class="config-choice-desc">Jusqu’à 5 pages à partir d’un entretien.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 690 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-pages" data-name="3 pages simples supplémentaires" data-price="450">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">3 pages simples supplémentaires</span>
+                <span class="config-choice-desc">Dans la structure graphique déjà définie.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 450 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-langue" data-name="Langue supplémentaire" data-rate="0.3" data-min-price="490">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Langue supplémentaire</span>
+                <span class="config-choice-desc">Traductions fournies · 30 % de la formule, minimum 490 €.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 900 €</span>
+            </label>
+            </div>
+          </section>
+          <section class="config-option-group" aria-labelledby="config-group-conversion">
+            <div class="config-option-group-head">
+              <span class="config-option-group-index" aria-hidden="true">02</span>
+              <div>
+                <h3 id="config-group-conversion">Visibilité & conversion</h3>
+                <p>Pour être trouvé plus facilement et transformer davantage de visites en demandes.</p>
+              </div>
+            </div>
+            <div class="config-opts">
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-visibilite-locale" data-name="Pack visibilité locale" data-price="590">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Pack visibilité locale</span>
+                <span class="config-choice-desc">Mots-clés, 5 pages optimisées, Search Console et fiche Google.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 590 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-rdv" data-name="Prise de rendez-vous en ligne" data-price="290">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Prise de rendez-vous en ligne</span>
+                <span class="config-choice-desc">Intégration d’un outil existant.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 290 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-galerie" data-name="Galerie ou portfolio avancé" data-price="290">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Galerie ou portfolio avancé</span>
+                <span class="config-choice-desc">Présentation organisée, filtres simples et agrandissement.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 290 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-simulateur" data-name="Formulaire avancé ou simulateur" data-price="590">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Formulaire avancé ou simulateur</span>
+                <span class="config-choice-desc">Parcours en plusieurs étapes et demande qualifiée.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 590 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-automatisation" data-name="CRM, newsletter ou automatisation" data-price="390">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">CRM, newsletter ou automatisation</span>
+                <span class="config-choice-desc">Connexion à un outil et scénario simple.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 390 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-paiement" data-name="Paiement ou acompte en ligne" data-price="390">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Paiement ou acompte en ligne</span>
+                <span class="config-choice-desc">Intégration d’une solution de paiement existante.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>dès 390 €</span>
+            </label>
+              <label class="config-choice config-choice--opt">
+              <input type="checkbox" name="config-opt-conversions" data-name="Mesure des conversions" data-price="190">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Mesure des conversions</span>
+                <span class="config-choice-desc">Suivi des formulaires, clics d’appel et prises de rendez-vous.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 190 €</span>
+            </label>
+            </div>
+          </section>
+          <section class="config-option-group config-option-group--aftercare" aria-labelledby="config-group-aftercare">
+            <div class="config-option-group-head">
+              <span class="config-option-group-index" aria-hidden="true">03</span>
+              <div>
+                <h3 id="config-group-aftercare">Après la livraison</h3>
+                <p>Pour garder un site disponible, suivi et facile à faire évoluer.</p>
+              </div>
+            </div>
+            <div class="config-opts">
+              <label class="config-choice config-choice--opt config-choice--recurring">
+              <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance &amp; hébergement" data-recurring="79">
+              <span class="config-choice-copy">
+                <span class="config-choice-name">Maintenance & hébergement</span>
+                <span class="config-choice-desc">Hébergement professionnel et jusqu’à 30 min de modifications légères par mois.</span>
+              </span>
+              <span class="config-choice-price" data-option-price>+ 79 €/mois</span>
+            </label>
+            </div>
+          </section>
             </div>
           </div>
           <p class="config-hint">Cochez : le total et le récapitulatif se mettent à jour.</p>
@@ -1928,7 +2065,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           <p class="config-reassurance">Sans engagement, réponse sous 24 à 48 h.</p>
         </aside>
 
-        <p class="config-disclaimer">Estimations provisoires — le montant final, les coûts récurrents et les conditions d’hébergement sont arrêtés dans le devis après un premier échange.</p>
+        <p class="config-disclaimer">Estimations provisoires — le montant final, les services tiers éventuels, les coûts récurrents et les conditions d’hébergement sont arrêtés dans le devis après un premier échange.</p>
       </div>
     </div>
   </section>
@@ -2008,7 +2145,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </details>
       <details class="faq-item" name="faq">
         <summary>Est-ce que je pourrai le modifier moi-même ?<span class="plus"></span></summary>
-        <p>Un espace d’administration peut être ajouté en option à votre projet si vous souhaitez modifier vous-même vos textes, images et actualités.</p>
+        <p>Un espace d’administration standard peut être ajouté à partir de 690 € si vous souhaitez modifier vous-même vos textes et images. Le tarif est adapté lorsque le site comprend un blog ou des contenus plus complexes.</p>
       </details>
       <details class="faq-item" name="faq">
         <summary>La mise en ligne et l’hébergement sont-ils inclus ?<span class="plus"></span></summary>
@@ -2016,7 +2153,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </details>
       <details class="faq-item" name="faq">
         <summary>Que se passe-t-il après la livraison ?<span class="plus"></span></summary>
-        <p>Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement ainsi que les petites modifications de textes, d’images ou de couleurs. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé.</p>
+        <p>Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement et jusqu’à 30 minutes de modifications légères par mois, non cumulables. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé.</p>
       </details>
       <details class="faq-item" name="faq">
         <summary>Que se passe-t-il si je ne suis pas satisfait du résultat ?<span class="plus"></span></summary>
@@ -2332,6 +2469,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
+      function cOptionPrice(o, basePrice) {
+        var rate = parseFloat(o.getAttribute('data-rate'));
+        if (!isNaN(rate)) {
+          var minPrice = parseFloat(o.getAttribute('data-min-price')) || 0;
+          return Math.max(minPrice, Math.round((basePrice * rate) / 10) * 10);
+        }
+        return parseFloat(o.getAttribute('data-price')) || 0;
+      }
+
       function cAnimate(target) {
         if (prefersReduce) { if (cTotal) cTotal.textContent = frCount(target); cShown = target; return; }
         var from = cShown, t0 = performance.now();
@@ -2347,10 +2493,11 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, timeline = '', recurring = 0, opts = [];
+        var total = 0, basePrice = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
-          total = parseFloat(base.getAttribute('data-price'));
+          basePrice = parseFloat(base.getAttribute('data-price'));
+          total = basePrice;
           timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
@@ -2362,12 +2509,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           }
         }
         cOpts.forEach(function (o) {
+          var calculatedPrice = cOptionPrice(o, basePrice);
+          var dynamicPrice = o.parentNode.querySelector('[data-option-price]');
+          if (dynamicPrice && o.hasAttribute('data-rate')) dynamicPrice.textContent = '+ ' + frCount(calculatedPrice) + ' \u20ac';
           if (!o.checked) return;
           var nm = o.getAttribute('data-name');
           var rec = o.getAttribute('data-recurring');
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \u20ac/mois)'); }
           else {
-            var pr = parseFloat(o.getAttribute('data-price')) || 0;
+            var pr = calculatedPrice;
             total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \u20ac)');
           }
@@ -2376,7 +2526,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             row.className = 'config-recap-row';
             var a = document.createElement('span'); a.textContent = nm;
             var b = document.createElement('span');
-            b.textContent = rec ? ('+ ' + rec + ' \u20ac/mois') : ('+ ' + frCount(parseFloat(o.getAttribute('data-price'))) + ' \u20ac');
+            b.textContent = rec ? ('+ ' + rec + ' \u20ac/mois') : ('+ ' + frCount(calculatedPrice) + ' \u20ac');
             row.appendChild(a); row.appendChild(b);
             cRecap.appendChild(row);
           }
@@ -2392,7 +2542,17 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       }
 
       cBases.forEach(function (b) { b.addEventListener('change', cPaint); });
-      cOpts.forEach(function (o) { o.addEventListener('change', cPaint); });
+      cOpts.forEach(function (o) {
+        o.addEventListener('change', function () {
+          var exclusiveGroup = o.getAttribute('data-exclusive-group');
+          if (o.checked && exclusiveGroup) {
+            cOpts.forEach(function (other) {
+              if (other !== o && other.getAttribute('data-exclusive-group') === exclusiveGroup) other.checked = false;
+            });
+          }
+          cPaint();
+        });
+      });
       cPaint();
 
       // « Recevoir ce devis détaillé » -> pré-remplit le formulaire de contact, puis y amène

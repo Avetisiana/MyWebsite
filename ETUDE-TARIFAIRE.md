@@ -9,8 +9,9 @@ Ce document sert à recalculer les formules avant de considérer les prix comme 
 - Aucune heure de formation n’est incluse ni affichée.
 - Corrections : 2 séries pour Essentiel, 3 pour Professionnel, ajustements jusqu’à validation pour Premium dans le périmètre convenu.
 - L’hébergement est inclus uniquement avec la maintenance.
-- La maintenance comprend les petites modifications de textes, images et couleurs.
+- La maintenance comprend jusqu’à 30 minutes de modifications légères par mois, non cumulables.
 - Les évolutions structurelles ou nouvelles fonctionnalités font l’objet d’un devis distinct.
+- La retouche photo n’est pas proposée : elle reste hors périmètre, même en option.
 
 ## Délais et hypothèses de production
 
@@ -80,10 +81,31 @@ Cette grille pourra évoluer après les premiers devis signés et le relevé des
 
 Le prix commercial pourra ensuite être arrondi et positionné selon la valeur apportée, sans chercher uniquement à être moins cher que le marché.
 
+## Options validées
+
+Les montants ci-dessous sont ceux affichés dans le configurateur. « Dès » signifie que le périmètre exact et les éventuels abonnements tiers sont arrêtés dans le devis.
+
+| Famille | Option | Prix affiché | Périmètre indicatif |
+|---|---|---:|---|
+| Contenu & autonomie | Espace d’administration standard | Dès 690 € | Modification autonome des textes et images |
+| Contenu & autonomie | Réécriture & optimisation | 390 € | Jusqu’à 5 pages à partir de textes fournis |
+| Contenu & autonomie | Rédaction complète | Dès 690 € | Jusqu’à 5 pages à partir d’un entretien |
+| Contenu & autonomie | 3 pages simples supplémentaires | 450 € | Dans une structure graphique déjà définie |
+| Contenu & autonomie | Langue supplémentaire | 30 % de la formule, minimum 490 € | Traductions fournies par le client |
+| Visibilité & conversion | Pack visibilité locale | 590 € | Mots-clés, 5 pages optimisées, Search Console et fiche Google |
+| Visibilité & conversion | Prise de rendez-vous en ligne | Dès 290 € | Intégration d’un outil existant |
+| Visibilité & conversion | Galerie ou portfolio avancé | 290 € | Présentation organisée, filtres simples et agrandissement |
+| Visibilité & conversion | Formulaire avancé ou simulateur | Dès 590 € | Parcours en plusieurs étapes et demande qualifiée |
+| Visibilité & conversion | CRM, newsletter ou automatisation | Dès 390 € | Connexion à un outil et scénario simple |
+| Visibilité & conversion | Paiement ou acompte en ligne | Dès 390 € | Intégration d’une solution de paiement existante |
+| Visibilité & conversion | Mesure des conversions | 190 € | Suivi des formulaires, clics d’appel et prises de rendez-vous |
+
+La réécriture et la rédaction complète sont deux alternatives : elles ne se cumulent pas dans le configurateur. Les licences, commissions et abonnements de services tiers restent à la charge du client lorsqu’ils sont nécessaires.
+
 ## Maintenance et hébergement
 
-Le tarif affiché est désormais de 59 € par mois, soit 708 € par an. Après environ 20 € de domaine, il reste 688 € avant la quote-part Vercel et le temps consacré aux demandes.
+Le tarif affiché est désormais de **79 € par mois**, soit 948 € par an. Après environ 20 € de domaine, il reste 928 € avant la quote-part Vercel, les autres outils professionnels et le temps consacré aux demandes.
 
-Le tarif de lancement retenu est de 59 € par mois. Il pourra passer à 69 € lorsque le nombre de sites hébergés, le niveau de service ou les coûts d’outils augmenteront. Les anciens clients peuvent conserver leur tarif pendant une période définie, tandis que les nouveaux devis utilisent le nouveau prix.
+Ce tarif couvre l’hébergement professionnel, le suivi du site et jusqu’à 30 minutes de modifications légères par mois. Ce quota est non cumulable. Au-delà, ou pour toute évolution structurelle, un devis distinct est établi.
 
-L’absence de quota mensuel est commercialement simple, mais doit être encadrée dans le devis par la notion de « petites modifications dans un usage raisonnable ». Les nouvelles pages, changements de structure et fonctionnalités restent hors maintenance.
+Les abonnements GPT et Claude constituent des frais professionnels généraux : ils justifient de préserver une marge suffisante, mais ne doivent pas être présentés au client comme des coûts techniques propres à son site. Le tarif de maintenance devra être réévalué si le niveau de service, les coûts d’hébergement ou les outils augmentent sensiblement.

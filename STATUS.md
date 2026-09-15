@@ -1,5 +1,40 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-15 — options tarifaires et maintenance (poussé)
+
+### Réalisé
+
+- Configurateur enrichi et réorganisé en trois familles lisibles : « Contenu & autonomie »,
+  « Visibilité & conversion » et « Après la livraison ».
+- 12 options ponctuelles affichées avec un périmètre court : administration, deux niveaux de
+  rédaction, pages supplémentaires, langue, visibilité locale, rendez-vous, galerie, formulaire
+  avancé, CRM/automatisation, paiement et mesure des conversions.
+- Option de retouche/optimisation photo entièrement retirée à la demande d’Arthur.
+- Langue supplémentaire calculée dynamiquement à 30 % de la formule avec un minimum de 490 €.
+- Réécriture et rédaction complète rendues mutuellement exclusives dans le configurateur.
+- Maintenance & hébergement portée à 79 €/mois, avec jusqu’à 30 minutes de modifications légères
+  par mois, non cumulables ; les abonnements et frais de services tiers sont clarifiés.
+- Exemple de devis mis à jour : formule Professionnel + administration + rédaction complète +
+  visibilité locale = 4 960 €, puis 79 €/mois pour la maintenance si retenue.
+- FAQ et `ETUDE-TARIFAIRE.md` harmonisées avec la nouvelle grille.
+- Ajout de `scripts/check-configurator.mjs` pour tester les calculs, l’exclusion des rédactions,
+  l’absence d’option photo, la récurrence, le récapitulatif et le préremplissage du contact.
+
+### Vérifié
+
+- `node build.mjs` : 9 pages HTML, sitemap, robots et configuration Vercel générés sans erreur.
+- Test Puppeteer du configurateur : tous les scénarios passent, y compris le prix variable de la
+  langue, le total Premium à 7 830 € avec options et la maintenance séparée à 79 €/mois.
+- 0 erreur console/page sur les 9 pages, 0 débordement horizontal à 390 px (revérifié avant push).
+- Deux passes visuelles sur ordinateur (1440 px) et mobile (390 px). Correction d’un héritage de
+  padding qui créait trop d’espace entre les groupes ; cartes, prix et panneau final sont lisibles.
+
+### État actuel
+
+- Site local prêt sur `http://localhost:3000`.
+- Poussé sur GitHub (`main`). `brand_assets/explorations/` (12 Mo de PNG d’exploration) laissé hors git.
+- Les frais exacts des intégrations tierces restent à préciser dans chaque devis client.
+
 ## Session 2026-09-03 — refonte contenu (Arthur) + étape 4 typo (non poussé)
 
 Arthur a repris la main sur le contenu et la structure pendant un reset de session.

@@ -471,6 +471,15 @@ function scripts() {
       var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
+      function cOptionPrice(o, basePrice) {
+        var rate = parseFloat(o.getAttribute('data-rate'));
+        if (!isNaN(rate)) {
+          var minPrice = parseFloat(o.getAttribute('data-min-price')) || 0;
+          return Math.max(minPrice, Math.round((basePrice * rate) / 10) * 10);
+        }
+        return parseFloat(o.getAttribute('data-price')) || 0;
+      }
+
       function cAnimate(target) {
         if (prefersReduce) { if (cTotal) cTotal.textContent = frCount(target); cShown = target; return; }
         var from = cShown, t0 = performance.now();
@@ -486,10 +495,11 @@ function scripts() {
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, timeline = '', recurring = 0, opts = [];
+        var total = 0, basePrice = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
-          total = parseFloat(base.getAttribute('data-price'));
+          basePrice = parseFloat(base.getAttribute('data-price'));
+          total = basePrice;
           timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
@@ -501,12 +511,15 @@ function scripts() {
           }
         }
         cOpts.forEach(function (o) {
+          var calculatedPrice = cOptionPrice(o, basePrice);
+          var dynamicPrice = o.parentNode.querySelector('[data-option-price]');
+          if (dynamicPrice && o.hasAttribute('data-rate')) dynamicPrice.textContent = '+ ' + frCount(calculatedPrice) + ' \\u20ac';
           if (!o.checked) return;
           var nm = o.getAttribute('data-name');
           var rec = o.getAttribute('data-recurring');
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \\u20ac/mois)'); }
           else {
-            var pr = parseFloat(o.getAttribute('data-price')) || 0;
+            var pr = calculatedPrice;
             total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \\u20ac)');
           }
@@ -515,7 +528,7 @@ function scripts() {
             row.className = 'config-recap-row';
             var a = document.createElement('span'); a.textContent = nm;
             var b = document.createElement('span');
-            b.textContent = rec ? ('+ ' + rec + ' \\u20ac/mois') : ('+ ' + frCount(parseFloat(o.getAttribute('data-price'))) + ' \\u20ac');
+            b.textContent = rec ? ('+ ' + rec + ' \\u20ac/mois') : ('+ ' + frCount(calculatedPrice) + ' \\u20ac');
             row.appendChild(a); row.appendChild(b);
             cRecap.appendChild(row);
           }
@@ -531,7 +544,17 @@ function scripts() {
       }
 
       cBases.forEach(function (b) { b.addEventListener('change', cPaint); });
-      cOpts.forEach(function (o) { o.addEventListener('change', cPaint); });
+      cOpts.forEach(function (o) {
+        o.addEventListener('change', function () {
+          var exclusiveGroup = o.getAttribute('data-exclusive-group');
+          if (o.checked && exclusiveGroup) {
+            cOpts.forEach(function (other) {
+              if (other !== o && other.getAttribute('data-exclusive-group') === exclusiveGroup) other.checked = false;
+            });
+          }
+          cPaint();
+        });
+      });
       cPaint();
 
       // « Recevoir ce devis détaillé » -> pré-remplit le formulaire de contact, puis y amène
@@ -960,6 +983,30 @@ function configuratorSection() {
   const pn = cf.panel;
   const def = cf.bases.find(b => b.recommended) || cf.bases[0];
 
+  const optionPrice = (o, basePrice) => o.rate
+    ? Math.max(o.minPrice || 0, Math.round((basePrice * o.rate) / 10) * 10)
+    : o.price;
+
+  const optionCard = (o, { recurring = false } = {}) => {
+    const price = optionPrice(o, def.price);
+    const priceText = recurring
+      ? `+ ${fmtEUR(price)}${o.unit}`
+      : `${o.pricePrefix ? `${o.pricePrefix} ` : '+ '}${fmtEUR(price)} €`;
+    const dataPrice = recurring
+      ? `data-recurring="${price}"`
+      : o.rate
+        ? `data-rate="${o.rate}" data-min-price="${o.minPrice || 0}"`
+        : `data-price="${price}"`;
+    return `<label class="config-choice config-choice--opt${recurring ? ' config-choice--recurring' : ''}">
+              <input type="checkbox" name="config-opt-${o.id}" data-name="${attr(o.name)}" ${dataPrice}${o.exclusiveGroup ? ` data-exclusive-group="${attr(o.exclusiveGroup)}"` : ''}>
+              <span class="config-choice-copy">
+                <span class="config-choice-name">${o.name}</span>
+                ${o.desc ? `<span class="config-choice-desc">${o.desc}</span>` : ''}
+              </span>
+              <span class="config-choice-price" data-option-price>${priceText}</span>
+            </label>`;
+  };
+
   const bases = cf.bases.map(b => {
     const price = `${b.pricePrefix ? `<span class="config-formule-prefix">${b.pricePrefix}</span>` : ''}${fmtEUR(b.price)} €${b.priceNote ? `<span class="config-formule-pricenote">${b.priceNote}</span>` : ''}`;
     return `<label class="config-formule${b.recommended ? ' config-formule--reco' : ''}">
@@ -976,12 +1023,31 @@ function configuratorSection() {
           </label>`;
   }).join('\n          ');
 
-  const allOpts = cf.options.concat([{ ...cf.maintenance, recurring: true }]);
-  const opts = allOpts.map(o => `<label class="config-choice config-choice--opt${o.recurring ? ' config-choice--recurring' : ''}">
-            <input type="checkbox" name="config-opt-${o.id}" data-name="${attr(o.name)}"${o.recurring ? ` data-recurring="${o.price}"` : ` data-price="${o.price}"`}>
-            <span class="config-choice-name">${o.name}</span>
-            <span class="config-choice-price">${o.recurring ? '+ ' : '+ '}${fmtEUR(o.price)}${o.unit || ' €'}</span>
-          </label>`).join('\n          ');
+  const optionGroups = cf.optionGroups.map((group, index) => `<section class="config-option-group" aria-labelledby="config-group-${group.id}">
+            <div class="config-option-group-head">
+              <span class="config-option-group-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 id="config-group-${group.id}">${group.label}</h3>
+                <p>${group.intro}</p>
+              </div>
+            </div>
+            <div class="config-opts">
+              ${group.options.map(o => optionCard(o)).join('\n              ')}
+            </div>
+          </section>`).join('\n          ');
+
+  const aftercare = `<section class="config-option-group config-option-group--aftercare" aria-labelledby="config-group-aftercare">
+            <div class="config-option-group-head">
+              <span class="config-option-group-index" aria-hidden="true">${String(cf.optionGroups.length + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 id="config-group-aftercare">${cf.aftercareLabel}</h3>
+                <p>${cf.aftercareIntro}</p>
+              </div>
+            </div>
+            <div class="config-opts">
+              ${optionCard(cf.maintenance, { recurring: true })}
+            </div>
+          </section>`;
 
   const exampleLink = pn.exampleDevisUrl
     ? `<a href="${pn.exampleDevisUrl}" class="config-example">${pn.exampleLabel} →</a>`
@@ -1007,8 +1073,9 @@ function configuratorSection() {
         <div class="config-controls">
           <div class="config-group">
             <p class="config-group-label">${cf.optionsLabel}</p>
-            <div class="config-opts">
-          ${opts}
+            <div class="config-option-groups">
+          ${optionGroups}
+          ${aftercare}
             </div>
           </div>
           <p class="config-hint">${pn.hint}</p>
@@ -1393,15 +1460,15 @@ function buildExempleDevis() {
           </thead>
           <tbody>
             <tr><td>Site multi-pages sur-mesure (formule Professionnel) — 5 pages, blog, formulaire qualifié et référencement local de base</td><td>2&nbsp;990&nbsp;€</td></tr>
-            <tr><td>Option espace d’administration</td><td>390&nbsp;€</td></tr>
-            <tr><td>Rédaction des textes de l'ensemble des pages</td><td>390&nbsp;€</td></tr>
-            <tr><td>Référencement renforcé — textes enrichis et suivi personnalisé dans le temps</td><td>390&nbsp;€</td></tr>
+            <tr><td>Option espace d’administration standard</td><td>690&nbsp;€</td></tr>
+            <tr><td>Rédaction complète des textes — jusqu’à 5 pages à partir d’un entretien</td><td>690&nbsp;€</td></tr>
+            <tr><td>Pack visibilité locale — optimisation de 5 pages, Search Console et fiche Google</td><td>590&nbsp;€</td></tr>
           </tbody>
           <tfoot>
-            <tr><td>Total</td><td>4&nbsp;160&nbsp;€</td></tr>
+            <tr><td>Total</td><td>4&nbsp;960&nbsp;€</td></tr>
           </tfoot>
         </table>
-        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et petites mises à jour à 59&nbsp;€/mois, sans engagement.</p>
+        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et jusqu’à 30 minutes de modifications légères par mois à 79&nbsp;€/mois, sans engagement.</p>
 
         <p class="devis-label">Modalités</p>
         <ul>

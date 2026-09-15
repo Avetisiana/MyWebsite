@@ -1143,6 +1143,43 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   color: var(--color-text-faint);
   margin-bottom: var(--space-2);
 }
+.config-option-groups { display: flex; flex-direction: column; gap: var(--space-5); }
+.config-option-group { min-width: 0; padding: 0; }
+.config-option-group-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  margin-bottom: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+.config-option-group-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+.config-option-group-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+.config-option-group-head p {
+  margin-top: 0.2em;
+  max-width: 58ch;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--color-text-faint);
+}
 .config-opts { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
 @media (min-width: 520px) {
   .config-opts { grid-template-columns: 1fr 1fr; }
@@ -1217,8 +1254,10 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .config-choice:has(input:checked) { border-color: var(--color-accent); background: var(--color-accent-tint); }
 .config-choice:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .config-choice input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
-.config-choice--opt { padding: 0.7em 0.85em; }
-.config-choice--opt .config-choice-name { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--color-text); overflow-wrap: anywhere; }
+.config-choice--opt { padding: 0.82em 0.85em; align-items: flex-start; }
+.config-choice-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 0.2em; }
+.config-choice--opt .config-choice-name { min-width: 0; font-size: 0.86rem; line-height: 1.35; color: var(--color-text); overflow-wrap: anywhere; }
+.config-choice-desc { font-size: 0.71rem; line-height: 1.45; color: var(--color-text-faint); overflow-wrap: anywhere; }
 .config-choice--opt .config-choice-price { font-size: 0.78rem; color: var(--color-text-soft); white-space: nowrap; text-align: right; }
 .config-choice--opt::after {
   content: '';
@@ -1227,6 +1266,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   border: 1.5px solid var(--color-border);
   border-radius: 5px;
   background: transparent;
+  margin-top: 0.05em;
   transition: background-color 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
 }
 .config-choice--opt:has(input:checked)::after {
@@ -1477,7 +1517,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 @media (max-width: 359px) {
   .container { padding-inline: var(--space-2); }
   .proof-main, .proof-commitments, .config-panel { padding-inline: var(--space-3); }
-  .config-choice--opt { align-items: flex-start; flex-wrap: wrap; }
+  .config-choice--opt { flex-wrap: wrap; }
   .config-choice--opt .config-choice-price { white-space: normal; }
 }
 
@@ -1894,6 +1934,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       var cState = { formule: '', type: '', total: 0, timeline: '', opts: [], recurring: 0 };
       var cRaf;
 
+      function cOptionPrice(o, basePrice) {
+        var rate = parseFloat(o.getAttribute('data-rate'));
+        if (!isNaN(rate)) {
+          var minPrice = parseFloat(o.getAttribute('data-min-price')) || 0;
+          return Math.max(minPrice, Math.round((basePrice * rate) / 10) * 10);
+        }
+        return parseFloat(o.getAttribute('data-price')) || 0;
+      }
+
       function cAnimate(target) {
         if (prefersReduce) { if (cTotal) cTotal.textContent = frCount(target); cShown = target; return; }
         var from = cShown, t0 = performance.now();
@@ -1909,10 +1958,11 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       function cPaint() {
         var base = null;
         for (var i = 0; i < cBases.length; i++) { if (cBases[i].checked) { base = cBases[i]; break; } }
-        var total = 0, timeline = '', recurring = 0, opts = [];
+        var total = 0, basePrice = 0, timeline = '', recurring = 0, opts = [];
         if (cRecap) cRecap.innerHTML = '';
         if (base) {
-          total = parseFloat(base.getAttribute('data-price'));
+          basePrice = parseFloat(base.getAttribute('data-price'));
+          total = basePrice;
           timeline = base.getAttribute('data-timeline') || '';
           if (cRecap) {
             var brow = document.createElement('div');
@@ -1924,12 +1974,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           }
         }
         cOpts.forEach(function (o) {
+          var calculatedPrice = cOptionPrice(o, basePrice);
+          var dynamicPrice = o.parentNode.querySelector('[data-option-price]');
+          if (dynamicPrice && o.hasAttribute('data-rate')) dynamicPrice.textContent = '+ ' + frCount(calculatedPrice) + ' \u20ac';
           if (!o.checked) return;
           var nm = o.getAttribute('data-name');
           var rec = o.getAttribute('data-recurring');
           if (rec) { recurring += parseFloat(rec); opts.push(nm + ' (' + rec + ' \u20ac/mois)'); }
           else {
-            var pr = parseFloat(o.getAttribute('data-price')) || 0;
+            var pr = calculatedPrice;
             total += pr;
             opts.push(nm + ' (+' + frCount(pr) + ' \u20ac)');
           }
@@ -1938,7 +1991,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             row.className = 'config-recap-row';
             var a = document.createElement('span'); a.textContent = nm;
             var b = document.createElement('span');
-            b.textContent = rec ? ('+ ' + rec + ' \u20ac/mois') : ('+ ' + frCount(parseFloat(o.getAttribute('data-price'))) + ' \u20ac');
+            b.textContent = rec ? ('+ ' + rec + ' \u20ac/mois') : ('+ ' + frCount(calculatedPrice) + ' \u20ac');
             row.appendChild(a); row.appendChild(b);
             cRecap.appendChild(row);
           }
@@ -1954,7 +2007,17 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       }
 
       cBases.forEach(function (b) { b.addEventListener('change', cPaint); });
-      cOpts.forEach(function (o) { o.addEventListener('change', cPaint); });
+      cOpts.forEach(function (o) {
+        o.addEventListener('change', function () {
+          var exclusiveGroup = o.getAttribute('data-exclusive-group');
+          if (o.checked && exclusiveGroup) {
+            cOpts.forEach(function (other) {
+              if (other !== o && other.getAttribute('data-exclusive-group') === exclusiveGroup) other.checked = false;
+            });
+          }
+          cPaint();
+        });
+      });
       cPaint();
 
       // « Recevoir ce devis détaillé » -> pré-remplit le formulaire de contact, puis y amène
