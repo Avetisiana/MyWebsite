@@ -1,5 +1,33 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-16 — renommage « Deux As » (non poussée)
+
+- Nom commercial changé partout : `content.meta.siteName`, `content.meta.title`,
+  `content.nav.logo` → **« Deux As »** (`Arthur Avetisian` ne restait déjà que dans le nom/logo,
+  aucun texte de la page ne se nommait lui-même — le reste du site n'a donc pas eu à changer).
+  Tout ce qui dérive de `nav.logo` a suivi automatiquement : `<title>`, `og:site_name`,
+  `og:image:alt`, `<h3>` du footer, copyright, titres des pages (Merci, 404, mentions légales,
+  confidentialité, pages Solutions, exemple de devis).
+- **JSON-LD corrigé plutôt que simplement renommé** : `founder` référençait `nav.logo` (donc
+  aurait fini par dire qu'une personne s'appelle « Deux As »). Ajout de `content.meta.founderName
+  = 'Arthur Avetisian'`, utilisé uniquement pour ce champ — `Deux As` reste le nom de l'entité
+  (`ProfessionalService`), Arthur en reste le fondateur (`Person`) dans les données structurées.
+- **Assets visuels régénérés** (`node scripts/gen-assets.mjs`) après mise à jour des sources :
+  monogramme `favicon.svg` et `apple-touch-icon` : `AA` → `DA` ; image OG (`og/og-default.png`) :
+  `<h1>Arthur Avetisian</h1>` → `<h1>Deux As</h1>`. `manifest.webmanifest` (`name`/`short_name`)
+  mis à jour de la même façon (nom affiché si le site est ajouté à l'écran d'accueil mobile).
+- Fichiers de projet (non visibles sur le site) alignés par cohérence : `package.json`
+  (`name`/`description`), `README.md`, commentaire d'en-tête de `styles/main.css`.
+- Vérifié : recherche exhaustive de `Arthur Avetisian` dans tout le dépôt (hors `prospection/`,
+  `outputs/`, `.artifact-work/`, `brand_assets/`, `ui_design/`) — après rebuild, **la seule
+  occurrence restante dans le HTML généré est le `founder` du JSON-LD**, ce qui est voulu.
+  Captures desktop (1440 px) et mobile (390 px, y compris le panneau menu ouvert) du header et
+  du footer, plus l'image OG et le monogramme (icon-512, apple-touch-icon) : aucun débordement,
+  bon centrage. 0 erreur console/CSP sur 8 pages.
+- Domaine, e-mail et légal restent séparés de ce renommage : `mentions-legales.html` garde ses
+  `[Nom complet à compléter]` / `[SIRET à compléter]` — la raison sociale légale exacte de
+  « Deux As » (SIRET, statut juridique) reste à fournir par Arthur.
+
 ## Session 2026-09-16 — domaine définitif deux-as.fr (poussée)
 
 - Domaine `deux-as.fr` acheté par Arthur chez OVH, relié au projet Vercel (`mon_site_aa`) :
@@ -24,14 +52,17 @@
   `.gitignore`) — la campagne de prospection (`STATUS.md` sessions du 15-16/09) reste un sujet
   à part, non lié au code du site.
 
-## Session 2026-09-16 — préparation de la vague 2 (non poussée)
+## Session 2026-09-16 — envoi de la vague 2 (non poussée)
 
 - Les 25 prospects restants ont été revérifiés ; P015 est bien active et a été requalifiée.
-- 25 e-mails individualisés ont été préparés dans Zimbra, avec le modèle HTML validé, puis contrôlés par destinataire, objet et aperçu. Le dossier Brouillons contient exactement 25 messages.
+- 25 e-mails individualisés ont été préparés dans Zimbra, avec le modèle HTML validé, puis contrôlés par destinataire, objet et aperçu.
 - Le retour de non-distribution du message P026 a été analysé : Orange/Wanadoo refuse actuellement `contact@deux-as.fr` avec un code `550 5.1.0`, en indiquant un signalement Abusix ou Spamhaus.
-- Huit brouillons de la vague 2 sont donc suspendus pour délivrabilité : P015, P016, P017, P021, P023, P024, P025 et P027. Les 17 autres sont techniquement prêts à partir après confirmation immédiate d'Arthur.
+- Après confirmation d'Arthur, 17 messages ont été envoyés le 16/09/2026. Seize ne présentent aucun retour d'échec connu ; P019 a été rejeté parce que la boîte Hotmail du destinataire est pleine.
+- Huit brouillons restent suspendus pour délivrabilité Orange/Wanadoo : P015, P016, P017, P021, P023, P024, P025 et P027.
 - Les textes complets et l'état de préparation sont conservés dans `prospection/prospects-data.json`; la source éditable de la vague est `prospection/wave-2-drafts.json`.
-- Le classeur local et le fichier Google Drive ne doivent passer en statut `Envoyé` qu'après l'envoi effectif.
+- Le classeur local et le fichier Google Drive ont été synchronisés : 20 messages sans retour d'échec connu, 8 brouillons prêts et 2 échecs de livraison.
+- Le fichier Drive a été remplacé sur place, sans doublon et avec le même ID, par `prospection-charente.xlsx`.
+- Diagnostic délivrabilité : SPF public correct (`v=spf1 include:mx.ovh.com ~all`), aucun enregistrement DMARC public détecté, état DKIM à contrôler dans OVHcloud. Le rejet Orange cite le relais OVH `mo634.mail-out.ovh.net` (`79.137.60.134`) et un signalement Abusix ou Spamhaus.
 
 ## Session 2026-09-15 — prospection commerciale Charente (non poussée)
 

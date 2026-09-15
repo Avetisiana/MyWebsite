@@ -1,8 +1,8 @@
 {
-  "name": "arthur-avetisian-site",
+  "name": "deux-as-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Site vitrine statique d'Arthur Avetisian, création de sites internet à Angoulême et en Charente.",
+  "description": "Site vitrine statique de Deux As, création de sites internet à Angoulême et en Charente.",
   "main": "build.mjs",
   "engines": {
     "node": ">=18.18"

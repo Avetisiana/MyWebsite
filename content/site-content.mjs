@@ -3,20 +3,23 @@
 
 export const content = {
   meta: {
-    siteName: 'Arthur Avetisian',
-    title: 'Arthur Avetisian — Création de sites internet à Angoulême',
+    siteName: 'Deux As',
+    title: 'Deux As — Création de sites internet à Angoulême',
     description: "Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.",
     domain: 'https://deux-as.fr',
     previewUrl: 'https://monsiteaa.vercel.app',
     email: 'contact@deux-as.fr',
     phone: '+33646456925',
     phoneDisplay: '06 46 45 69 25',
+    // Personne réelle à l'origine de l'entreprise — sert uniquement au JSON-LD "founder"
+    // (distinct du nom commercial "Deux As" utilisé partout ailleurs sur le site).
+    founderName: 'Arthur Avetisian',
     gaId: '[GA_MEASUREMENT_ID]',
     year: new Date().getFullYear(),
   },
 
   nav: {
-    logo: 'Arthur Avetisian',
+    logo: 'Deux As',
     links: [
       { label: 'Prestations', href: '/#prestations' },
       { label: 'Réalisation', href: '/#realisation' },

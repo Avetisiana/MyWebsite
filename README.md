@@ -1,4 +1,4 @@
-# Arthur Avetisian — site vitrine
+# Deux As — site vitrine
 
 Site 100 % statique (aucun framework, aucune dépendance côté navigateur). Le CSS est inliné dans
 chaque page HTML générée ; il n'y a jamais de Tailwind CDN ni de bibliothèque externe.

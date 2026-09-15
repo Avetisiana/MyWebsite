@@ -52,7 +52,7 @@ async function genOgImage() {
 </style></head>
 <body>
   <div class="eyebrow">Création de sites internet</div>
-  <h1>Arthur Avetisian</h1>
+  <h1>Deux As</h1>
   <p>Angoulême &amp; Charente</p>
 </body></html>`;
 
@@ -89,7 +89,7 @@ async function genFavicons() {
   // apple-touch-icon.png (180x180) : fond plein carré (pas de transparence, iOS arrondit lui-même)
   const squareSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
     <rect width="180" height="180" fill="#1E3B32"/>
-    <text x="90" y="115" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-size="72" font-weight="700" fill="#FAF6EF">AA</text>
+    <text x="90" y="115" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-size="72" font-weight="700" fill="#FAF6EF">DA</text>
   </svg>`;
   await sharp(Buffer.from(squareSvg)).resize(180, 180).png().toFile(path.join(root, 'apple-touch-icon.png'));
   console.log('✓ apple-touch-icon.png');

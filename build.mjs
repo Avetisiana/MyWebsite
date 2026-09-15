@@ -1194,7 +1194,7 @@ function buildIndex() {
       longitude: 0.1557,
     },
     knowsLanguage: 'fr',
-    founder: { '@type': 'Person', name: content.nav.logo },
+    founder: { '@type': 'Person', name: content.meta.founderName },
   };
 
   const faqPage = {
