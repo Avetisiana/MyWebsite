@@ -1613,12 +1613,12 @@ function buildCSP() {
 function buildVercelJson() {
   // En production, l'alias Vercel historique redirige (308) vers le domaine : une seule
   // adresse indexable pour Google. Les URL de preview (hash/branche) ne sont pas concernées.
-  const redirects = IS_PREVIEW ? [] : [{
-    source: '/:path*',
-    has: [{ type: 'host', value: new URL(content.meta.previewUrl).host }],
-    destination: `${SITE_URL}/:path*`,
-    permanent: true,
-  }];
+  // La racine a sa propre règle : sur Vercel, `/:path*` ne capture pas `/` (constaté en prod).
+  const previewHost = [{ type: 'host', value: new URL(content.meta.previewUrl).host }];
+  const redirects = IS_PREVIEW ? [] : [
+    { source: '/', has: previewHost, destination: `${SITE_URL}/`, permanent: true },
+    { source: '/:path*', has: previewHost, destination: `${SITE_URL}/:path*`, permanent: true },
+  ];
   const config = {
     cleanUrls: true,
     trailingSlash: false,

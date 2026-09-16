@@ -3,6 +3,17 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "monsiteaa.vercel.app"
+        }
+      ],
+      "destination": "https://deux-as.fr/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
