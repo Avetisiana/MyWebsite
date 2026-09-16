@@ -14,3 +14,9 @@ package.json
 package-lock.json
 temporary screenshots/
 .vercel
+# Données et documents de travail — ne doivent jamais être servis, même en cas de
+# déploiement direct depuis ce dossier avec la CLI Vercel
+prospection/
+outputs/
+.artifact-work/
+ui_design/

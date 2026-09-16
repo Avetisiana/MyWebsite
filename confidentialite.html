@@ -33,6 +33,31 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Politique de confidentialité — Deux As","description":"Politique de confidentialité RGPD du site de création de sites internet à Angoulême — données collectées, cookies, droits.","url":"https://deux-as.fr/confidentialite","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Deux As","url":"https://deux-as.fr"}}</script>
   <script>(function () {
     var GA_ID = '[GA_MEASUREMENT_ID]';
+    // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
+    // il est effacé et la bannière est proposée à nouveau.
+    var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
+    window.__consent = {
+      get: function () {
+        try {
+          var v = localStorage.getItem('cookie-consent');
+          var at = parseInt(localStorage.getItem('cookie-consent-at'), 10);
+          if (v && (!at || Date.now() - at > CONSENT_MAX_AGE)) { window.__consent.clear(); return null; }
+          return v;
+        } catch (e) { return null; }
+      },
+      set: function (v) {
+        try {
+          localStorage.setItem('cookie-consent', v);
+          localStorage.setItem('cookie-consent-at', String(Date.now()));
+        } catch (e) {}
+      },
+      clear: function () {
+        try {
+          localStorage.removeItem('cookie-consent');
+          localStorage.removeItem('cookie-consent-at');
+        } catch (e) {}
+      },
+    };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
       if (window.__gaLoaded) return;
@@ -46,7 +71,7 @@
       gtag('js', new Date());
       gtag('config', GA_ID);
     };
-    if (localStorage.getItem('cookie-consent') === 'accepted') window.__loadGA();
+    if (window.__consent.get() === 'accepted') window.__loadGA();
   })();</script>
   <style>/* ============================================================
    Deux As — design system
@@ -327,6 +352,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+/* envoi du formulaire en cours (évite le double envoi) */
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -1549,7 +1576,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .legal-page .updated { color: var(--color-text-faint); font-size: 0.85rem; margin-bottom: var(--space-6); }
 .legal-page h2 { font-size: 1.3rem; margin-top: var(--space-6); margin-bottom: var(--space-2); }
 .legal-page p, .legal-page li { margin-bottom: var(--space-2); }
-.legal-page a { color: var(--color-accent); font-weight: 600; }
+/* :not(.btn) — sinon cette règle, plus spécifique, rend le texte des boutons de la couleur de leur fond */
+.legal-page a:not(.btn) { color: var(--color-accent); font-weight: 600; }
 .legal-page ul { padding-left: 1.2em; list-style: disc; }
 
 /* ---------- Exemple de devis ---------- */
@@ -1649,30 +1677,29 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 <div class="container">
     <div class="legal-page">
       <h1>Politique de confidentialité</h1>
-      <p class="updated">Dernière mise à jour : [DATE_A_COMPLETER]</p>
+      <p class="updated">Dernière mise à jour : [Date à compléter]</p>
       
-      <h2>1. Introduction</h2>
-      <p>La présente politique de confidentialité explique comment [Nom complet à compléter] collecte, utilise et protège vos données personnelles lorsque vous visitez ce site.</p>
+      <h2>1. Responsable du traitement</h2>
+      <p>La présente politique explique comment [Nom complet à compléter], exerçant sous le nom commercial Deux As ([Adresse à compléter] — <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>), collecte et utilise vos données personnelles lorsque vous consultez ce site ou le contactez.</p>
 
-      <h2>2. Responsable du traitement</h2>
-      <p>[Nom complet à compléter] — [Adresse à compléter] — <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a></p>
+      <h2>2. Données collectées</h2>
+      <p>Via le formulaire de contact : nom, adresse email, téléphone (facultatif), type de projet et message. Lors de la consultation du site, l'hébergeur enregistre des données techniques de connexion (adresse IP, pages demandées, date et heure) nécessaires au fonctionnement et à la sécurité du service.</p>
 
-      <h2>3. Données collectées</h2>
-      <p>Via le formulaire de contact : nom, email, téléphone, type de projet et message. Ces données sont transmises via le service Formsubmit et ne sont utilisées que pour répondre à votre demande.</p>
+      <h2>3. Finalités et bases légales</h2>
+      <p>Répondre à votre demande de contact ou de devis : mesures précontractuelles prises à votre demande (article 6.1.b du RGPD). Assurer la sécurité et le bon fonctionnement du site : intérêt légitime (article 6.1.f). Vos données ne sont ni revendues, ni utilisées à d'autres fins.</p>
 
-      <h2>4. Finalité du traitement</h2>
-      <p>Les données collectées servent uniquement à répondre à vos demandes de devis ou de contact. Elles ne sont ni revendues ni transmises à des tiers à des fins commerciales.</p>
+      <h2>4. Destinataires et prestataires</h2>
+      <p>Vos données sont destinées uniquement à Deux As. Elles transitent par les prestataires techniques suivants : Formsubmit (acheminement des messages du formulaire par email, États-Unis), OVHcloud (messagerie, France) et Vercel Inc. (hébergement du site, États-Unis, adhérent au Data Privacy Framework UE–États-Unis). Certains de ces prestataires étant établis aux États-Unis, vos données peuvent y être transférées.</p>
 
       <h2>5. Durée de conservation</h2>
-      <p>Les données transmises via le formulaire sont conservées le temps nécessaire au traitement de votre demande, puis supprimées.</p>
+      <p>Les demandes de contact sont conservées au maximum 3 ans à compter de notre dernier échange, puis supprimées. Si votre demande aboutit à un contrat, les documents correspondants sont conservés pendant les durées imposées par la loi (par exemple 10 ans pour les factures). Les données techniques de connexion sont conservées par l'hébergeur pour une durée limitée.</p>
 
       <h2>6. Vos droits</h2>
-      <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour l'exercer, contactez-nous à <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>. Vous disposez également d'un droit de réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
+      <p>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de définir des directives relatives à leur sort après votre décès. Pour les exercer, écrivez à <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>. Vous pouvez également introduire une réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
 
       <h2>7. Cookies</h2>
-      <p>Ce site utilise Google Analytics à des fins de mesure d'audience, uniquement après votre consentement via la bannière cookies affichée lors de votre première visite. Votre choix (accepté ou refusé) est enregistré dans le stockage local de votre navigateur (localStorage) et peut être modifié à tout moment via le bouton « Gérer les cookies » dans le pied de page, ou en effaçant les données de navigation de ce site. Aucun cookie de mesure d'audience n'est déposé tant que vous n'avez pas accepté la bannière.</p>
-      <p>Destinataire des données de mesure d'audience : Google Ireland Limited. Ces données peuvent faire l'objet d'un transfert hors Union européenne, encadré par les clauses contractuelles types de la Commission européenne.</p>
-      <p>Le formulaire de contact est traité par Formsubmit (sous-traitant situé aux États-Unis) qui achemine votre message par email ; il n'est pas utilisé à des fins de mesure d'audience.</p>
+      <p>Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience, de publicité ou de suivi. Les polices de caractères, images et scripts sont servis depuis le site lui-même : naviguer sur ces pages n'envoie aucune information à un service tiers.</p>
+      <p>Seul l'envoi du formulaire de contact transmet des données à Formsubmit (voir section 4). Si le formulaire est envoyé sans JavaScript, Formsubmit peut afficher une vérification anti-robot Google reCAPTCHA sur sa propre page.</p>
 
       <h2>8. Contact</h2>
       <p>Pour toute question relative à cette politique de confidentialité : <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>.</p>
@@ -1706,7 +1733,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
+            
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -1721,13 +1748,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
-    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
-    <div class="cookie-actions">
-      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
-      <button class="cookie-accept" id="cookie-accept">Accepter</button>
-    </div>
-  </div>
+
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
@@ -2089,43 +2110,73 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
     var refuseBtn = document.getElementById('cookie-refuse');
     var resetBtn = document.getElementById('cookie-reset');
     function maybeShowBanner() {
-      var consent = localStorage.getItem('cookie-consent');
+      var consent = window.__consent.get();
       if (banner && GA_CONFIGURED && !consent) {
         setTimeout(function () { banner.classList.add('is-visible'); }, 800);
       }
     }
     maybeShowBanner();
     if (acceptBtn) acceptBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'accepted');
+      window.__consent.set('accepted');
       banner.classList.remove('is-visible');
       if (window.__loadGA) window.__loadGA();
     });
+    // retrait du consentement : on supprime aussi les cookies Analytics déjà déposés
+    function clearGaCookies() {
+      var host = location.hostname;
+      document.cookie.split(';').forEach(function (c) {
+        var name = c.split('=')[0].trim();
+        if (name.indexOf('_ga') !== 0) return;
+        ['', '; domain=' + host, '; domain=.' + host].forEach(function (d) {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+        });
+      });
+    }
     if (refuseBtn) refuseBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'refused');
+      window.__consent.set('refused');
+      clearGaCookies();
       banner.classList.remove('is-visible');
     });
     if (resetBtn) resetBtn.addEventListener('click', function () {
-      localStorage.removeItem('cookie-consent');
+      window.__consent.clear();
       maybeShowBanner();
     });
 
-    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS
+    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS.
+    // Le fetch vise l'endpoint /ajax/ de Formsubmit : l'endpoint classique répond 200 avec sa
+    // page reCAPTCHA (CORS ouvert), ce qui ferait croire à un succès alors que rien n'est envoyé.
+    // On ne redirige vers /merci que si Formsubmit confirme explicitement l'envoi ; sinon
+    // (formulaire pas encore activé, erreur, réseau) repli sur l'envoi natif avec reCAPTCHA.
     var contactForm = document.querySelector('.contact-form');
     if (contactForm) {
       var nextField = contactForm.querySelector('[name="_next"]');
       if (nextField) nextField.value = location.origin + '/merci';
+      var sending = false;
       contactForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        fetch(contactForm.action, {
+        if (sending) return;
+        sending = true;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        var ajaxUrl = contactForm.action.replace('://formsubmit.co/', '://formsubmit.co/ajax/');
+        fetch(ajaxUrl, {
           method: 'POST',
           body: new FormData(contactForm),
           headers: { Accept: 'application/json' },
         }).then(function (res) {
-          if (res.ok) { location.href = nextField ? nextField.value : '/merci'; }
+          return res.ok ? res.json() : null;
+        }).then(function (data) {
+          if (data && String(data.success) === 'true') { location.href = nextField ? nextField.value : '/merci'; }
           else { contactForm.submit(); }
         }).catch(function () {
           contactForm.submit();
         });
+      });
+      // retour arrière (bfcache) : le formulaire doit rester utilisable
+      window.addEventListener('pageshow', function () {
+        sending = false;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = false;
       });
     }
   })();</script>

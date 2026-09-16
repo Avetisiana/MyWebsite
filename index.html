@@ -31,9 +31,34 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://deux-as.fr/#organization","name":"Deux As","description":"Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.","url":"https://deux-as.fr","image":"https://deux-as.fr/og/og-default.png","logo":"https://deux-as.fr/icon-512.png","email":"contact@deux-as.fr","telephone":"+33646456925","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"address":{"@type":"PostalAddress","addressLocality":"Angoulême","addressRegion":"Charente","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":45.6486,"longitude":0.1557},"knowsLanguage":"fr","founder":{"@type":"Person","name":"Arthur Avetisian"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Un espace d’administration standard peut être ajouté à partir de 690 € si vous souhaitez modifier vous-même vos textes et images. Le tarif est adapté lorsque le site comprend un blog ou des contenus plus complexes."}},{"@type":"Question","name":"La mise en ligne et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement et jusqu’à 30 minutes de modifications légères par mois, non cumulables. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Un espace d’administration standard peut être ajouté à partir de 690 € si vous souhaitez modifier vous-même vos textes et images. Le tarif est adapté lorsque le site comprend un blog ou des contenus plus complexes."}},{"@type":"Question","name":"La mise en ligne et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès 89 €/an — aucun abonnement mensuel obligatoire. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement."}},{"@type":"Question","name":"Suis-je obligé de prendre un contrat de maintenance ?","acceptedAnswer":{"@type":"Answer","text":"Non. Votre site est livré clé en main et fonctionne sans aucun contrat de maintenance. Le seul coût qui continue, c’est l’hébergement (dès 89 €/an) et le renouvellement de votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). La maintenance n’est utile que si vous préférez me confier les modifications."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Je reste disponible après la livraison. L’hébergement (dès 89 €/an) permet à votre site de rester en ligne, sans aucune obligation de maintenance. Si vous préférez me confier les modifications, l’option Maintenance inclut jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
   <script>(function () {
     var GA_ID = '[GA_MEASUREMENT_ID]';
+    // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
+    // il est effacé et la bannière est proposée à nouveau.
+    var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
+    window.__consent = {
+      get: function () {
+        try {
+          var v = localStorage.getItem('cookie-consent');
+          var at = parseInt(localStorage.getItem('cookie-consent-at'), 10);
+          if (v && (!at || Date.now() - at > CONSENT_MAX_AGE)) { window.__consent.clear(); return null; }
+          return v;
+        } catch (e) { return null; }
+      },
+      set: function (v) {
+        try {
+          localStorage.setItem('cookie-consent', v);
+          localStorage.setItem('cookie-consent-at', String(Date.now()));
+        } catch (e) {}
+      },
+      clear: function () {
+        try {
+          localStorage.removeItem('cookie-consent');
+          localStorage.removeItem('cookie-consent-at');
+        } catch (e) {}
+      },
+    };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
       if (window.__gaLoaded) return;
@@ -47,7 +72,7 @@
       gtag('js', new Date());
       gtag('config', GA_ID);
     };
-    if (localStorage.getItem('cookie-consent') === 'accepted') window.__loadGA();
+    if (window.__consent.get() === 'accepted') window.__loadGA();
   })();</script>
   <style>/* ============================================================
    Deux As — design system
@@ -328,6 +353,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+/* envoi du formulaire en cours (évite le double envoi) */
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -1550,7 +1577,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .legal-page .updated { color: var(--color-text-faint); font-size: 0.85rem; margin-bottom: var(--space-6); }
 .legal-page h2 { font-size: 1.3rem; margin-top: var(--space-6); margin-bottom: var(--space-2); }
 .legal-page p, .legal-page li { margin-bottom: var(--space-2); }
-.legal-page a { color: var(--color-accent); font-weight: 600; }
+/* :not(.btn) — sinon cette règle, plus spécifique, rend le texte des boutons de la couleur de leur fond */
+.legal-page a:not(.btn) { color: var(--color-accent); font-weight: 600; }
 .legal-page ul { padding-left: 1.2em; list-style: disc; }
 
 /* ---------- Exemple de devis ---------- */
@@ -1820,7 +1848,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
         <span class="mark">04</span>
         <div>
           <h3>Mise en ligne & accompagnement</h3>
-          <p>Je prépare la publication du site. La maintenance optionnelle inclut ensuite l’hébergement et les petites mises à jour.</p>
+          <p>Je prépare la publication du site. L’hébergement (dès 89 €/an) le garde en ligne ; la maintenance reste, elle, entièrement optionnelle.</p>
         </div>
       </div>
       </div>
@@ -1849,8 +1877,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           <span class="proof-stat-label">une expérience conçue pour tous les écrans</span>
         </div>
         <div class="proof-stat">
-          <span class="proof-stat-num">Votre site</span>
-          <span class="proof-stat-label">des accès et une propriété précisés dans le devis</span>
+          <span class="proof-stat-num">Sans contrat</span>
+          <span class="proof-stat-label">obligatoire — seul l’hébergement continue, dès 89 €/an</span>
         </div>
           </div>
         </div>
@@ -1859,8 +1887,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
           <ul class="proof-commitments-list">
             <li>Le périmètre et le calendrier du projet</li>
             <li>Le nombre de séries de corrections incluses</li>
-            <li>Les coûts ponctuels et récurrents</li>
-            <li>L’hébergement uniquement avec la maintenance</li>
+            <li>Un hébergement dès 89 €/an, sans contrat de maintenance obligatoire</li>
+            <li>Un nom de domaine qui reste à votre nom, chez le registrar de votre choix</li>
           </ul>
           <p class="proof-commitments-note">Chaque point est confirmé dans le devis avant le début de la création.</p>
           <a href="/#contact" class="btn btn-invert proof-commitments-cta">Demander un devis</a>
@@ -2058,15 +2086,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
               <span class="config-option-group-index" aria-hidden="true">03</span>
               <div>
                 <h3 id="config-group-aftercare">Après la livraison</h3>
-                <p>Pour garder un site disponible, suivi et facile à faire évoluer.</p>
+                <p>Votre site reste en ligne grâce à l’hébergement (dès 89 €/an, sans engagement) — la maintenance ci-dessous est entièrement optionnelle.</p>
               </div>
             </div>
             <div class="config-opts">
               <label class="config-choice config-choice--opt config-choice--recurring">
-              <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance &amp; hébergement" data-recurring="79">
+              <input type="checkbox" name="config-opt-maintenance" data-name="Maintenance (modifications &amp; support)" data-recurring="79">
               <span class="config-choice-copy">
-                <span class="config-choice-name">Maintenance & hébergement</span>
-                <span class="config-choice-desc">Hébergement professionnel et jusqu’à 30 min de modifications légères par mois.</span>
+                <span class="config-choice-name">Maintenance (modifications & support)</span>
+                <span class="config-choice-desc">Jusqu’à 30 min de modifications légères par mois, sans engagement.</span>
               </span>
               <span class="config-choice-price" data-option-price>+ 79 €/mois</span>
             </label>
@@ -2080,14 +2108,14 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
         <aside class="config-panel" aria-live="polite">
           <p class="config-panel-label">Estimation indicative</p>
           <p class="config-total"><span data-config-total>2 990</span><span class="config-total-cur">€</span></p>
-          <p class="config-panel-note">Hors option maintenance & hébergement. Délai indicatif : <span data-config-weeks>3 semaines</span>.</p>
+          <p class="config-panel-note">Hors hébergement (dès 89 €/an, sans maintenance obligatoire). Délai indicatif : <span data-config-weeks>3 semaines</span>.</p>
           <div class="config-recap" data-config-recap></div>
           <a href="/#contact" class="btn btn-invert config-cta" data-config-cta>Demander une estimation personnalisée</a>
           <a href="/exemple-devis" class="config-example">Voir un exemple de devis →</a>
           <p class="config-reassurance">Sans engagement, réponse sous 24 à 48 h.</p>
         </aside>
 
-        <p class="config-disclaimer">Estimations provisoires — le montant final, les services tiers éventuels, les coûts récurrents et les conditions d’hébergement sont arrêtés dans le devis après un premier échange.</p>
+        <p class="config-disclaimer">Estimations provisoires — le montant final et les éventuels services tiers sont arrêtés dans le devis après un premier échange.</p>
       </div>
     </div>
   </section>
@@ -2171,11 +2199,15 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </details>
       <details class="faq-item" name="faq">
         <summary>La mise en ligne et l’hébergement sont-ils inclus ?<span class="plus"></span></summary>
-        <p>La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis.</p>
+        <p>La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès 89 €/an — aucun abonnement mensuel obligatoire. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement.</p>
+      </details>
+      <details class="faq-item" name="faq">
+        <summary>Suis-je obligé de prendre un contrat de maintenance ?<span class="plus"></span></summary>
+        <p>Non. Votre site est livré clé en main et fonctionne sans aucun contrat de maintenance. Le seul coût qui continue, c’est l’hébergement (dès 89 €/an) et le renouvellement de votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). La maintenance n’est utile que si vous préférez me confier les modifications.</p>
       </details>
       <details class="faq-item" name="faq">
         <summary>Que se passe-t-il après la livraison ?<span class="plus"></span></summary>
-        <p>Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement et jusqu’à 30 minutes de modifications légères par mois, non cumulables. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé.</p>
+        <p>Je reste disponible après la livraison. L’hébergement (dès 89 €/an) permet à votre site de rester en ligne, sans aucune obligation de maintenance. Si vous préférez me confier les modifications, l’option Maintenance inclut jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé.</p>
       </details>
       <details class="faq-item" name="faq">
         <summary>Que se passe-t-il si je ne suis pas satisfait du résultat ?<span class="plus"></span></summary>
@@ -2283,7 +2315,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
+            
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -2298,13 +2330,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
-    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
-    <div class="cookie-actions">
-      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
-      <button class="cookie-accept" id="cookie-accept">Accepter</button>
-    </div>
-  </div>
+
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
@@ -2666,43 +2692,73 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
     var refuseBtn = document.getElementById('cookie-refuse');
     var resetBtn = document.getElementById('cookie-reset');
     function maybeShowBanner() {
-      var consent = localStorage.getItem('cookie-consent');
+      var consent = window.__consent.get();
       if (banner && GA_CONFIGURED && !consent) {
         setTimeout(function () { banner.classList.add('is-visible'); }, 800);
       }
     }
     maybeShowBanner();
     if (acceptBtn) acceptBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'accepted');
+      window.__consent.set('accepted');
       banner.classList.remove('is-visible');
       if (window.__loadGA) window.__loadGA();
     });
+    // retrait du consentement : on supprime aussi les cookies Analytics déjà déposés
+    function clearGaCookies() {
+      var host = location.hostname;
+      document.cookie.split(';').forEach(function (c) {
+        var name = c.split('=')[0].trim();
+        if (name.indexOf('_ga') !== 0) return;
+        ['', '; domain=' + host, '; domain=.' + host].forEach(function (d) {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+        });
+      });
+    }
     if (refuseBtn) refuseBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'refused');
+      window.__consent.set('refused');
+      clearGaCookies();
       banner.classList.remove('is-visible');
     });
     if (resetBtn) resetBtn.addEventListener('click', function () {
-      localStorage.removeItem('cookie-consent');
+      window.__consent.clear();
       maybeShowBanner();
     });
 
-    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS
+    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS.
+    // Le fetch vise l'endpoint /ajax/ de Formsubmit : l'endpoint classique répond 200 avec sa
+    // page reCAPTCHA (CORS ouvert), ce qui ferait croire à un succès alors que rien n'est envoyé.
+    // On ne redirige vers /merci que si Formsubmit confirme explicitement l'envoi ; sinon
+    // (formulaire pas encore activé, erreur, réseau) repli sur l'envoi natif avec reCAPTCHA.
     var contactForm = document.querySelector('.contact-form');
     if (contactForm) {
       var nextField = contactForm.querySelector('[name="_next"]');
       if (nextField) nextField.value = location.origin + '/merci';
+      var sending = false;
       contactForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        fetch(contactForm.action, {
+        if (sending) return;
+        sending = true;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        var ajaxUrl = contactForm.action.replace('://formsubmit.co/', '://formsubmit.co/ajax/');
+        fetch(ajaxUrl, {
           method: 'POST',
           body: new FormData(contactForm),
           headers: { Accept: 'application/json' },
         }).then(function (res) {
-          if (res.ok) { location.href = nextField ? nextField.value : '/merci'; }
+          return res.ok ? res.json() : null;
+        }).then(function (data) {
+          if (data && String(data.success) === 'true') { location.href = nextField ? nextField.value : '/merci'; }
           else { contactForm.submit(); }
         }).catch(function () {
           contactForm.submit();
         });
+      });
+      // retour arrière (bfcache) : le formulaire doit rester utilisable
+      window.addEventListener('pageshow', function () {
+        sending = false;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = false;
       });
     }
   })();</script>

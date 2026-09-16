@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contenu réseaux sociaux IA — Deux As</title>
-  <meta name="description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.">
+  <meta name="description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées — Angoulême et Charente.">
   <link rel="canonical" href="https://deux-as.fr/contenu-reseaux-sociaux">
   <meta name="robots" content="index, follow">
   <meta property="og:site_name" content="Deux As">
   <meta property="og:title" content="Contenu réseaux sociaux IA — Deux As">
-  <meta property="og:description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.">
+  <meta property="og:description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées — Angoulême et Charente.">
   <meta property="og:url" content="https://deux-as.fr/contenu-reseaux-sociaux">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
@@ -19,7 +19,7 @@
   <meta property="og:image:alt" content="Deux As — Deux As — Création de sites internet à Angoulême">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Contenu réseaux sociaux IA — Deux As">
-  <meta name="twitter:description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.">
+  <meta name="twitter:description" content="Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées — Angoulême et Charente.">
   <meta name="twitter:image" content="https://deux-as.fr/og/og-default.png">
   <meta name="theme-color" content="#FAF6EF">
   <meta name="color-scheme" content="light">
@@ -30,9 +30,34 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-400-700-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-800-normal-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Contenu réseaux sociaux IA","description":"Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.","url":"https://deux-as.fr/contenu-reseaux-sociaux","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"provider":{"@id":"https://deux-as.fr/#organization"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Contenu réseaux sociaux IA","description":"Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées — Angoulême et Charente.","url":"https://deux-as.fr/contenu-reseaux-sociaux","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"provider":{"@id":"https://deux-as.fr/#organization"}}</script>
   <script>(function () {
     var GA_ID = '[GA_MEASUREMENT_ID]';
+    // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
+    // il est effacé et la bannière est proposée à nouveau.
+    var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
+    window.__consent = {
+      get: function () {
+        try {
+          var v = localStorage.getItem('cookie-consent');
+          var at = parseInt(localStorage.getItem('cookie-consent-at'), 10);
+          if (v && (!at || Date.now() - at > CONSENT_MAX_AGE)) { window.__consent.clear(); return null; }
+          return v;
+        } catch (e) { return null; }
+      },
+      set: function (v) {
+        try {
+          localStorage.setItem('cookie-consent', v);
+          localStorage.setItem('cookie-consent-at', String(Date.now()));
+        } catch (e) {}
+      },
+      clear: function () {
+        try {
+          localStorage.removeItem('cookie-consent');
+          localStorage.removeItem('cookie-consent-at');
+        } catch (e) {}
+      },
+    };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
       if (window.__gaLoaded) return;
@@ -46,7 +71,7 @@
       gtag('js', new Date());
       gtag('config', GA_ID);
     };
-    if (localStorage.getItem('cookie-consent') === 'accepted') window.__loadGA();
+    if (window.__consent.get() === 'accepted') window.__loadGA();
   })();</script>
   <style>/* ============================================================
    Deux As — design system
@@ -327,6 +352,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+/* envoi du formulaire en cours (évite le double envoi) */
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -1549,7 +1576,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .legal-page .updated { color: var(--color-text-faint); font-size: 0.85rem; margin-bottom: var(--space-6); }
 .legal-page h2 { font-size: 1.3rem; margin-top: var(--space-6); margin-bottom: var(--space-2); }
 .legal-page p, .legal-page li { margin-bottom: var(--space-2); }
-.legal-page a { color: var(--color-accent); font-weight: 600; }
+/* :not(.btn) — sinon cette règle, plus spécifique, rend le texte des boutons de la couleur de leur fond */
+.legal-page a:not(.btn) { color: var(--color-accent); font-weight: 600; }
 .legal-page ul { padding-left: 1.2em; list-style: disc; }
 
 /* ---------- Exemple de devis ---------- */
@@ -1748,7 +1776,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
+            
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -1763,13 +1791,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
-    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
-    <div class="cookie-actions">
-      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
-      <button class="cookie-accept" id="cookie-accept">Accepter</button>
-    </div>
-  </div>
+
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
@@ -2131,43 +2153,73 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
     var refuseBtn = document.getElementById('cookie-refuse');
     var resetBtn = document.getElementById('cookie-reset');
     function maybeShowBanner() {
-      var consent = localStorage.getItem('cookie-consent');
+      var consent = window.__consent.get();
       if (banner && GA_CONFIGURED && !consent) {
         setTimeout(function () { banner.classList.add('is-visible'); }, 800);
       }
     }
     maybeShowBanner();
     if (acceptBtn) acceptBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'accepted');
+      window.__consent.set('accepted');
       banner.classList.remove('is-visible');
       if (window.__loadGA) window.__loadGA();
     });
+    // retrait du consentement : on supprime aussi les cookies Analytics déjà déposés
+    function clearGaCookies() {
+      var host = location.hostname;
+      document.cookie.split(';').forEach(function (c) {
+        var name = c.split('=')[0].trim();
+        if (name.indexOf('_ga') !== 0) return;
+        ['', '; domain=' + host, '; domain=.' + host].forEach(function (d) {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+        });
+      });
+    }
     if (refuseBtn) refuseBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'refused');
+      window.__consent.set('refused');
+      clearGaCookies();
       banner.classList.remove('is-visible');
     });
     if (resetBtn) resetBtn.addEventListener('click', function () {
-      localStorage.removeItem('cookie-consent');
+      window.__consent.clear();
       maybeShowBanner();
     });
 
-    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS
+    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS.
+    // Le fetch vise l'endpoint /ajax/ de Formsubmit : l'endpoint classique répond 200 avec sa
+    // page reCAPTCHA (CORS ouvert), ce qui ferait croire à un succès alors que rien n'est envoyé.
+    // On ne redirige vers /merci que si Formsubmit confirme explicitement l'envoi ; sinon
+    // (formulaire pas encore activé, erreur, réseau) repli sur l'envoi natif avec reCAPTCHA.
     var contactForm = document.querySelector('.contact-form');
     if (contactForm) {
       var nextField = contactForm.querySelector('[name="_next"]');
       if (nextField) nextField.value = location.origin + '/merci';
+      var sending = false;
       contactForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        fetch(contactForm.action, {
+        if (sending) return;
+        sending = true;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        var ajaxUrl = contactForm.action.replace('://formsubmit.co/', '://formsubmit.co/ajax/');
+        fetch(ajaxUrl, {
           method: 'POST',
           body: new FormData(contactForm),
           headers: { Accept: 'application/json' },
         }).then(function (res) {
-          if (res.ok) { location.href = nextField ? nextField.value : '/merci'; }
+          return res.ok ? res.json() : null;
+        }).then(function (data) {
+          if (data && String(data.success) === 'true') { location.href = nextField ? nextField.value : '/merci'; }
           else { contactForm.submit(); }
         }).catch(function () {
           contactForm.submit();
         });
+      });
+      // retour arrière (bfcache) : le formulaire doit rester utilisable
+      window.addEventListener('pageshow', function () {
+        sending = false;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = false;
       });
     }
   })();</script>

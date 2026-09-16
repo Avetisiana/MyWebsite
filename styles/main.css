@@ -277,6 +277,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+/* envoi du formulaire en cours (évite le double envoi) */
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; }
 
 /* ---------- Nav ---------- */
 .nav {
@@ -1499,7 +1501,8 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
 .legal-page .updated { color: var(--color-text-faint); font-size: 0.85rem; margin-bottom: var(--space-6); }
 .legal-page h2 { font-size: 1.3rem; margin-top: var(--space-6); margin-bottom: var(--space-2); }
 .legal-page p, .legal-page li { margin-bottom: var(--space-2); }
-.legal-page a { color: var(--color-accent); font-weight: 600; }
+/* :not(.btn) — sinon cette règle, plus spécifique, rend le texte des boutons de la couleur de leur fond */
+.legal-page a:not(.btn) { color: var(--color-accent); font-weight: 600; }
 .legal-page ul { padding-left: 1.2em; list-style: disc; }
 
 /* ---------- Exemple de devis ---------- */

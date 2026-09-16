@@ -1,5 +1,108 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-16 — mise en ligne : indexation Google + audit sécurité (poussée)
+
+**Mise à jour après retour d'Arthur :**
+- Google Search Console validée (TXT `google-site-verification` présent dans la zone OVH).
+- Formulaire Formsubmit activé.
+- Redirection `www.deux-as.fr` → `deux-as.fr` passée en 308 dans Vercel (vérifié en direct).
+- Poussé avec le lot « transparence hébergement / maintenance » de la session parallèle.
+- Reste ouvert :
+  - infos légales (`content.legal`) ;
+  - dans Search Console : envoyer le sitemap et demander l'indexation ;
+  - alias Formsubmit (facultatif) ;
+  - Google Analytics (ID `G-…`) ;
+  - passage du dépôt en privé + Vercel Pro (usage commercial) — un seul abonnement Pro couvre tous
+    les projets de l'équipe.
+
+- **Audit du site en ligne (OK)** : le HTML servi par `deux-as.fr` est identique au dépôt.
+  - http → https en 308, TLS 1.2/1.3 uniquement (1.0/1.1 refusés), certificat Let's Encrypt valide.
+  - HSTS, CSP stricte sans `unsafe-inline`, X-Frame-Options, nosniff, Permissions-Policy en place.
+  - Une trentaine de chemins sensibles testés (`.git`, `build.mjs`, `package.json`, `content/`,
+    `prospection/`…) : tous en 404.
+  - DNS : DNSSEC actif, SPF + DKIM (2 sélecteurs OVH) + DMARC `p=none` présents.
+  - Aucune dépendance npm en production (vulnérabilités uniquement dans les outils de build locaux).
+  - Le classeur Drive dont l'ID figure dans ce fichier est privé (propriétaire seul).
+  - SEO de chaque page OK : title, description, canonical, robots, OG, un seul H1, JSON-LD valide.
+- **Bug critique corrigé — formulaire de contact** : le `fetch` visait l'endpoint classique de
+  Formsubmit, qui répond 200 (CORS ouvert) avec sa page reCAPTCHA → redirection vers `/merci` alors
+  que rien n'était envoyé. Désormais : endpoint `/ajax/`, redirection seulement si
+  `success === "true"`, sinon repli sur l'envoi natif (reCAPTCHA). Anti double envoi, bouton
+  `:disabled`, réinitialisation au retour arrière. Testé avec 4 réponses Formsubmit simulées.
+- **Cookies / RGPD** :
+  - la page confidentialité annonçait Google Analytics alors qu'il n'est pas configuré ; la
+    section 7 dépend maintenant de `GA_CONFIGURED` (sans GA : « aucun cookie ») ;
+  - la page a été complétée (bases légales, prestataires Formsubmit/OVHcloud/Vercel, conservation
+    3 ans — **durée à valider par Arthur**, droits complets) ;
+  - bouton « Gérer les cookies » et bannière rendus seulement si GA est configuré ;
+  - consentement horodaté, valable 6 mois (`window.__consent`) ; un refus supprime les cookies `_ga*` ;
+  - branche « GA configuré » testée avec un ID factice.
+- **Mentions légales** :
+  - infos centralisées dans `content.legal` (mentions, confidentialité, en-tête de
+    `/exemple-devis`), avec un avertissement au build tant qu'un champ contient `[` ;
+  - adresse Vercel mise à jour (440 N Barranca Ave #4133, Covina) et téléphone de l'hébergeur ajouté
+    (+1 559 288 7060, numéro repris des mentions d'autres sites — pas publié par Vercel lui-même).
+- **Durcissement** :
+  - CSP : les domaines Google ne sont autorisés que si GA est configuré ;
+  - `vercel.json` : `monsiteaa.vercel.app` redirige en 308 vers `https://deux-as.fr` (contenu dupliqué) ;
+  - `.vercelignore` exclut aussi `prospection/`, `outputs/`, `.artifact-work/` et `ui_design/`.
+- **Autres corrections** :
+  - `contenu-reseaux-sociaux` : ville ajoutée à la meta description ;
+  - bug signalé par la session parallèle corrigé : `.legal-page a:not(.btn)`, le bouton
+    « Demander mon devis » de `/exemple-devis` est de nouveau visible.
+- Vérifié après rebuild :
+  - 9 pages : 0 erreur console/CSP, 0 requête externe, 0 cookie ;
+  - `check-configurator` : 0 échec ;
+  - captures 1440 px et 390 px (mentions légales, confidentialité, CTA de l'exemple de devis).
+  - PageSpeed Insights non mesuré (quota de l'API anonyme épuisé).
+- **En attente d'Arthur (bloquant pour la livraison)** :
+  1. Infos légales dans `content.legal` : nom, statut, SIRET, adresse, date (actuellement
+     `[… à compléter]` **visibles en ligne**).
+  2. Accord pour commit + push (= déploiement).
+  3. Google Search Console : propriété **Domaine** `deux-as.fr`, TXT de validation dans la zone
+     OVH, puis envoi de `https://deux-as.fr/sitemap.xml` et demande d'indexation.
+  4. Après déploiement : envoi réel du formulaire + clic sur l'e-mail d'activation Formsubmit,
+     puis remplacer l'e-mail de `content.contact.form.action` par l'alias fourni.
+  5. Vercel → Domains → `www.deux-as.fr` : redirection actuellement en **307**, à passer en **308**.
+  6. Dépôt GitHub `Avetisiana/MyWebsite` **public** (STATUS.md, étude tarifaire, CLAUDE.md
+     lisibles) → recommandé de le passer en privé.
+  7. Google Analytics souhaité ? Si oui, renseigner `content.meta.gaId` (`G-…`).
+- **Points d'attention** :
+  - l'offre Vercel « Hobby » interdit l'usage commercial ;
+  - enregistrement DNS `ftp` inutile chez OVH ;
+  - DMARC à durcir (`p=quarantine`) après lecture des rapports ;
+  - Google Business Profile recommandé pour la recherche locale.
+
+## Session 2026-09-16 — transparence hébergement / maintenance (poussée avec la session mise en ligne)
+
+- Message central : le site est livré clé en main, **sans contrat de maintenance obligatoire** ;
+  seul l'hébergement continue (`89 €/an`, montant unique dans `HOSTING_FEE` en tête de
+  `content/site-content.mjs`, interpolé partout où il apparaît). Décision d'Arthur : il garde
+  l'hébergement de son côté (compte Vercel), le nom de domaine reste au nom du client.
+- Rapport de marché fait avant tout changement (prix constatés 100-300 €/mois chez les agences,
+  causes réelles du non-équipement des TPE, coût réel Vercel Pro mutualisable) — a servi à motiver
+  le choix du montant et la séparation hébergement / maintenance.
+- Contenu mis à jour : `proof.stats` (nouvelle carte « Sans contrat »), `proof.details`,
+  `prestations` (pilier 4), `configurator.aftercareIntro`, `configurator.maintenance` renommée
+  *Maintenance (modifications & support)* — ne mentionne plus l'hébergement, `configurator.panel`
+  (note + disclaimer), 2 entrées FAQ réécrites + 1 nouvelle (« Suis-je obligé de prendre un
+  contrat de maintenance ? »). `build.mjs` : note + modalité de `/exemple-devis` alignées.
+- Calculateur du configurateur non touché (mêmes `id`/`price`/`unit` sur `maintenance`) —
+  `node scripts/check-configurator.mjs` repasse à 0 échec après coup.
+- Vérifié desktop + mobile : section « Mes engagements », bloc « Après la livraison », FAQ ouverte,
+  page `/exemple-devis`. Un premier libellé (« Sans abonnement ») cassait sur 3 lignes en grille
+  mobile 2 colonnes — remplacé par « Sans contrat » (même longueur que les autres cartes).
+- **Bug préexistant repéré en vérifiant, sans rapport avec ce changement** : sur `/exemple-devis`,
+  le bouton « Demander mon devis » (`.btn.btn-primary` dans `.devis-cta-line`) est invisible —
+  texte et fond de la même couleur verte. Cause : `.legal-page a { color: var(--color-accent) }`
+  (spécificité `0,1,1`) l'emporte sur `.btn-primary { color: var(--color-bg) }` (`0,1,0`) parce que
+  le bouton est un lien à l'intérieur de `.legal-page`. Pas corrigé — signalé à Arthur, en pause le
+  temps qu'une session en parallèle (démarrage/sécurité/GA) touche aussi `styles/main.css`.
+- **Coordination** : une autre session (monsite-83) travaillait en parallèle sur `build.mjs` /
+  `content/site-content.mjs` (bloc `legal`, formulaire, cookies/GA, CSP, `vercel.json`). Une de mes
+  modifications (le pilier 4 de `prestations`) a été perdue pendant une restauration temporaire de
+  leur côté puis réappliquée après vérification croisée de chaque changement. Rien commité/poussé.
+
 ## Session 2026-09-16 — renommage « Deux As » (non poussée)
 
 - Nom commercial changé partout : `content.meta.siteName`, `content.meta.title`,

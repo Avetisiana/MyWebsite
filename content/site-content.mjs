@@ -1,6 +1,10 @@
 // Contenu du site — séparé du template (build.mjs).
 // Modifier ce fichier pour changer les textes ; la mise en page vit dans build.mjs / styles/main.css.
 
+// Hébergement : coût fixe, indépendant de la maintenance (aucun abonnement mensuel obligatoire).
+// Source unique du montant — le changer ici met à jour tous les textes qui le mentionnent.
+const HOSTING_FEE = '89 €/an';
+
 export const content = {
   meta: {
     siteName: 'Deux As',
@@ -16,6 +20,24 @@ export const content = {
     founderName: 'Arthur Avetisian',
     gaId: '[GA_MEASUREMENT_ID]',
     year: new Date().getFullYear(),
+  },
+
+  // Informations légales (mentions légales, confidentialité, exemple de devis).
+  // Obligatoires (LCEN art. 6) : tant qu'un champ contient « [ », `node build.mjs`
+  // affiche un avertissement et la valeur entre crochets reste visible sur le site.
+  legal: {
+    ownerName: '[Nom complet à compléter]',        // ex. « Arthur Avetisian » (personne physique, EI)
+    legalStatus: '[Statut juridique à compléter]', // ex. « Entrepreneur individuel (EI) — micro-entreprise »
+    siret: '[SIRET à compléter]',
+    address: '[Adresse à compléter]',              // adresse du siège (ou de domiciliation)
+    publicationDirector: '[Nom complet à compléter]',
+    updated: '[Date à compléter]',                 // ex. « 16 septembre 2026 »
+    host: {
+      name: 'Vercel Inc.',
+      address: '440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis',
+      phone: '+1 559 288 7060',
+      url: 'https://vercel.com',
+    },
   },
 
   nav: {
@@ -91,7 +113,7 @@ export const content = {
       },
       {
         title: 'Mise en ligne & accompagnement',
-        desc: 'Je prépare la publication du site. La maintenance optionnelle inclut ensuite l’hébergement et les petites mises à jour.',
+        desc: `Je prépare la publication du site. L’hébergement (dès ${HOSTING_FEE}) le garde en ligne ; la maintenance reste, elle, entièrement optionnelle.`,
       },
     ],
   },
@@ -160,14 +182,14 @@ export const content = {
       { value: '24–48 h', label: 'pour recevoir une première réponse', plain: true },
       { value: 'Budget clair', label: 'une estimation visible puis un devis adapté au périmètre', plain: true },
       { value: 'Mobile d’abord', label: 'une expérience conçue pour tous les écrans', plain: true },
-      { value: 'Votre site', label: 'des accès et une propriété précisés dans le devis', plain: true },
+      { value: 'Sans contrat', label: `obligatoire — seul l’hébergement continue, dès ${HOSTING_FEE}`, plain: true },
     ],
     detailsLabel: 'Défini avant le lancement',
     details: [
       'Le périmètre et le calendrier du projet',
       'Le nombre de séries de corrections incluses',
-      'Les coûts ponctuels et récurrents',
-      'L’hébergement uniquement avec la maintenance',
+      `Un hébergement dès ${HOSTING_FEE}, sans contrat de maintenance obligatoire`,
+      'Un nom de domaine qui reste à votre nom, chez le registrar de votre choix',
     ],
     note: 'Chaque point est confirmé dans le devis avant le début de la création.',
     cta: { label: 'Demander un devis', href: '/#contact' },
@@ -322,22 +344,24 @@ export const content = {
       },
     ],
     aftercareLabel: 'Après la livraison',
-    aftercareIntro: 'Pour garder un site disponible, suivi et facile à faire évoluer.',
+    aftercareIntro: `Votre site reste en ligne grâce à l’hébergement (dès ${HOSTING_FEE}, sans engagement) — la maintenance ci-dessous est entièrement optionnelle.`,
+    // Coût de l'hébergement seul — affiché dans le panneau, la FAQ et l'exemple de devis (build.mjs).
+    hosting: { display: HOSTING_FEE },
     maintenance: {
       id: 'maintenance',
-      name: 'Maintenance & hébergement',
-      desc: 'Hébergement professionnel et jusqu’à 30 min de modifications légères par mois.',
+      name: 'Maintenance (modifications & support)',
+      desc: 'Jusqu’à 30 min de modifications légères par mois, sans engagement.',
       price: 79,
       unit: ' €/mois',
     },
     panel: {
       label: 'Estimation indicative',
-      note: 'Hors option maintenance & hébergement. Délai indicatif :',
+      note: `Hors hébergement (dès ${HOSTING_FEE}, sans maintenance obligatoire). Délai indicatif :`,
       basePrefix: 'Formule',
       cta: 'Demander une estimation personnalisée',
       exampleLabel: 'Voir un exemple de devis',
       exampleDevisUrl: '/exemple-devis',
-      disclaimer: 'Estimations provisoires — le montant final, les services tiers éventuels, les coûts récurrents et les conditions d’hébergement sont arrêtés dans le devis après un premier échange.',
+      disclaimer: 'Estimations provisoires — le montant final et les éventuels services tiers sont arrêtés dans le devis après un premier échange.',
       reassurance: 'Sans engagement, réponse sous 24 à 48 h.',
       hint: 'Cochez : le total et le récapitulatif se mettent à jour.',
     },
@@ -359,11 +383,15 @@ export const content = {
       },
       {
         q: 'La mise en ligne et l’hébergement sont-ils inclus ?',
-        a: 'La préparation et la mise en ligne sont incluses dans chaque formule. L’hébergement est inclus uniquement avec l’option de maintenance ; sans cette option, je vous accompagne dans sa configuration et les conditions sont précisées dans le devis.',
+        a: `La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès ${HOSTING_FEE} — aucun abonnement mensuel obligatoire. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement.`,
+      },
+      {
+        q: 'Suis-je obligé de prendre un contrat de maintenance ?',
+        a: `Non. Votre site est livré clé en main et fonctionne sans aucun contrat de maintenance. Le seul coût qui continue, c’est l’hébergement (dès ${HOSTING_FEE}) et le renouvellement de votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). La maintenance n’est utile que si vous préférez me confier les modifications.`,
       },
       {
         q: 'Que se passe-t-il après la livraison ?',
-        a: 'Je reste disponible après la livraison. L’option de maintenance comprend l’hébergement et jusqu’à 30 minutes de modifications légères par mois, non cumulables. Les évolutions structurelles et nouvelles fonctionnalités font l’objet d’un devis séparé.',
+        a: `Je reste disponible après la livraison. L’hébergement (dès ${HOSTING_FEE}) permet à votre site de rester en ligne, sans aucune obligation de maintenance. Si vous préférez me confier les modifications, l’option Maintenance inclut jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé.`,
       },
       {
         q: 'Que se passe-t-il si je ne suis pas satisfait du résultat ?',
@@ -421,7 +449,7 @@ export const content = {
       {
         slug: 'contenu-reseaux-sociaux',
         metaTitle: 'Contenu réseaux sociaux IA',
-        metaDescription: "Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées.",
+        metaDescription: "Formats courts générés par IA à partir de vos photos pour exister sur les réseaux sociaux, sans y passer vos soirées — Angoulême et Charente.",
         cardTitle: 'Contenu réseaux sociaux',
         cardDesc: 'Des formats courts, générés à partir de vos photos, pour exister en ligne sans y passer vos soirées.',
         pageEyebrow: 'Réseaux sociaux',

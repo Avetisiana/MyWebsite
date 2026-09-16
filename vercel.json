@@ -1,6 +1,19 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "monsiteaa.vercel.app"
+        }
+      ],
+      "destination": "https://deux-as.fr/:path*",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -35,7 +48,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-DvlvUKFISKDG27tmmCPY8icm1XcJjulv1cB8znrr6hw=' 'sha256-QzKrYwv1GYVKy6Xi4+Bo0046UawX2UJYHZAlg4RPrI0=' 'sha256-e8aYQVfMKkCilagPai8eu610D2cLqEDXVp/NSh66YqE=' 'sha256-FTYsOpjefC7aBBA7rReGYn0TwWTFXyFrFTPWF99wrE0=' 'sha256-LRTEtdA1++LS+cqpcRH+P9gCbEnS5lj931+v1Nv3P7U=' 'sha256-ZZ99GEhCmsfOjXzHe9NNbV+cPIGv9Z5atLDiFoQ3vcQ=' 'sha256-7BDAo5ZsSax/prBZjGEClL1IXZvgEE6hqtn2ganoBA8=' 'sha256-tkPAEASwSyfUj2gj9eVTX0tk2wgMhFEVMcIBaFuOWPw=' 'sha256-OK1tn+76Dz2OZe3BFJEh0Z/XtNUXP0LOFNTJE97XtGs=' 'sha256-Ih5YF23XVMWvxCeCBn7TDVhQBWjBoOctat9pkMT865k=' 'sha256-9tMGooTuHUlNtoCwMa0r53WgCAM4Owv62np0o5+phrk=' 'sha256-6ykpLaPc+W0qKUhHHStlQlSxJw8Dm9IxPgF6Av0w+JI=' https://www.googletagmanager.com; style-src 'self' 'sha256-GBTp8mS+3J3th/6Kyy9/Z8Q2hoDsuYEBU/2ghGM8dXQ=' 'sha256-nXKql2lRBWJvcQbxqbgOmIB5/iLE/JVN+92u2KPDivQ='; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://formsubmit.co https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-DvlvUKFISKDG27tmmCPY8icm1XcJjulv1cB8znrr6hw=' 'sha256-3VPP086vZ7rXKHT54au+fmOHT3YluFuUIp5xxSLFGWg=' 'sha256-HzMi4j5KXdc+XQkBTlPKQU4YRfUyfJ5bLXkFAyrFZQ4=' 'sha256-VJ14vlAsas+fQaF1yVGxW4MCayv2tJbtRGVoMcdRjBU=' 'sha256-LRTEtdA1++LS+cqpcRH+P9gCbEnS5lj931+v1Nv3P7U=' 'sha256-ZZ99GEhCmsfOjXzHe9NNbV+cPIGv9Z5atLDiFoQ3vcQ=' 'sha256-cl25f5H8aJ6pmZ125O6gNvT7jUPEWLdTjAxfPUNXdAg=' 'sha256-tkPAEASwSyfUj2gj9eVTX0tk2wgMhFEVMcIBaFuOWPw=' 'sha256-OK1tn+76Dz2OZe3BFJEh0Z/XtNUXP0LOFNTJE97XtGs=' 'sha256-Ih5YF23XVMWvxCeCBn7TDVhQBWjBoOctat9pkMT865k=' 'sha256-9tMGooTuHUlNtoCwMa0r53WgCAM4Owv62np0o5+phrk=' 'sha256-6ykpLaPc+W0qKUhHHStlQlSxJw8Dm9IxPgF6Av0w+JI='; style-src 'self' 'sha256-9BNNMlJI9muy5zpT85k8EhcD+NM9hmF0hODsauT1z4g=' 'sha256-nXKql2lRBWJvcQbxqbgOmIB5/iLE/JVN+92u2KPDivQ='; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formsubmit.co; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
         }
       ]
     },

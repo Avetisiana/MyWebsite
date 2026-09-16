@@ -113,6 +113,31 @@ function attr(s) {
 function ga() {
   const body = `(function () {
     var GA_ID = '${content.meta.gaId}';
+    // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
+    // il est effacé et la bannière est proposée à nouveau.
+    var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
+    window.__consent = {
+      get: function () {
+        try {
+          var v = localStorage.getItem('cookie-consent');
+          var at = parseInt(localStorage.getItem('cookie-consent-at'), 10);
+          if (v && (!at || Date.now() - at > CONSENT_MAX_AGE)) { window.__consent.clear(); return null; }
+          return v;
+        } catch (e) { return null; }
+      },
+      set: function (v) {
+        try {
+          localStorage.setItem('cookie-consent', v);
+          localStorage.setItem('cookie-consent-at', String(Date.now()));
+        } catch (e) {}
+      },
+      clear: function () {
+        try {
+          localStorage.removeItem('cookie-consent');
+          localStorage.removeItem('cookie-consent-at');
+        } catch (e) {}
+      },
+    };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
       if (window.__gaLoaded) return;
@@ -126,7 +151,7 @@ function ga() {
       gtag('js', new Date());
       gtag('config', GA_ID);
     };
-    if (localStorage.getItem('cookie-consent') === 'accepted') window.__loadGA();
+    if (window.__consent.get() === 'accepted') window.__loadGA();
   })();`;
   cspScriptHashes.add(sha256b64(body));
   return `<script>${body}</script>`;
@@ -254,7 +279,7 @@ function footer() {
           <div class="footer-col">
             <span class="head">Légal</span>
             ${legalLinks}
-            <button type="button" class="footer-cookie-btn" id="cookie-reset">${content.cookieBanner.manage}</button>
+            ${GA_CONFIGURED ? `<button type="button" class="footer-cookie-btn" id="cookie-reset">${content.cookieBanner.manage}</button>` : ''}
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -646,43 +671,73 @@ function scripts() {
     var refuseBtn = document.getElementById('cookie-refuse');
     var resetBtn = document.getElementById('cookie-reset');
     function maybeShowBanner() {
-      var consent = localStorage.getItem('cookie-consent');
+      var consent = window.__consent.get();
       if (banner && GA_CONFIGURED && !consent) {
         setTimeout(function () { banner.classList.add('is-visible'); }, 800);
       }
     }
     maybeShowBanner();
     if (acceptBtn) acceptBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'accepted');
+      window.__consent.set('accepted');
       banner.classList.remove('is-visible');
       if (window.__loadGA) window.__loadGA();
     });
+    // retrait du consentement : on supprime aussi les cookies Analytics déjà déposés
+    function clearGaCookies() {
+      var host = location.hostname;
+      document.cookie.split(';').forEach(function (c) {
+        var name = c.split('=')[0].trim();
+        if (name.indexOf('_ga') !== 0) return;
+        ['', '; domain=' + host, '; domain=.' + host].forEach(function (d) {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+        });
+      });
+    }
     if (refuseBtn) refuseBtn.addEventListener('click', function () {
-      localStorage.setItem('cookie-consent', 'refused');
+      window.__consent.set('refused');
+      clearGaCookies();
       banner.classList.remove('is-visible');
     });
     if (resetBtn) resetBtn.addEventListener('click', function () {
-      localStorage.removeItem('cookie-consent');
+      window.__consent.clear();
       maybeShowBanner();
     });
 
-    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS
+    // formulaire de contact — _next robuste + envoi progressif (fetch), repli POST natif sans JS.
+    // Le fetch vise l'endpoint /ajax/ de Formsubmit : l'endpoint classique répond 200 avec sa
+    // page reCAPTCHA (CORS ouvert), ce qui ferait croire à un succès alors que rien n'est envoyé.
+    // On ne redirige vers /merci que si Formsubmit confirme explicitement l'envoi ; sinon
+    // (formulaire pas encore activé, erreur, réseau) repli sur l'envoi natif avec reCAPTCHA.
     var contactForm = document.querySelector('.contact-form');
     if (contactForm) {
       var nextField = contactForm.querySelector('[name="_next"]');
       if (nextField) nextField.value = location.origin + '/merci';
+      var sending = false;
       contactForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        fetch(contactForm.action, {
+        if (sending) return;
+        sending = true;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        var ajaxUrl = contactForm.action.replace('://formsubmit.co/', '://formsubmit.co/ajax/');
+        fetch(ajaxUrl, {
           method: 'POST',
           body: new FormData(contactForm),
           headers: { Accept: 'application/json' },
         }).then(function (res) {
-          if (res.ok) { location.href = nextField ? nextField.value : '/merci'; }
+          return res.ok ? res.json() : null;
+        }).then(function (data) {
+          if (data && String(data.success) === 'true') { location.href = nextField ? nextField.value : '/merci'; }
           else { contactForm.submit(); }
         }).catch(function () {
           contactForm.submit();
         });
+      });
+      // retour arrière (bfcache) : le formulaire doit rester utilisable
+      window.addEventListener('pageshow', function () {
+        sending = false;
+        var submitBtn = contactForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = false;
       });
     }
   })();`;
@@ -703,7 +758,7 @@ ${nav()}
 ${bodyHTML}
 </main>
 ${footer()}
-${cookieBanner()}
+${GA_CONFIGURED ? cookieBanner() : ''}
 ${includeMobileCta ? mobileCta() : ''}
 <script src="/silk-bg.js?v=${SILK_JS_V}" defer></script>
 ${scripts()}
@@ -1297,7 +1352,7 @@ function legalPage({ pagePath, title, description, sections }) {
   const bodyHTML = `<div class="container">
     <div class="legal-page">
       <h1>${title}</h1>
-      <p class="updated">Dernière mise à jour : [DATE_A_COMPLETER]</p>
+      <p class="updated">Dernière mise à jour : ${content.legal.updated}</p>
       ${sections}
     </div>
   </div>`;
@@ -1312,29 +1367,31 @@ function legalPage({ pagePath, title, description, sections }) {
 }
 
 function buildMentionsLegales() {
+  const l = content.legal;
   const sections = `
       <h2>Éditeur du site</h2>
       <p>
-        [Nom complet à compléter]<br>
-        Statut : [Auto-entrepreneur / EI à compléter]<br>
-        SIRET : [SIRET à compléter]<br>
-        Adresse : [Adresse à compléter]<br>
+        ${l.ownerName}, exerçant sous le nom commercial ${content.nav.logo}<br>
+        Statut : ${l.legalStatus}<br>
+        SIRET : ${l.siret}<br>
+        Adresse : ${l.address}<br>
         Email : <a href="mailto:${content.meta.email}">${content.meta.email}</a><br>
         Téléphone : <a href="tel:${content.meta.phone}">${content.meta.phoneDisplay}</a>
       </p>
 
       <h2>Directeur de la publication</h2>
-      <p>[Nom complet à compléter]</p>
+      <p>${l.publicationDirector}</p>
 
       <h2>Hébergement</h2>
       <p>
-        Le site est hébergé par Vercel Inc.<br>
-        340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis<br>
-        <a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a>
+        Le site est hébergé par ${l.host.name}<br>
+        ${l.host.address}<br>
+        Téléphone : ${l.host.phone}<br>
+        <a href="${l.host.url}" target="_blank" rel="noopener">${l.host.url.replace('https://', '')}</a>
       </p>
 
       <h2>Propriété intellectuelle</h2>
-      <p>L'ensemble des contenus présents sur ce site (textes, images, identité visuelle) est la propriété exclusive de [Nom complet à compléter], sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+      <p>L'ensemble des contenus présents sur ce site (textes, images, identité visuelle) est la propriété exclusive de ${l.ownerName}, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
 
       <h2>Litiges</h2>
       <p>En cas de litige, une solution amiable sera recherchée avant toute action judiciaire. À défaut, les tribunaux français seront seuls compétents.</p>
@@ -1348,29 +1405,37 @@ function buildMentionsLegales() {
 }
 
 function buildConfidentialite() {
+  const l = content.legal;
+  const mail = `<a href="mailto:${content.meta.email}">${content.meta.email}</a>`;
+  // Section 7 : décrit ce que le site fait réellement — elle bascule automatiquement
+  // dès que content.meta.gaId est renseigné (bannière + chargement de GA après accord).
+  const cookiesSection = GA_CONFIGURED
+    ? `<p>Ce site utilise Google Analytics à des fins de mesure d'audience (statistiques de visites), uniquement après votre consentement via la bannière affichée lors de votre première visite. Aucun cookie de mesure d'audience n'est déposé tant que vous n'avez pas cliqué sur « ${content.cookieBanner.accept} ». Les cookies Google Analytics (<code>_ga</code>, <code>_ga_*</code>) ont une durée de vie maximale de 13 mois.</p>
+      <p>Votre choix (accepté ou refusé) est enregistré dans le stockage local de votre navigateur pendant 6 mois, puis la question vous est reposée. Vous pouvez le modifier à tout moment via le bouton « ${content.cookieBanner.manage} » en pied de page ; un refus supprime les cookies Google Analytics déjà déposés.</p>
+      <p>Destinataire des données de mesure d'audience : Google Ireland Limited, avec un transfert possible vers Google LLC aux États-Unis, encadré par le Data Privacy Framework UE–États-Unis.</p>`
+    : `<p>Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience, de publicité ou de suivi. Les polices de caractères, images et scripts sont servis depuis le site lui-même : naviguer sur ces pages n'envoie aucune information à un service tiers.</p>
+      <p>Seul l'envoi du formulaire de contact transmet des données à Formsubmit (voir section 4). Si le formulaire est envoyé sans JavaScript, Formsubmit peut afficher une vérification anti-robot Google reCAPTCHA sur sa propre page.</p>`;
   const sections = `
-      <h2>1. Introduction</h2>
-      <p>La présente politique de confidentialité explique comment [Nom complet à compléter] collecte, utilise et protège vos données personnelles lorsque vous visitez ce site.</p>
+      <h2>1. Responsable du traitement</h2>
+      <p>La présente politique explique comment ${l.ownerName}, exerçant sous le nom commercial ${content.nav.logo} (${l.address} — ${mail}), collecte et utilise vos données personnelles lorsque vous consultez ce site ou le contactez.</p>
 
-      <h2>2. Responsable du traitement</h2>
-      <p>[Nom complet à compléter] — [Adresse à compléter] — <a href="mailto:${content.meta.email}">${content.meta.email}</a></p>
+      <h2>2. Données collectées</h2>
+      <p>Via le formulaire de contact : nom, adresse email, téléphone (facultatif), type de projet et message. Lors de la consultation du site, l'hébergeur enregistre des données techniques de connexion (adresse IP, pages demandées, date et heure) nécessaires au fonctionnement et à la sécurité du service.</p>
 
-      <h2>3. Données collectées</h2>
-      <p>Via le formulaire de contact : nom, email, téléphone, type de projet et message. Ces données sont transmises via le service Formsubmit et ne sont utilisées que pour répondre à votre demande.</p>
+      <h2>3. Finalités et bases légales</h2>
+      <p>Répondre à votre demande de contact ou de devis : mesures précontractuelles prises à votre demande (article 6.1.b du RGPD). Assurer la sécurité et le bon fonctionnement du site : intérêt légitime (article 6.1.f).${GA_CONFIGURED ? ' Mesurer l\'audience du site : votre consentement (article 6.1.a).' : ''} Vos données ne sont ni revendues, ni utilisées à d'autres fins.</p>
 
-      <h2>4. Finalité du traitement</h2>
-      <p>Les données collectées servent uniquement à répondre à vos demandes de devis ou de contact. Elles ne sont ni revendues ni transmises à des tiers à des fins commerciales.</p>
+      <h2>4. Destinataires et prestataires</h2>
+      <p>Vos données sont destinées uniquement à ${content.nav.logo}. Elles transitent par les prestataires techniques suivants : Formsubmit (acheminement des messages du formulaire par email, États-Unis), OVHcloud (messagerie, France) et ${l.host.name} (hébergement du site, États-Unis, adhérent au Data Privacy Framework UE–États-Unis).${GA_CONFIGURED ? ' Google (mesure d\'audience, voir section 7).' : ''} Certains de ces prestataires étant établis aux États-Unis, vos données peuvent y être transférées.</p>
 
       <h2>5. Durée de conservation</h2>
-      <p>Les données transmises via le formulaire sont conservées le temps nécessaire au traitement de votre demande, puis supprimées.</p>
+      <p>Les demandes de contact sont conservées au maximum 3 ans à compter de notre dernier échange, puis supprimées. Si votre demande aboutit à un contrat, les documents correspondants sont conservés pendant les durées imposées par la loi (par exemple 10 ans pour les factures). Les données techniques de connexion sont conservées par l'hébergeur pour une durée limitée.</p>
 
       <h2>6. Vos droits</h2>
-      <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour l'exercer, contactez-nous à <a href="mailto:${content.meta.email}">${content.meta.email}</a>. Vous disposez également d'un droit de réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
+      <p>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de définir des directives relatives à leur sort après votre décès.${GA_CONFIGURED ? ' Vous pouvez retirer votre consentement à tout moment.' : ''} Pour les exercer, écrivez à ${mail}. Vous pouvez également introduire une réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
 
       <h2>7. Cookies</h2>
-      <p>Ce site utilise Google Analytics à des fins de mesure d'audience, uniquement après votre consentement via la bannière cookies affichée lors de votre première visite. Votre choix (accepté ou refusé) est enregistré dans le stockage local de votre navigateur (localStorage) et peut être modifié à tout moment via le bouton « ${content.cookieBanner.manage} » dans le pied de page, ou en effaçant les données de navigation de ce site. Aucun cookie de mesure d'audience n'est déposé tant que vous n'avez pas accepté la bannière.</p>
-      <p>Destinataire des données de mesure d'audience : Google Ireland Limited. Ces données peuvent faire l'objet d'un transfert hors Union européenne, encadré par les clauses contractuelles types de la Commission européenne.</p>
-      <p>Le formulaire de contact est traité par Formsubmit (sous-traitant situé aux États-Unis) qui achemine votre message par email ; il n'est pas utilisé à des fins de mesure d'audience.</p>
+      ${cookiesSection}
 
       <h2>8. Contact</h2>
       <p>Pour toute question relative à cette politique de confidentialité : <a href="mailto:${content.meta.email}">${content.meta.email}</a>.</p>
@@ -1440,10 +1505,10 @@ function buildExempleDevis() {
         <div class="devis-head">
           <div>
             <p class="devis-label">Prestataire</p>
-            <p>${content.nav.logo}<br>
-            [Statut juridique à compléter]<br>
-            SIRET : [SIRET à compléter]<br>
-            [Adresse à compléter]<br>
+            <p>${content.nav.logo} — ${content.legal.ownerName}<br>
+            ${content.legal.legalStatus}<br>
+            SIRET : ${content.legal.siret}<br>
+            ${content.legal.address}<br>
             ${content.meta.email} · ${content.meta.phoneDisplay}</p>
           </div>
           <div>
@@ -1468,7 +1533,7 @@ function buildExempleDevis() {
             <tr><td>Total</td><td>4&nbsp;960&nbsp;€</td></tr>
           </tfoot>
         </table>
-        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option : maintenance, hébergement et jusqu’à 30 minutes de modifications légères par mois à 79&nbsp;€/mois, sans engagement.</p>
+        <p class="devis-note">Conditions fiscales précisées sur le devis définitif. Option Maintenance (modifications & support) : jusqu’à 30 minutes de modifications légères par mois à 79&nbsp;€/mois, sans engagement.</p>
 
         <p class="devis-label">Modalités</p>
         <ul>
@@ -1476,6 +1541,7 @@ function buildExempleDevis() {
           <li>Délai indicatif : 4 semaines à compter de la validation de la maquette.</li>
           <li>Trois séries de corrections incluses sur le design.</li>
           <li>Le site et son code vous appartiennent à la livraison.</li>
+          <li>Hébergement dès ${content.configurator.hosting.display}, sans contrat de maintenance obligatoire — le nom de domaine reste à votre nom.</li>
         </ul>
       </div>
 
@@ -1520,15 +1586,19 @@ Sitemap: ${SITE_URL}/sitemap.xml
 }
 
 function buildCSP() {
-  const scriptSrc = ["'self'", ...[...cspScriptHashes].map(h => `'sha256-${h}'`), 'https://www.googletagmanager.com'];
+  // Domaines Google autorisés uniquement quand Analytics est réellement configuré.
+  const gaScript = GA_CONFIGURED ? ['https://www.googletagmanager.com'] : [];
+  const gaImg = GA_CONFIGURED ? ' https://www.googletagmanager.com https://*.google-analytics.com' : '';
+  const gaConnect = GA_CONFIGURED ? ' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com' : '';
+  const scriptSrc = ["'self'", ...[...cspScriptHashes].map(h => `'sha256-${h}'`), ...gaScript];
   const styleSrc = ["'self'", ...[...cspStyleHashes].map(h => `'sha256-${h}'`)];
   return [
     `default-src 'self'`,
     `script-src ${scriptSrc.join(' ')}`,
     `style-src ${styleSrc.join(' ')}`,
-    `img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com`,
+    `img-src 'self' data:${gaImg}`,
     `font-src 'self'`,
-    `connect-src 'self' https://formsubmit.co https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com`,
+    `connect-src 'self' https://formsubmit.co${gaConnect}`,
     `form-action 'self' https://formsubmit.co`,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
@@ -1541,9 +1611,18 @@ function buildCSP() {
 // vercel.json est généré par build.mjs (hashes CSP calculés à partir du contenu inline réel) :
 // ne pas éditer à la main, toute modification manuelle sera écrasée au prochain build.
 function buildVercelJson() {
+  // En production, l'alias Vercel historique redirige (308) vers le domaine : une seule
+  // adresse indexable pour Google. Les URL de preview (hash/branche) ne sont pas concernées.
+  const redirects = IS_PREVIEW ? [] : [{
+    source: '/:path*',
+    has: [{ type: 'host', value: new URL(content.meta.previewUrl).host }],
+    destination: `${SITE_URL}/:path*`,
+    permanent: true,
+  }];
   const config = {
     cleanUrls: true,
     trailingSlash: false,
+    ...(redirects.length ? { redirects } : {}),
     headers: [
       {
         source: '/(.*)',
@@ -1608,4 +1687,10 @@ for (const [file, html] of Object.entries(outputs)) {
 }
 
 console.log(`\nSITE_URL = ${SITE_URL}${IS_PREVIEW ? '  (preview — pages en noindex, follow)' : ''}`);
+console.log(`Google Analytics : ${GA_CONFIGURED ? content.meta.gaId : 'non configuré (aucun cookie, bannière masquée)'}`);
+const missingLegal = Object.entries(content.legal).filter(([, v]) => typeof v === 'string' && v.includes('['));
+if (missingLegal.length) {
+  console.warn(`\n⚠ Informations légales manquantes (visibles sur le site) : ${missingLegal.map(([k]) => k).join(', ')}`);
+  console.warn('  → à renseigner dans content/site-content.mjs (legal) avant la mise en ligne.');
+}
 console.log('Build terminé.');
