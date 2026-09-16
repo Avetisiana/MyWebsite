@@ -22,6 +22,8 @@ const snapshot = () => page.evaluate(() => ({
   options: document.querySelectorAll('input[name^="config-opt-"]').length,
   photoOption: !!document.querySelector('input[name="config-opt-photos"]'),
   recap: document.querySelector('[data-config-recap]')?.textContent.replace(/\s+/g, ' ').trim(),
+  aftercareIntro: document.querySelector('#config-group-aftercare')?.parentElement.querySelector('p')?.textContent,
+  maintenanceCopy: document.querySelector('input[name="config-opt-maintenance"]')?.closest('label')?.textContent.replace(/\s+/g, ' ').trim(),
 }));
 
 const activate = async selector => {
@@ -69,6 +71,8 @@ if (results.essentialLanguage.total !== expected.essentialLanguageTotal) failure
 if (results.exclusiveWriting.total !== expected.exclusiveTotal || results.exclusiveWriting.rewrite || !results.exclusiveWriting.writing) failures.push('exclusion rédaction');
 if (results.premium.total !== expected.premiumTotal || !results.premium.recap.includes('79 €/mois')) failures.push('total Premium + récurrence');
 if (results.initial.options !== expected.options || results.initial.photoOption) failures.push('inventaire options');
+if (!results.initial.aftercareIntro.includes('89 €/an') || !results.initial.aftercareIntro.includes('renouvellement annuel')) failures.push('conditions hébergement');
+if (!results.initial.maintenanceCopy.includes('non cumulables') || !results.initial.maintenanceCopy.includes('Hébergement séparé')) failures.push('périmètre maintenance');
 const normalizedPrefill = results.prefill.message.replace(/\u00a0/g, ' ');
 if (results.prefill.projectType !== 'Site multi-pages' || !normalizedPrefill.includes('7 830 € + 79 €/mois')) failures.push('préremplissage contact');
 if (errors.length) failures.push('erreurs console');

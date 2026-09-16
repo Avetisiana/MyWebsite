@@ -1,5 +1,27 @@
 # STATUS.md — [MOI]
 
+## Session 2026-09-16 — séparation tarifaire hébergement / maintenance (poussée)
+
+- Positionnement conservé : hébergement géré **dès 89 €/an** et maintenance facultative
+  **79 €/mois**. Le prix de maintenance ne baisse pas lorsque l’hébergement est séparé : il rémunère
+  le suivi, l’assistance et le temps d’intervention, pas seulement Vercel.
+- Tous les textes concernés distinguent désormais explicitement les deux services : hébergement
+  facturé séparément avec renouvellement annuel ; maintenance sans engagement de durée.
+- Le contenu de la maintenance est cadré : suivi du bon fonctionnement, assistance et jusqu’à
+  30 minutes de modifications légères par mois, **non cumulables**. Les évolutions plus importantes
+  font l’objet d’un devis distinct.
+- Transparence ajoutée dans la FAQ : le client peut récupérer les fichiers ; une migration technique
+  vers un autre hébergeur est chiffrée séparément.
+- `/exemple-devis` et `ETUDE-TARIFAIRE.md` ont été alignés avec ce fonctionnement. Coût annuel des
+  deux services si le client choisit les deux : 1 037 € (89 € + 12 × 79 €).
+- Vérifications : rebuild des 9 pages, test complet du configurateur sans échec ni débordement de
+  390 à 1 920 px, contrôles visuels desktop/mobile du configurateur et de `/exemple-devis`.
+- `HANDOFF.md` ajouté pour la reprise technique du projet. Audit de confidentialité effectué : aucun
+  nom civil, adresse, téléphone, e-mail, donnée client, information de prospection, secret ou
+  identifiant de compte n’y figure.
+- Lot livré avec les sources, les pages générées, les tests, `ETUDE-TARIFAIRE.md`, `HANDOFF.md` et
+  cette mise à jour de `STATUS.md`.
+
 ## Session 2026-09-16 — mise en ligne : indexation Google + audit sécurité (poussée)
 
 **Mise à jour après retour d'Arthur :**

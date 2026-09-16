@@ -8,7 +8,7 @@ Ce document sert à recalculer les formules avant de considérer les prix comme 
 - L’espace d’administration est une option séparée.
 - Aucune heure de formation n’est incluse ni affichée.
 - Corrections : 2 séries pour Essentiel, 3 pour Professionnel, ajustements jusqu’à validation pour Premium dans le périmètre convenu.
-- L’hébergement est inclus uniquement avec la maintenance.
+- L’hébergement est séparé de la maintenance et facturé dès 89 € par an, avec renouvellement annuel.
 - La maintenance comprend jusqu’à 30 minutes de modifications légères par mois, non cumulables.
 - Les évolutions structurelles ou nouvelles fonctionnalités font l’objet d’un devis distinct.
 - La retouche photo n’est pas proposée : elle reste hors périmètre, même en option.
@@ -104,8 +104,10 @@ La réécriture et la rédaction complète sont deux alternatives : elles ne se 
 
 ## Maintenance et hébergement
 
-Le tarif affiché est désormais de **79 € par mois**, soit 948 € par an. Après environ 20 € de domaine, il reste 928 € avant la quote-part Vercel, les autres outils professionnels et le temps consacré aux demandes.
+L’hébergement géré est affiché **dès 89 € par an**. Il couvre la mise à disposition du site sur Vercel et son maintien en ligne dans le périmètre prévu au devis. Le nom de domaine reste au nom du client et est réglé directement auprès du registrar. Le tarif peut être ajusté pour un projet générant une consommation ou des besoins techniques particuliers.
 
-Ce tarif couvre l’hébergement professionnel, le suivi du site et jusqu’à 30 minutes de modifications légères par mois. Ce quota est non cumulable. Au-delà, ou pour toute évolution structurelle, un devis distinct est établi.
+La maintenance reste facultative à **79 € par mois**, soit 948 € par an, hors hébergement. Elle couvre le suivi du bon fonctionnement, l’assistance et jusqu’à 30 minutes de modifications légères par mois. Ce quota est non cumulable. Au-delà, ou pour toute évolution structurelle, un devis distinct est établi.
+
+Un client qui choisit l’hébergement et la maintenance règle donc 1 037 € par an, soit environ 86,42 € par mois. Un client peut conserver uniquement l’hébergement, sans contrat de maintenance. Les fichiers du site peuvent être récupérés à tout moment ; une éventuelle migration technique vers un autre hébergeur est chiffrée séparément.
 
 Les abonnements GPT et Claude constituent des frais professionnels généraux : ils justifient de préserver une marge suffisante, mais ne doivent pas être présentés au client comme des coûts techniques propres à son site. Le tarif de maintenance devra être réévalué si le niveau de service, les coûts d’hébergement ou les outils augmentent sensiblement.

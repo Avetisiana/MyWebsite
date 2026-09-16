@@ -114,7 +114,7 @@ export const content = {
       },
       {
         title: 'Mise en ligne & accompagnement',
-        desc: `Je prépare la publication du site. L’hébergement (dès ${HOSTING_FEE}) le garde en ligne ; la maintenance reste, elle, entièrement optionnelle.`,
+        desc: `Je prépare la publication du site. L’hébergement, facturé dès ${HOSTING_FEE} et renouvelé annuellement, le garde en ligne ; la maintenance reste entièrement optionnelle.`,
       },
     ],
   },
@@ -183,7 +183,7 @@ export const content = {
       { value: '24–48 h', label: 'pour recevoir une première réponse', plain: true },
       { value: 'Budget clair', label: 'une estimation visible puis un devis adapté au périmètre', plain: true },
       { value: 'Mobile d’abord', label: 'une expérience conçue pour tous les écrans', plain: true },
-      { value: 'Sans contrat', label: `obligatoire — seul l’hébergement continue, dès ${HOSTING_FEE}`, plain: true },
+      { value: 'Sans contrat', label: `maintenance facultative, hébergement séparé dès ${HOSTING_FEE}`, plain: true },
     ],
     detailsLabel: 'Défini avant le lancement',
     details: [
@@ -345,19 +345,19 @@ export const content = {
       },
     ],
     aftercareLabel: 'Après la livraison',
-    aftercareIntro: `Votre site reste en ligne grâce à l’hébergement (dès ${HOSTING_FEE}, sans engagement) — la maintenance ci-dessous est entièrement optionnelle.`,
+    aftercareIntro: `L’hébergement est facturé séparément dès ${HOSTING_FEE}, avec renouvellement annuel. La maintenance ci-dessous reste entièrement optionnelle.`,
     // Coût de l'hébergement seul — affiché dans le panneau, la FAQ et l'exemple de devis (build.mjs).
     hosting: { display: HOSTING_FEE },
     maintenance: {
       id: 'maintenance',
       name: 'Maintenance (modifications & support)',
-      desc: 'Jusqu’à 30 min de modifications légères par mois, sans engagement.',
+      desc: 'Suivi du bon fonctionnement, assistance et jusqu’à 30 min de modifications légères par mois, non cumulables. Hébergement séparé.',
       price: 79,
       unit: ' €/mois',
     },
     panel: {
       label: 'Estimation indicative',
-      note: `Hors hébergement (dès ${HOSTING_FEE}, sans maintenance obligatoire). Délai indicatif :`,
+      note: `Hors hébergement (dès ${HOSTING_FEE}, renouvelé annuellement). Maintenance facultative. Délai indicatif :`,
       basePrefix: 'Formule',
       cta: 'Demander une estimation personnalisée',
       exampleLabel: 'Voir un exemple de devis',
@@ -384,15 +384,15 @@ export const content = {
       },
       {
         q: 'La mise en ligne et l’hébergement sont-ils inclus ?',
-        a: `La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès ${HOSTING_FEE} — aucun abonnement mensuel obligatoire. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement.`,
+        a: `La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès ${HOSTING_FEE}, avec renouvellement annuel. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement de durée.`,
       },
       {
         q: 'Suis-je obligé de prendre un contrat de maintenance ?',
-        a: `Non. Votre site est livré clé en main et fonctionne sans aucun contrat de maintenance. Le seul coût qui continue, c’est l’hébergement (dès ${HOSTING_FEE}) et le renouvellement de votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). La maintenance n’est utile que si vous préférez me confier les modifications.`,
+        a: `Non. Votre site est livré clé en main et fonctionne sans contrat de maintenance. Les seuls coûts nécessaires à sa présence en ligne sont l’hébergement (dès ${HOSTING_FEE}, renouvelé annuellement) et votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). Vous pouvez récupérer les fichiers du site à tout moment ; une éventuelle migration technique vers un autre hébergeur est chiffrée séparément.`,
       },
       {
         q: 'Que se passe-t-il après la livraison ?',
-        a: `Je reste disponible après la livraison. L’hébergement (dès ${HOSTING_FEE}) permet à votre site de rester en ligne, sans aucune obligation de maintenance. Si vous préférez me confier les modifications, l’option Maintenance inclut jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé.`,
+        a: `Je reste disponible après la livraison. L’hébergement, facturé séparément dès ${HOSTING_FEE} et renouvelé annuellement, permet à votre site de rester en ligne sans obligation de maintenance. L’option Maintenance comprend le suivi du bon fonctionnement, l’assistance et jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé.`,
       },
       {
         q: 'Que se passe-t-il si je ne suis pas satisfait du résultat ?',
