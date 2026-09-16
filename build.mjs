@@ -140,6 +140,7 @@ function ga() {
     };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
+      if (location.hostname !== '${new URL(SITE_URL).hostname}') return; // local / previews : pas de statistiques faussées
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement('script');

@@ -32,7 +32,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Exemple de devis — Deux As","description":"Exemple de devis pour la création d’un site internet à Angoulême : prestations détaillées, montant, modalités.","url":"https://deux-as.fr/exemple-devis","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Deux As","url":"https://deux-as.fr"}}</script>
   <script>(function () {
-    var GA_ID = '[GA_MEASUREMENT_ID]';
+    var GA_ID = 'G-7GG622YVYK';
     // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
     // il est effacé et la bannière est proposée à nouveau.
     var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
@@ -60,6 +60,7 @@
     };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
+      if (location.hostname !== 'deux-as.fr') return; // local / previews : pas de statistiques faussées
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement('script');
@@ -1754,7 +1755,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            
+            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -1769,11 +1770,17 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
+    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
+    <div class="cookie-actions">
+      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
+      <button class="cookie-accept" id="cookie-accept">Accepter</button>
+    </div>
+  </div>
 
 <script src="/silk-bg.js?v=a83e590461" defer></script>
 <script>(function () {
-    var GA_CONFIGURED = false;
+    var GA_CONFIGURED = true;
 
     // nav scroll state
     var nav = document.getElementById('nav');

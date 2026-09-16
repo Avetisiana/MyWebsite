@@ -33,7 +33,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://deux-as.fr/#organization","name":"Deux As","description":"Création de sites internet sur-mesure à Angoulême pour avocats, artisans et indépendants. Devis gratuit, sites qui inspirent confiance.","url":"https://deux-as.fr","image":"https://deux-as.fr/og/og-default.png","logo":"https://deux-as.fr/icon-512.png","email":"contact@deux-as.fr","telephone":"+33646456925","areaServed":[{"@type":"City","name":"Angoulême"},{"@type":"AdministrativeArea","name":"Charente"}],"address":{"@type":"PostalAddress","addressLocality":"Angoulême","addressRegion":"Charente","addressCountry":"FR"},"geo":{"@type":"GeoCoordinates","latitude":45.6486,"longitude":0.1557},"knowsLanguage":"fr","founder":{"@type":"Person","name":"Arthur Avetisian"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien de temps pour créer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Comptez en moyenne 2 à 4 semaines selon la formule choisie, de l’échange initial jusqu’à la mise en ligne."}},{"@type":"Question","name":"Est-ce que je pourrai le modifier moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Un espace d’administration standard peut être ajouté à partir de 690 € si vous souhaitez modifier vous-même vos textes et images. Le tarif est adapté lorsque le site comprend un blog ou des contenus plus complexes."}},{"@type":"Question","name":"La mise en ligne et l’hébergement sont-ils inclus ?","acceptedAnswer":{"@type":"Answer","text":"La création et la mise en ligne sont incluses dans chaque formule. L’hébergement est ensuite facturé séparément, dès 89 €/an — aucun abonnement mensuel obligatoire. Le nom de domaine reste à votre nom, chez le registrar de votre choix. La maintenance est une option distincte, sans engagement."}},{"@type":"Question","name":"Suis-je obligé de prendre un contrat de maintenance ?","acceptedAnswer":{"@type":"Answer","text":"Non. Votre site est livré clé en main et fonctionne sans aucun contrat de maintenance. Le seul coût qui continue, c’est l’hébergement (dès 89 €/an) et le renouvellement de votre nom de domaine (environ 12 à 15 € par an, payé directement à votre registrar). La maintenance n’est utile que si vous préférez me confier les modifications."}},{"@type":"Question","name":"Que se passe-t-il après la livraison ?","acceptedAnswer":{"@type":"Answer","text":"Je reste disponible après la livraison. L’hébergement (dès 89 €/an) permet à votre site de rester en ligne, sans aucune obligation de maintenance. Si vous préférez me confier les modifications, l’option Maintenance inclut jusqu’à 30 minutes de modifications légères par mois, non cumulables ; les évolutions plus importantes font l’objet d’un devis séparé."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait du résultat ?","acceptedAnswer":{"@type":"Answer","text":"La formule Essentiel inclut 2 séries de corrections et la formule Professionnel 3. La formule Premium permet des ajustements jusqu’à validation, tant qu’ils restent dans le périmètre défini ensemble au départ."}},{"@type":"Question","name":"Travaillez-vous avec des clients hors d’Angoulême ?","acceptedAnswer":{"@type":"Answer","text":"Oui, je travaille avec des clients partout en Charente et au-delà, en visio comme en présentiel."}}]}</script>
   <script>(function () {
-    var GA_ID = '[GA_MEASUREMENT_ID]';
+    var GA_ID = 'G-7GG622YVYK';
     // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
     // il est effacé et la bannière est proposée à nouveau.
     var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
@@ -61,6 +61,7 @@
     };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
+      if (location.hostname !== 'deux-as.fr') return; // local / previews : pas de statistiques faussées
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement('script');
@@ -2315,7 +2316,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            
+            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -2330,13 +2331,19 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
+    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
+    <div class="cookie-actions">
+      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
+      <button class="cookie-accept" id="cookie-accept">Accepter</button>
+    </div>
+  </div>
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
 <script src="/silk-bg.js?v=a83e590461" defer></script>
 <script>(function () {
-    var GA_CONFIGURED = false;
+    var GA_CONFIGURED = true;
 
     // nav scroll state
     var nav = document.getElementById('nav');

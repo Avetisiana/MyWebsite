@@ -18,7 +18,8 @@ export const content = {
     // Personne réelle à l'origine de l'entreprise — sert uniquement au JSON-LD "founder"
     // (distinct du nom commercial "Deux As" utilisé partout ailleurs sur le site).
     founderName: 'Arthur Avetisian',
-    gaId: '[GA_MEASUREMENT_ID]',
+    // Google Analytics 4 — propriété « deux-as.fr » du compte Deux-As (chargé uniquement après consentement)
+    gaId: 'G-7GG622YVYK',
     year: new Date().getFullYear(),
   },
 

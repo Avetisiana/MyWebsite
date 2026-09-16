@@ -32,7 +32,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-display-700-italic-latin.woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Politique de confidentialité — Deux As","description":"Politique de confidentialité RGPD du site de création de sites internet à Angoulême — données collectées, cookies, droits.","url":"https://deux-as.fr/confidentialite","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Deux As","url":"https://deux-as.fr"}}</script>
   <script>(function () {
-    var GA_ID = '[GA_MEASUREMENT_ID]';
+    var GA_ID = 'G-7GG622YVYK';
     // Choix cookies horodaté, valable 6 mois (recommandation CNIL) : passé ce délai,
     // il est effacé et la bannière est proposée à nouveau.
     var CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182;
@@ -60,6 +60,7 @@
     };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
+      if (location.hostname !== 'deux-as.fr') return; // local / previews : pas de statistiques faussées
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement('script');
@@ -1686,20 +1687,21 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       <p>Via le formulaire de contact : nom, adresse email, téléphone (facultatif), type de projet et message. Lors de la consultation du site, l'hébergeur enregistre des données techniques de connexion (adresse IP, pages demandées, date et heure) nécessaires au fonctionnement et à la sécurité du service.</p>
 
       <h2>3. Finalités et bases légales</h2>
-      <p>Répondre à votre demande de contact ou de devis : mesures précontractuelles prises à votre demande (article 6.1.b du RGPD). Assurer la sécurité et le bon fonctionnement du site : intérêt légitime (article 6.1.f). Vos données ne sont ni revendues, ni utilisées à d'autres fins.</p>
+      <p>Répondre à votre demande de contact ou de devis : mesures précontractuelles prises à votre demande (article 6.1.b du RGPD). Assurer la sécurité et le bon fonctionnement du site : intérêt légitime (article 6.1.f). Mesurer l'audience du site : votre consentement (article 6.1.a). Vos données ne sont ni revendues, ni utilisées à d'autres fins.</p>
 
       <h2>4. Destinataires et prestataires</h2>
-      <p>Vos données sont destinées uniquement à Deux As. Elles transitent par les prestataires techniques suivants : Formsubmit (acheminement des messages du formulaire par email, États-Unis), OVHcloud (messagerie, France) et Vercel Inc. (hébergement du site, États-Unis, adhérent au Data Privacy Framework UE–États-Unis). Certains de ces prestataires étant établis aux États-Unis, vos données peuvent y être transférées.</p>
+      <p>Vos données sont destinées uniquement à Deux As. Elles transitent par les prestataires techniques suivants : Formsubmit (acheminement des messages du formulaire par email, États-Unis), OVHcloud (messagerie, France) et Vercel Inc. (hébergement du site, États-Unis, adhérent au Data Privacy Framework UE–États-Unis). Google (mesure d'audience, voir section 7). Certains de ces prestataires étant établis aux États-Unis, vos données peuvent y être transférées.</p>
 
       <h2>5. Durée de conservation</h2>
       <p>Les demandes de contact sont conservées au maximum 3 ans à compter de notre dernier échange, puis supprimées. Si votre demande aboutit à un contrat, les documents correspondants sont conservés pendant les durées imposées par la loi (par exemple 10 ans pour les factures). Les données techniques de connexion sont conservées par l'hébergeur pour une durée limitée.</p>
 
       <h2>6. Vos droits</h2>
-      <p>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de définir des directives relatives à leur sort après votre décès. Pour les exercer, écrivez à <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>. Vous pouvez également introduire une réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
+      <p>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de définir des directives relatives à leur sort après votre décès. Vous pouvez retirer votre consentement à tout moment. Pour les exercer, écrivez à <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>. Vous pouvez également introduire une réclamation auprès de la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">CNIL</a>.</p>
 
       <h2>7. Cookies</h2>
-      <p>Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience, de publicité ou de suivi. Les polices de caractères, images et scripts sont servis depuis le site lui-même : naviguer sur ces pages n'envoie aucune information à un service tiers.</p>
-      <p>Seul l'envoi du formulaire de contact transmet des données à Formsubmit (voir section 4). Si le formulaire est envoyé sans JavaScript, Formsubmit peut afficher une vérification anti-robot Google reCAPTCHA sur sa propre page.</p>
+      <p>Ce site utilise Google Analytics à des fins de mesure d'audience (statistiques de visites), uniquement après votre consentement via la bannière affichée lors de votre première visite. Aucun cookie de mesure d'audience n'est déposé tant que vous n'avez pas cliqué sur « Accepter ». Les cookies Google Analytics (<code>_ga</code>, <code>_ga_*</code>) ont une durée de vie maximale de 13 mois.</p>
+      <p>Votre choix (accepté ou refusé) est enregistré dans le stockage local de votre navigateur pendant 6 mois, puis la question vous est reposée. Vous pouvez le modifier à tout moment via le bouton « Gérer les cookies » en pied de page ; un refus supprime les cookies Google Analytics déjà déposés.</p>
+      <p>Destinataire des données de mesure d'audience : Google Ireland Limited, avec un transfert possible vers Google LLC aux États-Unis, encadré par le Data Privacy Framework UE–États-Unis.</p>
 
       <h2>8. Contact</h2>
       <p>Pour toute question relative à cette politique de confidentialité : <a href="mailto:contact@deux-as.fr">contact@deux-as.fr</a>.</p>
@@ -1733,7 +1735,7 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
             <span class="head">Légal</span>
             <a href="/mentions-legales">Mentions légales</a>
           <a href="/confidentialite">Confidentialité</a>
-            
+            <button type="button" class="footer-cookie-btn" id="cookie-reset">Gérer les cookies</button>
           </div>
           <div class="footer-col">
             <span class="head">Contact</span>
@@ -1748,13 +1750,19 @@ section { padding: var(--space-6) 0; position: relative; scroll-margin-top: 96px
       </div>
     </div>
   </footer>
-
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Consentement aux cookies">
+    <p>Ce site utilise des cookies à des fins de mesure d’audience (statistiques de visites). Vous pouvez accepter ou refuser. <a href="/confidentialite">En savoir plus</a></p>
+    <div class="cookie-actions">
+      <button class="cookie-refuse" id="cookie-refuse">Refuser</button>
+      <button class="cookie-accept" id="cookie-accept">Accepter</button>
+    </div>
+  </div>
 <div class="mobile-cta">
     <a href="/#contact" class="btn btn-primary">Demander un devis</a>
   </div>
 <script src="/silk-bg.js?v=a83e590461" defer></script>
 <script>(function () {
-    var GA_CONFIGURED = false;
+    var GA_CONFIGURED = true;
 
     // nav scroll state
     var nav = document.getElementById('nav');

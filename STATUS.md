@@ -7,11 +7,16 @@
 - Formulaire Formsubmit activé.
 - Redirection `www.deux-as.fr` → `deux-as.fr` passée en 308 dans Vercel (vérifié en direct).
 - Poussé avec le lot « transparence hébergement / maintenance » de la session parallèle.
+- **Google Analytics activé** (`G-7GG622YVYK`, propriété « deux-as.fr » du compte Deux-As) :
+  bannière Refuser/Accepter, GA chargé seulement après accord et seulement sur `deux-as.fr`
+  (jamais en local ni sur les previews), bouton « Gérer les cookies » dans le footer, section 7
+  de la confidentialité et CSP passées automatiquement en version « Analytics ». Poussé seul,
+  sans le 2ᵉ lot de formulations hébergement/maintenance de la session parallèle (resté non commité).
+  Réglages GA conseillés à Arthur : conservation 14 mois, Signaux Google désactivés.
 - Reste ouvert :
   - infos légales (`content.legal`) ;
   - dans Search Console : envoyer le sitemap et demander l'indexation ;
   - alias Formsubmit (facultatif) ;
-  - Google Analytics (ID `G-…`) ;
   - passage du dépôt en privé + Vercel Pro (usage commercial) — un seul abonnement Pro couvre tous
     les projets de l'équipe.
 
