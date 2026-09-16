@@ -13,6 +13,8 @@
   de la confidentialité et CSP passées automatiquement en version « Analytics ». Poussé seul,
   sans le 2ᵉ lot de formulations hébergement/maintenance de la session parallèle (resté non commité).
   Réglages GA conseillés à Arthur : conservation 14 mois, Signaux Google désactivés.
+- Correctif RGPD vérifié sous le vrai domaine (interception Puppeteer) : un refus après acceptation
+  active `ga-disable-G-…` — le script déjà chargé n'envoie plus les événements de sortie de page.
 - Reste ouvert :
   - infos légales (`content.legal`) ;
   - dans Search Console : envoyer le sitemap et demander l'indexation ;

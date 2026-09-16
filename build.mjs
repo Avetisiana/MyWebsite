@@ -138,9 +138,13 @@ function ga() {
         } catch (e) {}
       },
     };
+    // Refus : drapeau officiel Google — le script déjà chargé dans la page n'envoie plus rien
+    // (sans lui, les événements de fin de page partent encore après le refus).
+    window.__disableGA = function () { window['ga-disable-' + GA_ID] = true; };
     window.__loadGA = function () {
       if (GA_ID.indexOf('[') !== -1) return; // placeholder non configuré : jamais de requête vers Google
       if (location.hostname !== '${new URL(SITE_URL).hostname}') return; // local / previews : pas de statistiques faussées
+      window['ga-disable-' + GA_ID] = false; // ré-autorise si le visiteur accepte après un refus
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement('script');
@@ -696,6 +700,7 @@ function scripts() {
     }
     if (refuseBtn) refuseBtn.addEventListener('click', function () {
       window.__consent.set('refused');
+      if (window.__disableGA) window.__disableGA();
       clearGaCookies();
       banner.classList.remove('is-visible');
     });
